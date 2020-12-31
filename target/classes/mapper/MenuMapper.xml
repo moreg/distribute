@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mys.meisiniu.dao.MenuDao">
-    <resultMap id="BaseResultMap" type="com.mys.meisiniu.model.Menu">
-        <id column="id" jdbcType="INTEGER" property="id" />
-        <result column="name" jdbcType="VARCHAR" property="name" />
-        <result column="parentId" jdbcType="VARCHAR" property="parentId" />
-        <result column="url" jdbcType="VARCHAR" property="url" />
-        <result column="icon" jdbcType="VARCHAR" property="icon" />
-        <result column="order" jdbcType="INTEGER" property="order" />
+<mapper namespace="com.jdsw.distribute.dao.MenuDao">
+    <resultMap id="BaseResultMap" type="com.jdsw.distribute.model.Menu">
+        <id column="id"  property="id" />
+        <result column="name"  property="name" />
+        <result column="parent_id"  property="parentId" />
+        <result column="url"  property="url" />
+        <result column="icon"  property="icon" />
+        <result column="order"  property="order" />
 
 
 
@@ -26,5 +26,8 @@
     <select id="getMenuList" resultMap="BaseResultMap">
         SELECT  sy.id,sy.`name`,sy.parentId,sy.`order`,sy.url,sy.icon
         FROM sys_menu sy
+    </select>
+    <select id="findBranch" resultMap="BaseResultMap">
+         select bm.id,bm.label,bm.parent_id,bm.order from branch_menu bm
     </select>
 </mapper>

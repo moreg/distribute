@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jdsw.distribute.dao.NetworkDao">
+  <resultMap id="DistributeMap" type="com.jdsw.distribute.model.Distribute">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name"  property="name" />
+    <result column="corporate_name"  property="corporate_name" />
+    <result column="corporate_phone"  property="corporate_phone" />
+    <result column="contacts"  property="contacts" />
+    <result column="contacts_phone"  property="contacts_phone" />
+    <result column="source"  property="source" />
+    <result column="follow_number"  property="follow_number" />
+    <result column="state"  property="state" />
+    <result column="last_follow_up"  property="last_follow_up" />
+    <result column="last_follow_content"  property="last_follow_content" />
+    <result column="last_follow_time"  property="last_follow_time" />
+    <result column="last_follow_name"  property="last_follow_name" />
+    <result column="last_follow_name"  property="last_follow_name" />
+    <result column="status"  property="status" />
+
+  </resultMap>
+  <resultMap id="pool" type="com.jdsw.distribute.vo.ComePool">
+    <result column="contacts"  property="contacts" />
+    <result column="create_time"  property="createTime" />
+    <result column="contacts_phone"  property="contactsPhone" />
+    <result column="source" property="source" />
+    <result column="img_url"  property="imgUrl" />
+    <result column="record"  property="record" />
+    <result column="remarks"  property="remarks" />
+  </resultMap>
+  <resultMap id="aMap" type="com.jdsw.distribute.vo.AirForcePool">
+    <result column="id"  property="id" />
+    <result column="track_id"  property="trackId" />
+    <result column="name"  property="name" />
+    <result column="corporate_name" property="corporateName" />
+    <result column="corporate_phone"  property="corporatePhone" />
+    <result column="registered_capital"  property="registeredCapital" />
+    <result column="establish_time"  property="establishTime" />
+    <result column="operation"  property="operation" />
+    <result column="issue"  property="issue" />
+    <result column="state"  property="state" />
+    <result column="create_time"  property="createTime" />
+    <result column="last_follow_name"  property="lastFollowName" />
+    <result column="source"  property="source" />
+    <result column="last_follow_time"  property="lastFollowTime" />
+    <result column="city"  property="city" />
+    <result column="other_phone"  property="otherPhone" />
+    <result column="address"  property="address" />
+  </resultMap>
+  <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
+    <result column="id"  property="id" />
+    <result column="track_id"  property="trackId" />
+    <result column="name"  property="name" />
+    <result column="corporate_name" property="corporateName" />
+    <result column="corporate_phone"  property="corporatePhone" />
+    <result column="create_time"  property="createTime" />
+    <result column="last_follow_name"  property="lastFollowName" />
+    <result column="source"  property="source" />
+    <result column="order_state"  property="orderState" />
+  </resultMap>
+  <resultMap id="recording" type="com.jdsw.distribute.vo.RecordingVo">
+    <result column="id"  property="id" />
+    <result column="create_time" property="createTime" />
+    <result column="source"  property="source" />
+    <result column="name"  property="name" />
+    <result column="last_follow_name"  property="lastFollowName" />
+    <result column="track_id"  property="trackId" />
+    <result column="corporate_name"  property="corporateName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,name, corporate_name, corporate_phone, contacts, contacts_phone, source, follow_number,state,last_follow_up,
+    last_follow_content,last_follow_time,last_follow_name,create_time,status,track_id,first_follow_name,appoint,leader_name
+  </sql>
+  <select id="selectNetworkTrackId" resultType="String">
+    select track_id from customer_network where id = #{id}
+  </select>
+
+  <select id="selectNetworkById" resultType="com.jdsw.distribute.model.Distribute">
+    select *
+    from customer_network where id =#{id}
+  </select>
+
+  <select id="airForcePoolList" resultMap="aMap" parameterType="String">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address,overdue_time from customer_network
+    where 1 = 1
+        <if test="strtime != null and strtime!=''">
+            AND create_time <![CDATA[ >= ]]> #{strtime}
+        </if>
+        <if test="endtime != null and endtime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endtime}
+        </if>
+        <if test="content != null and content!= ''">
+          <bind name="content" value="'%' + content + '%'" ></bind>
+            and (corporate_name like #{content} or corporate_phone like #{content})
+        </if>
+  </select>
+
+  <select id="grabbingOrdersList" resultMap="aMap" parameterType="String">
+
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address from customer_network
+    where 1 = 1 and issue = 1 and appoint = 0
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+  </select>
+
+  <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address from customer_network
+    where 1 = 1 and last_follow_name = #{lastFollowName}
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+
+  </select>
+
+  <select id="cashierListNetwork" resultMap="cashierMap" parameterType="String">
+    select id,name,corporate_name,corporate_phone,create_time,source,last_follow_name,track_id,order_state from customer_network
+    where 1 = 1 and status in(3,4)
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+  </select>
+
+  <select id="RecordingShowNetwork" resultMap="recording">
+    select name,corporate_name,source,track_id,create_time,last_follow_name from customer_network where id = #{id}
+  </select>
+  
+  <select id="Unsettled" resultType="com.jdsw.distribute.model.Distribute">
+    select id,overdue_time from customer_network where status = 0
+  </select>
+  <select id="qureyNetwork" resultType="Map">
+    select id,name,corporate_name as corporateName,corporate_phone as corporatePhone,deal_time as dealTime,registered_capital as registeredCapital,operation,conduct,city,source,address
+    ,create_time as createTime,other_phone as otherPhone from customer_network where id = #{id}
+  </select>
+
+  <insert id="insertTelemarkting" parameterType="java.util.List">
+    insert into customer_network(name,corporate_name,corporate_phone,contacts,contacts_phone,source,follow_number,state,
+    last_follow_up,last_follow_content,last_follow_time,last_follow_name,create_time,status)
+    <foreach collection="list" item="item" index="index" separator=",">
+        (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.contacts},#{item.contactsPhone},
+        #{item.source},#{item.followNumber},#{item.state},#{item.lastFollowUp},#{item.lastFollowContent},#{item.lastFollowTime},#{item.lastFollowName},
+      sysdate()  ,1)
+    </foreach>
+  </insert>
+
+  <update id="UpdateRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set order_state = 1,status = 1,conduct = #{conduct},contract_no = #{contractNo},pay = #{pay},cost = #{cost},deal_time = #{dealTime},recording_name = #{recordingName}
+    where id = #{id}
+  </update>
+
+  <update id="overTime" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set status = #{status},last_follow_name = #{lastFollowName} where id = #{id}
+  </update>
+
+  <update id="appoint" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="last_follow_name =case" suffix="end,">
+        <foreach collection="list" item="distribute" index="index">
+          last_follow_name = #{distribute.firstFollowName}
+        </foreach>
+      </trim >
+      <trim prefix="first_follow_name =case" suffix="end,">
+        <foreach collection="list" item="distribute" index="index">
+          first_follow_name = #{distribute.firstFollowName}
+        </foreach>
+      </trim>
+      <trim prefix="appoint =case" suffix="end,">
+        <foreach collection="list" item="distribute" index="index">
+          appoint = #{distribute.appoint}
+        </foreach>
+      </trim>
+      <trim prefix="issue =case" suffix="end,">
+        <foreach collection="list" item="distribute" index="index">
+          issue = #{distribute.issue}
+        </foreach>
+      </trim>
+    </trim>
+     where id in
+    <foreach collection="list" index="index" item="distribute" separator="," open="(" close=")">
+      #{distribute.id}
+    </foreach>
+  </update>
+  <update id="updateNetworkTrackId" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set track_id = #{trackId} where id = #{id}
+  </update>
+  <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName} where id = #{id}
+  </update>
+
+  <update id="updateNetworkLastFollowName" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set last_follow_name = #{lastFollowName} where id = #{id}
+  </update>
+  <update id="SubmitRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set status = #{status} where id = #{id}
+  </update>
+  <update id="putAirForcePoll" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set issue = 1,appoint = 0,track_id = #{trackId} where id = #{id}
+  </update>
+
+  <update id="updateNetwork" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set name = #{name},corporate_name = #{corporateName},corporate_phone = #{corporatePhone},deal_time = #{dealTime},registered_capital = #{registeredCapital},
+    operation = #{operation},conduct = #{conduct},city = #{city},source = #{source},address = #{address},other_phone = #{otherPhone} where id = #{id}
+  </update>
+  <update id="setOverdueTime" parameterType="com.jdsw.distribute.vo.AirForcePool">
+    update customer_network set overdue_time = #{overdueTime} where id = #{id}
+  </update>
+ <delete id="deleteNetwork" parameterType="com.jdsw.distribute.model.Distribute">
+   delete from customer_network where id = #{id}
+ </delete>
+
+  <insert id="insertNetwoork" parameterType="com.jdsw.distribute.model.Distribute">
+    insert into customer_network(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,conduct,city,source,address
+    ,create_time,status,issue,other_phone)
+    values (
+    #{name},#{corporateName},#{corporatePhone},#{dealTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
+    0,0,#{otherPhone}
+    )
+  </insert>
+</mapper>

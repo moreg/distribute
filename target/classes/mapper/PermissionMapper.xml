@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mys.meisiniu.dao.PermissionDao">
-  <resultMap id="BaseResultMap" type="com.mys.meisiniu.model.Permission">
+<mapper namespace="com.jdsw.distribute.dao.PermissionDao">
+  <resultMap id="BaseResultMap" type="com.jdsw.distribute.model.Permission">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="permissionname" jdbcType="VARCHAR" property="permissionname" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
@@ -19,13 +19,13 @@
     delete from permission
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.mys.meisiniu.model.Permission">
+  <insert id="insert" parameterType="com.jdsw.distribute.model.Permission">
     insert into permission (id, permissionname, remarks
       )
     values (#{id,jdbcType=INTEGER}, #{permissionname,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.mys.meisiniu.model.Permission">
+  <insert id="insertSelective" parameterType="com.jdsw.distribute.model.Permission">
     insert into permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -50,7 +50,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.mys.meisiniu.model.Permission">
+  <update id="updateByPrimaryKeySelective" parameterType="com.jdsw.distribute.model.Permission">
     update permission
     <set>
       <if test="permissionname != null">
@@ -62,7 +62,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mys.meisiniu.model.Permission">
+  <update id="updateByPrimaryKey" parameterType="com.jdsw.distribute.model.Permission">
     update permission
     set permissionname = #{permissionname,jdbcType=VARCHAR},
       remarks = #{remarks,jdbcType=VARCHAR}
