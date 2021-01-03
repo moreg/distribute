@@ -189,9 +189,9 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils{
         // 通过起始毫秒和终止毫秒的差值，计分钟
         long diff = endTime - startTime;
         long day = diff / 86400000;
-        long hour= diff % 86400000 / 3600000;               //以小时为单位取整
-        long min = diff % 86400000 % 3600000 / 60000;       //以分钟为单位取整
-        long seconds = diff % 86400000 % 3600000 % 60000 / 1000;   //以秒为单位取整
+        long hour= diff % 86400000 / 3600000;//以小时为单位取整
+        long min = diff % 86400000 % 3600000 / 60000;//以分钟为单位取整
+        long seconds = diff % 86400000 % 3600000 % 60000 / 1000;-//以秒为单位取整
 
         return hour+(day*24)+"小时"+min+"分"+seconds+"秒";
 
@@ -277,9 +277,18 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils{
         return sdf.format(afterDate);
 
     }
-    public static void main(String[] args) {
-        Integer time2 = 10*60*1000;
-       System.out.println(getOverTime(time2));
+    public static void main(String[] args) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
+        Date now = new Date();
+        Date start = sdf.parse("2021-01-03 20:36:00");
+        Date end = new Date(now.getTime());
+        long cha = end.getTime() - start.getTime();
+        System.out.println(cha);
+        if(cha <=300000){
+           System.out.println("trun");
+        }else{
+            System.out.println("false");
+        }
 
     }
 

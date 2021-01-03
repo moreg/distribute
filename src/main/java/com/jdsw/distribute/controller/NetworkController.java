@@ -4,18 +4,24 @@ import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.NetworkService;
 
+import com.jdsw.distribute.util.ImageUtil;
 import com.jdsw.distribute.util.Message;
 
+import com.jdsw.distribute.util.VideoUtil;
 import com.jdsw.distribute.vo.AirForcePool;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Encoder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
 
 
 @RestController
@@ -76,14 +82,30 @@ public class NetworkController {
     }
 
     /**
+     * 导入网销线索
+     * @param file
+     * @return
+     */
+    @RequestMapping("/excelNetwork")
+    public Message excelNetwork(@RequestParam("file") MultipartFile file) throws Exception {
+        int i = distributeService.excelNetwork(file);
+        if (i > 0){
+            return Message.success("导入成功");
+        }
+        return Message.fail();
+    }
+    /**
      * 删除
      * @param
      * @return
      */
     @RequestMapping("/deleteNetwork")
     public Message deleteNetwork(@RequestBody Distribute distribute){
-        distributeService.deleteNetwork(distribute);
-        return Message.success();
+        int i = distributeService.deleteNetwork(distribute);
+        if (i > 0){
+            return Message.success();
+        }
+        return Message.fail();
     }
 
     /**
@@ -93,25 +115,21 @@ public class NetworkController {
      */
     @RequestMapping("/updateNetwork")
     public Message updateNetwork(@RequestBody Distribute distribute){
-        distributeService.updateNetwork(distribute);
-        return  Message.success();
+        int i = distributeService.updateNetwork(distribute);
+        if (i > 0){
+            return  Message.success();
+        }
+        return  Message.fail();
     }
+
+    /**
+     * 编辑获取客户资料接口
+     * @param id
+     * @return
+     */
     @RequestMapping("/qureyNetwork")
     public Message qureyNetwork(Integer id){
         return Message.success("操作成功",distributeService.qureyNetwork(id));
-    }
-    /**
-     * 导入电销线索
-     * @param
-     * @return
-     */
-    @RequestMapping("/excelTelemarketing")
-    public Message excelTelemarketing(HttpServletRequest request, @RequestParam("file") MultipartFile file, Distribute excels) throws Exception {
-        int i = distributeService.ExclDistribute(file);
-        if (i > 0){
-            return Message.success("导入成功");
-        }
-        return Message.fail("导入失败");
     }
 
     /**
@@ -132,7 +150,7 @@ public class NetworkController {
     }
 
     /**
-     * 指定接单人
+     * 线索分发
      * @param
      * @return
      */
@@ -190,12 +208,36 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/uploadImg")
-    public  @ResponseBody Message  uploadImg(@RequestParam("img") MultipartFile img,HttpServletRequest request,@RequestBody Distribute distribute){
-          int i =distributeService.uploadImg(img,request);
-          if (i == 1){
-              return Message.success("上传成功");
-          }
-          return Message.fail("上传失败");
+    public Message  uploadImg(@RequestParam("img") MultipartFile[] img,HttpServletRequest request,@RequestParam("id")Integer id){
+        String uploadPathDB=null;
+        Map map=new HashMap();
+        try {
+            uploadPathDB= ImageUtil.saveImage(id,img,"WL");
+        }catch (IOException e){
+            e.printStackTrace();
+            return Message.fail("上传失败");
+        }
+        map.put("imgUrl",uploadPathDB);
+        return Message.success("上传成功",map);
+    }
+    /**
+     * 上传音频
+     * @param
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/uploadFile")
+    public Message  uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("id")Integer id){
+        Map map=new HashMap();
+        String uploadPathDB=null;
+        try {
+            uploadPathDB= VideoUtil.saveVideo(id,file,"WL");
+        }catch (IOException e) {
+            e.printStackTrace();
+            return Message.fail("上传失败");
+        }
+        map.put("record",uploadPathDB);
+       return Message.success("上传成功",map);
     }
 
     /**
@@ -249,12 +291,12 @@ public class NetworkController {
     }
 
     /**
-     * 转发
+     * 主管转交
      * @param distribute
      * @return
      */
     @RequestMapping("/transferNetwork")
-    public Message transferNetwork(@RequestBody Distribute distribute){
+    public Message transferNetwork(@RequestBody List<Distribute> distribute){
         return Message.success("操作成功",distributeService.transferNetwork(distribute),0);
     }
 
@@ -267,6 +309,20 @@ public class NetworkController {
     public Message setOverdueTime(@RequestBody AirForcePool airForcePool){
         distributeService.setOverdueTime(airForcePool);
         return Message.success();
+    }
+
+    /**
+     * 查询跟进列表
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/qureyFollowList")
+    public Message qureyFollowList(Integer id)throws IOException{
+        return Message.success("操作成功",distributeService.qureyFollowList(id));
+    }
+    @RequestMapping("/notice")
+    public Message notice(){
+        return Message.success("操作成功",distributeService.notice());
     }
 
 }

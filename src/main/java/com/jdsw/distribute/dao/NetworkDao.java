@@ -1,6 +1,8 @@
 package com.jdsw.distribute.dao;
 
 import com.jdsw.distribute.model.Distribute;
+import com.jdsw.distribute.model.DistributeFollow;
+import com.jdsw.distribute.model.Excel;
 import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.vo.AirForcePool;
 import com.jdsw.distribute.vo.CashierVo;
@@ -40,7 +42,7 @@ public interface NetworkDao {
      * @param distribute
      * @return
      */
-    int updateNetworkLastFollowName (Distribute distribute);
+    int updateNetworkLastFollowName (List<Distribute> distribute);
 
     /**
      * 抢单修改第一接单人和当前接单人
@@ -84,6 +86,13 @@ public interface NetworkDao {
      * @return
      */
     int insertNetwoork(Distribute distribute);
+
+    /**
+     * 导入网销
+     * @param excels
+     * @return
+     */
+    int excelNetwork(List<Object> excels);
     /**
      * 删除
      * @param
@@ -141,9 +150,15 @@ public interface NetworkDao {
     List<Distribute> Unsettled();
     /**
      * 设置过期时间
-     * @param distribute
+     * @param
      * @return
      */
     int setOverdueTime(AirForcePool airForcePool);
+
+    /**
+     *
+     * @return
+     */
+    List<Distribute> notice();
 
 }

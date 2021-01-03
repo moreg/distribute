@@ -1,8 +1,10 @@
 package com.jdsw.distribute;
 
+import com.jdsw.distribute.model.Excel;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.service.MenuService;
 import com.jdsw.distribute.service.UserService;
+import com.jdsw.distribute.util.excelRead;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.Deployment;
@@ -17,8 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -177,7 +182,28 @@ public class MbackstageApplicationTests {
         return result.toString();
     }
     @Test
-    public void json(){
+    public void json() throws IntrospectionException, InstantiationException, IllegalAccessException, NoSuchFieldException, InvocationTargetException {
+/** 方法一
+ * fileName:Excel文件路径
+ * StatrRow：读取的开始行数（默认填0）
+ * EndRow：读取的结束行数（填-1为全部）
+ * ExistTop:是否存在头部（如存在则读取数据时会把头部拼接到对应数据作为KEY，若无则KEY为当前列数）
+ */
+       /* List<Map<String,Object>> result = excelRead.ReadExcelByRC("E:\\高级搜索导出数据.xlsx",2,10,false);
+        System.out.println(result.size());
+        System.out.println(result);*/
 
+        /**
+         * 方法二
+         * ReadExcelByPOJO(String fileName, int StatrRow, int EndRow, Class t)
+         * fileName:Excel文件路径
+         * StatrRow：读取的开始行数（默认填0）
+         * EndRow：读取的结束行数（填-1为全部）
+         * Class<T>：传过来的实体类类型
+         */
+        List<Object> result2 = excelRead.ReadExcelByPOJO("E:\\高级搜索导出数据.xlsx",0,-1, Excel.class);
+        System.out.println(result2.size());
+        System.out.println(result2);
     }
+
 }

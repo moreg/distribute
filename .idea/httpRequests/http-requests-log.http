@@ -1,3 +1,17 @@
+GET http://127.0.0.1:8080/distribute/updateNetwork
+
+<> 2020-12-31T214529.400.json
+
+###
+
+GET http://127.0.0.1:8080/distribute/updateNetwork
+
+###
+
+GET http://distribute/updateNetwork
+
+###
+
 GET http://localhost:8080/menu/menujson
 Accept: */*
 Cache-Control: no-cache

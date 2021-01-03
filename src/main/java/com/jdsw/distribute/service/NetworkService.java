@@ -10,19 +10,11 @@ import com.jdsw.distribute.vo.RecordingVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public interface NetworkService {
-    /**
-     * 导入电销数据
-     * @param distribute
-     * @return
-     */
-    int insertTelemarkting(Distribute distribute);
-
-    int ExclDistribute(MultipartFile file) throws Exception;
-
     /**
      * 指定接单人
      * @param
@@ -71,9 +63,16 @@ public interface NetworkService {
      * @return
      */
     int insertNetwoork(Distribute distribute);
+
+    /**
+     * 导入网销线索
+     * @param file
+     * @return
+     */
+    int excelNetwork(MultipartFile file) throws Exception;
     /**
      * 删除
-     * @param id
+     * @param
      * @return
      */
     int deleteNetwork(Distribute distribute);
@@ -105,12 +104,7 @@ public interface NetworkService {
      */
     int followupNetwork(DistributeFollow networkFollow);
 
-    /**
-     * 上传图片
-     * @param img
-     * @return
-     */
-    int uploadImg(MultipartFile img, HttpServletRequest request);
+
     /**
     * 提交财务
      */
@@ -146,7 +140,7 @@ public interface NetworkService {
      * @param distribute
      * @return
      */
-    int transferNetwork(Distribute distribute);
+    int transferNetwork(List<Distribute> distribute);
 
     /**
      * 设置过期时间
@@ -155,6 +149,12 @@ public interface NetworkService {
      */
     int setOverdueTime(AirForcePool airForcePool);
 
+    /**
+     * 查询跟进列表
+     * @return
+     */
+    List<DistributeFollow> qureyFollowList(Integer id);
 
+    List<Distribute> notice();
 
 }

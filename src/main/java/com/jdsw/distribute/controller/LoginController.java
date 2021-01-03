@@ -27,7 +27,10 @@ public class LoginController {
     private MenuService menuService;
     @Autowired
     private UserService userService;
-
+    @RequestMapping("/index")
+    public String index(){
+        return "/index";
+    }
     @RequestMapping("/login")
     @ResponseBody
     public Message login(HttpSession session, HttpServletRequest request , @RequestBody User user) {

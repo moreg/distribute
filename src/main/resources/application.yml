@@ -50,6 +50,7 @@ spring:
 
      history-level: full
      #保存历史数据级别设置为full最高级别，便于历史数据的追溯
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.mys.mbackstage.model
