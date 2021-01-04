@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,32 +46,33 @@ public class TelemarkeServiceImpl implements TelemarkeService {
 
     @Override
     @Transactional
-    public int appoint(Distribute network, String name) {
-        DistributeFollow networkFollow = new DistributeFollow();
-        String trackId = Rand.getTrackId("DX");//获得跟踪单号
-        network.setTrackId(trackId);
-        String leader = network.getLeaderName();
-        String department =network.getDepartment();
-        if (StringUtil.isNotEmpty(leader)) {
-            network.setIssue(0);
-            network.setLeaderName(leader);
-        }else if (StringUtil.isNotEmpty(department)){
-            network.setIssue(1);
-            network.setDepartment(department);
-        }else {
-            network.setIssue(1);
-            networkFollow.setFollowName(name);
-            networkFollow.setNetworkId(network.getId());
-            networkFollow.setFollowResult("给你转交了一条线索");
-            telemarkeFollowDao.insertNetworkFollow(networkFollow);//插入跟进日志
+    public int appoint(List<Distribute> network, String name) {
+        Distribute distribute;
+        DistributeFollow networkFollow;
+        String str = "给"+network.get(0).getFirstFollowName()+"转交了一条线索";
+        List<DistributeFollow> ls = new ArrayList<>();
+        List<Distribute> ld = new ArrayList<>();
+        for (int i=0;i<network.size();i++){
+            distribute = new Distribute();
+            networkFollow = new DistributeFollow();
+            String trackId = Rand.getTrackId("WL");//获得跟踪单号
+            distribute.setTrackId(trackId);
+            distribute.setId(network.get(i).getId());
+            distribute.setDepartment(network.get(i).getDepartment());
+            distribute.setFirstFollowName(network.get(i).getFirstFollowName());
+            if (StringUtil.isEmpty(network.get(i).getDepartment())){
+                distribute.setDepartment("总部");
+                networkFollow.setFollowName(name);
+                networkFollow.setNetworkId(network.get(i).getId());
+                networkFollow.setFollowResult(str);
+                ls.add(networkFollow);
+            }
+            ld.add(distribute);
         }
-        network.setAppoint(1);
-        String date = DateUtil.getNextDay();
-        network.setOverdueTime(date);
-        network.setActivation(0);
-        telemarkDao.updateworkOverdueTime(network);//修改激活时间
-        telemarkDao.updateNetworkTrackId(network);//生成跟踪单号
-        return telemarkDao.appoint(network);
+        if(ls.size() > 0){
+            telemarkeFollowDao.insertNetworkFollow2(ls);
+        }
+        return telemarkDao.appoint(ld);
     }
     @Override
     @Transactional
@@ -194,8 +196,12 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
-    public int assign(Distribute distribute) {
-        distribute.setLeaderSign(1);
+    public int assign(List<Distribute> distribute) {
+        return telemarkDao.assign(distribute);
+    }
+
+    @Override
+    public int customerTransfer(List<Distribute> distribute) {
         return telemarkDao.assign(distribute);
     }
 

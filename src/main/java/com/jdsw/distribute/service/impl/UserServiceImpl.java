@@ -90,4 +90,26 @@ public class UserServiceImpl implements UserService {
         }
         return li;
     }
+
+    @Override
+    public List<UsersVo> queryCharge(String department) {
+        String temp[]=department.split(",");
+        List<String> list = new ArrayList();
+        for (int i=0;i<temp.length;i++){
+            String string1 = temp[i];
+            list.add(temp[i]);
+        }
+        List<UsersVo> ls = userMapper.queryCharge(list);
+        List li = new ArrayList();
+        User user  = new User();
+        Map map = new HashMap<>();
+        for(int i=0;i<ls.size();i++){
+            if (StringUtil.isNotEmpty(ls.get(i).getName())){
+                map.put("name",ls.get(i).getName());
+                map.put("department",ls.get(i).getDepartment());
+                li.add(map);
+            }
+        }
+        return li;
+    }
 }

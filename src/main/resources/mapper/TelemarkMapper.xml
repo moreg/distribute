@@ -222,4 +222,24 @@
     where id=#{id}
   </update>
 
+  <update id="assign" parameterType="java.util.List">
+    <if test="list!=null">
+      <foreach collection="list" item="Distribute" index="index" open="" close="" separator=";">
+        update customer_telemarke
+        <set>
+          <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != '">
+            last_follow_name =#{Distribute.lastFollowName}
+          </if>
+          <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
+            leader_name = #{Distribute.leaderName}
+
+          </if>
+        </set>
+        <where>
+          id=#{Distribute.id}
+        </where>
+
+      </foreach>
+    </if>
+  </update>
 </mapper>

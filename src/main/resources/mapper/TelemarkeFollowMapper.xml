@@ -66,6 +66,14 @@
     </trim>
 
   </insert>
+
+  <insert id="insertNetworkFollow2" parameterType="java.util.List">
+    insert into customer_telemarke_follow(follow_name,follow_result,network_id,create_time) values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.followName},#{item.followResult},#{item.networkId},sysdate())
+    </foreach>
+  </insert>
+
   <update id="updateFolloupNetwork" parameterType="com.jdsw.distribute.model.DistributeFollow">
     update customer_telemarke set state = #{state},last_follow_up = #{lastFollowUp},last_follow_time = #{followTime} where id = #{networkId}
   </update>

@@ -43,7 +43,6 @@ public interface NetworkDao {
      * @return
      */
     int updateNetworkLastFollowName (List<Distribute> distribute);
-
     /**
      * 抢单修改第一接单人和当前接单人
      * @param network

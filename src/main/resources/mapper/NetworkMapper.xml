@@ -159,7 +159,7 @@
   </select>
 
   <select id="notice" resultMap="DistributeMap">
-    select id,track_id,TIMESTAMPDIFF(MINUTE,overdue_time, SYSDATE()) as overdue_time FROM customer_network  where status = 0 and issue = 1;
+    select id,track_id,overdue_time,last_follow_name FROM customer_network  where status = 0 and issue = 1
   </select>
 
   <insert id="insertTelemarkting" parameterType="java.util.List">
@@ -211,7 +211,13 @@
     <foreach collection="list" item="Distribute" index="index" open="" close="" separator=";">
       update customer_network
       <set>
+      <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != '">
         last_follow_name =#{Distribute.lastFollowName}
+      </if>
+        <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
+          leader_name = #{Distribute.leaderName}
+
+        </if>
       </set>
         <where>
           id=#{Distribute.id}

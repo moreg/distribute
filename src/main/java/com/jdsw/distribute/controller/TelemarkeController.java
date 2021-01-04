@@ -3,13 +3,22 @@ package com.jdsw.distribute.controller;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.TelemarkeService;
+import com.jdsw.distribute.util.ImageUtil;
 import com.jdsw.distribute.util.Message;
+import com.jdsw.distribute.util.VideoUtil;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/telemark")
@@ -59,12 +68,12 @@ public class TelemarkeController {
         return Message.fail();
     }
     /**
-     * 指定接单人
+     * 线索分发
      * @param
      * @return
      */
     @RequestMapping("/appoint")
-    public Message appoint(@RequestBody Distribute network, HttpSession session){
+    public Message appoint(@RequestBody List<Distribute> network, HttpSession session){
         String name = (String) session.getAttribute("name");
         int i = telemarkService.appoint(network,name);
         if (i > 0){
@@ -110,6 +119,44 @@ public class TelemarkeController {
         return Message.fail();
     }
     /**
+     * 上传图片
+     * @param img
+     * @param request
+     * @return
+     */
+    @RequestMapping("/uploadImg")
+    public Message  uploadImg(@RequestParam("img") MultipartFile[] img, HttpServletRequest request, @RequestParam("id")Integer id){
+        String uploadPathDB=null;
+        Map map=new HashMap();
+        try {
+            uploadPathDB= ImageUtil.saveImage(id,img,"DX");
+        }catch (IOException e){
+            e.printStackTrace();
+            return Message.fail("上传失败");
+        }
+        map.put("imgUrl",uploadPathDB);
+        return Message.success("上传成功",map);
+    }
+    /**
+     * 上传音频
+     * @param
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/uploadFile")
+    public Message  uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("id")Integer id){
+        Map map=new HashMap();
+        String uploadPathDB=null;
+        try {
+            uploadPathDB= VideoUtil.saveVideo(id,file,"DX");
+        }catch (IOException e) {
+            e.printStackTrace();
+            return Message.fail("上传失败");
+        }
+        map.put("record",uploadPathDB);
+        return Message.success("上传成功",map);
+    }
+    /**
      * 业务员提交录单
      * @param network
      * @return
@@ -148,10 +195,22 @@ public class TelemarkeController {
      * @param distribute
      * @return
      */
-    @RequestMapping("/assign")
-    public Message assign(@RequestBody Distribute distribute){
-        telemarkService.assign(distribute);
-        return Message.success();
+    @RequestMapping("/transferTelemarke")
+    public Message assign(@RequestBody List<Distribute> distribute){
+        int i= telemarkService.assign(distribute);
+        if(i > 0){
+            return Message.success();
+        }
+        return Message.fail();
+    }
+    /**
+     * 客服转交
+     * @param distribute
+     * @return
+     */
+    @RequestMapping("/customerTransfer")
+    public Message customerTransfer(@RequestBody List<Distribute> distribute){
+        return Message.success("操作成功",telemarkService.customerTransfer(distribute),0);
     }
     /**
      * 让订单超时

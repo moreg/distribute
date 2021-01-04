@@ -71,6 +71,13 @@
     </foreach>
   </select>
 
+  <select id="queryCharge"  resultType="com.jdsw.distribute.vo.UsersVo" parameterType="java.util.List">
+    select u.name,r.department from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = '主管' and r.department in
+    <foreach collection="list" item="department" open="(" close=")" separator=",">
+      #{department}
+    </foreach>
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where id = #{id,jdbcType=INTEGER}

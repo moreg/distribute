@@ -18,5 +18,11 @@ public interface UserService {
 
     List<UsersVo> queryDepartment(String department);
 
+    /**
+     * 查询部门主管
+     * @return
+     */
+    List<UsersVo> queryCharge(String department);
+
 
 }

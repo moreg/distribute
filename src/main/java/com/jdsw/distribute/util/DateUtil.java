@@ -1,6 +1,7 @@
 package com.jdsw.distribute.util;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.text.ParseException;
@@ -191,7 +192,7 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils{
         long day = diff / 86400000;
         long hour= diff % 86400000 / 3600000;//以小时为单位取整
         long min = diff % 86400000 % 3600000 / 60000;//以分钟为单位取整
-        long seconds = diff % 86400000 % 3600000 % 60000 / 1000;-//以秒为单位取整
+        long seconds = diff % 86400000 % 3600000 % 60000 / 1000;//以秒为单位取整a
 
         return hour+(day*24)+"小时"+min+"分"+seconds+"秒";
 
@@ -277,14 +278,31 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils{
         return sdf.format(afterDate);
 
     }
-    public static void main(String[] args) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d HH:mm:ss");
+    public static Boolean getOvertimeBoo(String parse) throws Exception {
+        if(StringUtils.isEmpty(parse)){
+            return false;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();
-        Date start = sdf.parse("2021-01-03 20:36:00");
+        Date start = sdf.parse(parse);
         Date end = new Date(now.getTime());
-        long cha = end.getTime() - start.getTime();
+        long cha = start.getTime() - end.getTime();
         System.out.println(cha);
-        if(cha <=300000){
+        if(cha <=300000 && cha > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        Date start = sdf.parse("2021-01-04 09:18:00");
+        Date end = new Date(now.getTime());
+        long cha = start.getTime() - end.getTime();
+        System.out.println(cha);
+        if(cha <=300000 && cha > 0){
            System.out.println("trun");
         }else{
             System.out.println("false");

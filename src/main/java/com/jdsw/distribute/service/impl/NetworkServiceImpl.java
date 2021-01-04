@@ -208,6 +208,11 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
+    public int customerTransfer(List<Distribute> distribute) {
+        return networkDao.updateNetworkLastFollowName(distribute);
+    }
+
+    @Override
     public int setOverdueTime(AirForcePool airForcePool) {
         airForcePool.setOverdueTime(DateUtil.getOverTime(airForcePool.getMsec()));
         return networkDao.setOverdueTime(airForcePool);
@@ -219,16 +224,16 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public List<Distribute> notice() {
+    public List<Distribute> notice() throws Exception {
         List<Distribute> ls = networkDao.notice();
         List<Distribute> ls2 = new ArrayList<>();
         for (int i=0;i<ls.size();i++){
-
-            if (Integer.valueOf(ls.get(i).getOverdueTime()) >=-5 && Integer.valueOf(ls.get(i).getOverdueTime()) <= 0){
+            if (DateUtil.getOvertimeBoo(ls.get(i).getOverdueTime())){
                 Distribute d = new Distribute();
                 d.setOverdueTime(ls.get(i).getOverdueTime());
                 d.setId(ls.get(i).getId());
                 d.setTrackId(ls.get(i).getTrackId());
+                d.setLastFollowName(ls.get(i).getLastFollowName());
                 ls2.add(d);
             }
         }

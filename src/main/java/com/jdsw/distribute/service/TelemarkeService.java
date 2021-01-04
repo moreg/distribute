@@ -39,7 +39,7 @@ public interface TelemarkeService {
      * @param name
      * @return
      */
-    int appoint(Distribute network, String name);
+    int appoint(List<Distribute> network, String name);
     /**
      * 接单
      * @param distribute
@@ -118,7 +118,13 @@ public interface TelemarkeService {
      * @param distribute
      * @return
      */
-    int assign(Distribute distribute);
+    int assign(List<Distribute> distribute);
+    /**
+     * 客服分配
+     * @param distribute
+     * @return
+     */
+    int customerTransfer(List<Distribute> distribute);
     /**
      * 设置订单超时
      * @param distribute

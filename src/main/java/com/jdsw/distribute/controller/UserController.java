@@ -59,4 +59,13 @@ public class UserController {
         return Message.success("操作成功",userService.queryDepartment(department));
     }
 
+    /**
+     * 获取部门主管
+     * @param department
+     * @return
+     */
+    @RequestMapping("/queryCharge")
+    public Message queryCharge(String department){
+        return Message.success("操作成功",userService.queryCharge(department));
+    }
 }

@@ -99,7 +99,7 @@ public class NetworkController {
      * @param
      * @return
      */
-    @RequestMapping("/deleteNetwork")
+    @RequestMapping(value = "/deleteNetwork",method = RequestMethod.POST,produces="application/json")
     public Message deleteNetwork(@RequestBody Distribute distribute){
         int i = distributeService.deleteNetwork(distribute);
         if (i > 0){
@@ -113,7 +113,7 @@ public class NetworkController {
      * @param distribute
      * @return
      */
-    @RequestMapping("/updateNetwork")
+    @RequestMapping(value = "/updateNetwork",method = RequestMethod.POST,produces="application/json")
     public Message updateNetwork(@RequestBody Distribute distribute){
         int i = distributeService.updateNetwork(distribute);
         if (i > 0){
@@ -136,7 +136,7 @@ public class NetworkController {
      * 抢单接口
      * @return
      */
-    @RequestMapping("/orderTaking")
+    @RequestMapping(value = "/orderTaking",method = RequestMethod.POST,produces="application/json")
     public Message orderTaking(HttpSession session,@RequestBody Distribute distribute){
         String lastFollowName = (String) session.getAttribute("name");
         distribute.setLastFollowName(lastFollowName);
@@ -154,7 +154,7 @@ public class NetworkController {
      * @param
      * @return
      */
-    @RequestMapping("/appoint")
+    @RequestMapping(value = "/appoint" ,method = RequestMethod.POST,produces="application/json")
     public Message appoint(@RequestBody List<Distribute> network, HttpSession session){
         String name = (String) session.getAttribute("name");
         int i = distributeService.appoint(network,name);
@@ -190,7 +190,7 @@ public class NetworkController {
      * 写跟进
      * @return
      */
-    @RequestMapping("/followupNetwork")
+    @RequestMapping(value = "/followupNetwork",method = RequestMethod.POST,produces="application/json")
     public Message followupNetwork(@RequestBody DistributeFollow networkFollow, HttpSession session){
         String name = (String) session.getAttribute("name");
         networkFollow.setFollowName(name);
@@ -245,7 +245,7 @@ public class NetworkController {
      * @param network
      * @return
      */
-    @RequestMapping("/submitRecordingNetwork")
+    @RequestMapping(value = "/submitRecordingNetwork",method = RequestMethod.POST,produces="application/json")
     public Message submitRecordingNetwork(@RequestBody Distribute network){
         int i = distributeService.SubmitRecordingNetwork(network);
         if (i > 0){
@@ -266,7 +266,7 @@ public class NetworkController {
      * 财务录单
      * @return
      */
-    @RequestMapping("/recordingNetwork")
+    @RequestMapping(value = "/recordingNetwork",method = RequestMethod.POST,produces="application/json")
     public Message recordingNetwork(@RequestBody Distribute network){
         int i = distributeService.UpdateRecordingNetwork(network);
         if (i > 0){
@@ -301,6 +301,15 @@ public class NetworkController {
     }
 
     /**
+     * 客服转交
+     * @param distribute
+     * @return
+     */
+    @RequestMapping("/customerTransfer")
+    public Message customerTransfer(@RequestBody List<Distribute> distribute){
+        return Message.success("操作成功",distributeService.customerTransfer(distribute),0);
+    }
+    /**
      * 设置过期时间
      * @param
      * @return
@@ -320,8 +329,13 @@ public class NetworkController {
     public Message qureyFollowList(Integer id)throws IOException{
         return Message.success("操作成功",distributeService.qureyFollowList(id));
     }
+
+    /**
+     * 通知接口
+     * @return
+     */
     @RequestMapping("/notice")
-    public Message notice(){
+    public Message notice() throws Exception{
         return Message.success("操作成功",distributeService.notice());
     }
 

@@ -136,12 +136,17 @@ public interface NetworkService {
     int Unsettled();
 
     /**
-     * 转单
+     * 主管转单
      * @param distribute
      * @return
      */
     int transferNetwork(List<Distribute> distribute);
-
+    /**
+     * 客服转单
+     * @param distribute
+     * @return
+     */
+    int customerTransfer(List<Distribute> distribute);
     /**
      * 设置过期时间
      * @param
@@ -155,6 +160,6 @@ public interface NetworkService {
      */
     List<DistributeFollow> qureyFollowList(Integer id);
 
-    List<Distribute> notice();
+    List<Distribute> notice() throws Exception;
 
 }

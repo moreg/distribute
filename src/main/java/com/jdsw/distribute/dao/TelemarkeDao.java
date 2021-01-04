@@ -30,17 +30,13 @@ public interface TelemarkeDao {
      * @param distribute
      * @return
      */
-    int appoint(Distribute distribute);
-
+    int appoint(List<Distribute> distribute);
     /**
      * 生成跟踪单号
      * @param distribute
      * @return
      */
     int updateNetworkTrackId(Distribute distribute);
-
-
-
     /**
      *修改网络库跟踪人
      * @param distribute
@@ -126,7 +122,7 @@ public interface TelemarkeDao {
      * @param distribute
      * @return
      */
-    int assign(Distribute distribute);
+    int assign(List<Distribute> distribute);
     /**
      * 设置订单超时
      * @param distribute
