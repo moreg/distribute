@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 public interface TelemarkeService {
     /**
@@ -21,7 +22,37 @@ public interface TelemarkeService {
      * @return
      */
     PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime);
+    /**
+     * 新增
+     * @param distribute
+     * @return
+     */
+    int insertTelemarke(Distribute distribute);
+    /**
+     * 导入网销线索
+     * @param file
+     * @return
+     */
+    int excelTelemarke(MultipartFile file) throws Exception;
+    /**
+     * 删除
+     * @param
+     * @return
+     */
+    int deleteTelemarke(Distribute distribute);
 
+    /**
+     * 编辑
+     * @param distribute
+     * @return
+     */
+    int updateTelemarke(Distribute distribute);
+    /**
+     * 编辑查询客户信息
+     * @param id
+     * @return
+     */
+    List<Map> qureyTelemarke(Integer id);
     /**
      * 抢单列表
      * @param pageNum
@@ -125,6 +156,11 @@ public interface TelemarkeService {
      * @return
      */
     int customerTransfer(List<Distribute> distribute);
+    /**
+     * 查询跟进列表
+     * @return
+     */
+    List<DistributeFollow> qureyFollowList(Integer id);
     /**
      * 设置订单超时
      * @param distribute

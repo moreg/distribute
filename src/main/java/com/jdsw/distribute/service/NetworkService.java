@@ -41,7 +41,7 @@ public interface NetworkService {
      * 空军池列表
      * @return
      */
-    PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime);
+    PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username);
     /**
      * 抢单列表
      * @param pageNum

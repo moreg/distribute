@@ -5,6 +5,7 @@ import com.jdsw.distribute.vo.CashierVo;
 import com.jdsw.distribute.vo.RecordingVo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TelemarkeDao {
     /**
@@ -15,7 +16,37 @@ public interface TelemarkeDao {
      * @return
      */
     List<Distribute> armyListPoolList(String content, String strtime, String endtime);
+    /**
+     * 新增
+     * @param distribute
+     * @return
+     */
+    int insertTelemarke(Distribute distribute);
+    /**
+     * 删除
+     * @param
+     * @return
+     */
+    int deleteTelemarke(Distribute distribute);
 
+    /**
+     * 编辑
+     * @param distribute
+     * @return
+     */
+    int updateTelemarke(Distribute distribute);
+    /**
+     * 编辑查询
+     * @param id
+     * @return
+     */
+    List<Map> qureyTelemarke(Integer id);
+    /**
+     * 导入电销
+     * @param excels
+     * @return
+     */
+    int excelTelemarke(List<Object> excels);
     /**
      * 抢单列表
      * @param content

@@ -7,10 +7,12 @@ import com.jdsw.distribute.dao.TelemarkeDao;
 import com.jdsw.distribute.dao.TelemarkeFollowDao;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
+import com.jdsw.distribute.model.Excel;
 import com.jdsw.distribute.service.TelemarkeService;
 import com.jdsw.distribute.util.DateUtil;
 import com.jdsw.distribute.util.FileUtil;
 import com.jdsw.distribute.util.Rand;
+import com.jdsw.distribute.util.excelRead;
 import com.jdsw.distribute.vo.CashierVo;
 import com.jdsw.distribute.vo.RecordingVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TelemarkeServiceImpl implements TelemarkeService {
@@ -35,7 +39,38 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         PageInfo result = new PageInfo(Network);
         return result;
     }
+    @Override
+    public int insertTelemarke(Distribute distribute) {
+        return telemarkDao.insertTelemarke(distribute);
+    }
+    @Override
+    public int excelTelemarke(MultipartFile file) throws Exception {
+        String filePath = "E:\\upexl\\";
+        File dir = new File(filePath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        String newFileName = file.getOriginalFilename();
+        File newFile = new File(filePath + newFileName);
+        //复制操作
+        file.transferTo(newFile);
+        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,-1, Excel.class);
+        telemarkDao.excelTelemarke(result);
+        return 1;
+    }
+    @Override
+    public int deleteTelemarke(Distribute distribute) {
+        return telemarkDao.deleteTelemarke(distribute);
+    }
 
+    @Override
+    public int updateTelemarke(Distribute distribute) {
+        return telemarkDao.updateTelemarke(distribute);
+    }
+    @Override
+    public List<Map> qureyTelemarke(Integer id) {
+        return telemarkDao.qureyTelemarke(id);
+    }
     @Override
     public PageInfo<Distribute> grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime) {
         PageHelper.startPage(pageNum, limit);
@@ -206,6 +241,10 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
 
+    @Override
+    public List<DistributeFollow> qureyFollowList(Integer id) {
+        return telemarkeFollowDao.qureyFollowList(id);
+    }
     @Override
     public int setOvertime(Distribute distribute) {
 

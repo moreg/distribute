@@ -3,20 +3,15 @@
 <mapper namespace="com.jdsw.distribute.dao.TelemarkeFollowDao">
   <resultMap id="DistributeMap" type="com.jdsw.distribute.model.DistributeFollow">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="corporate_name" jdbcType="VARCHAR" property="corporate_name" />
-    <result column="corporate_phone" jdbcType="VARCHAR" property="corporate_phone" />
-    <result column="contacts" jdbcType="VARCHAR" property="contacts" />
-    <result column="contacts_phone" jdbcType="INTEGER" property="contacts_phone" />
-    <result column="source" jdbcType="VARCHAR" property="source" />
-    <result column="follow_number" jdbcType="VARCHAR" property="follow_number" />
-    <result column="state" jdbcType="VARCHAR" property="state" />
-    <result column="last_follow_up" jdbcType="VARCHAR" property="last_follow_up" />
-    <result column="last_follow_content" jdbcType="VARCHAR" property="last_follow_content" />
-    <result column="last_follow_time" jdbcType="VARCHAR" property="last_follow_time" />
-    <result column="last_follow_name" jdbcType="VARCHAR" property="last_follow_name" />
-    <result column="last_follow_name" jdbcType="VARCHAR" property="last_follow_name" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="follow_name"  property="followName" />
+    <result column="follow_time"  property="followTime" />
+    <result column="follow_result"  property="followResult" />
+    <result column="contact_type"  property="contactType" />
+    <result column="network_id" property="networkId" />
+    <result column="img_url"  property="imgUrl" />
+    <result column="remarks"  property="remarks" />
+    <result column="record"  property="record" />
+    <result column="create_time"  property="createTime" />
 
   </resultMap>
   <sql id="Base_Column_List">
@@ -77,4 +72,8 @@
   <update id="updateFolloupNetwork" parameterType="com.jdsw.distribute.model.DistributeFollow">
     update customer_telemarke set state = #{state},last_follow_up = #{lastFollowUp},last_follow_time = #{followTime} where id = #{networkId}
   </update>
+
+  <select id="qureyFollowList" parameterType="java.lang.Integer" resultMap="DistributeMap">
+    select id,follow_name,follow_time,follow_result,contact_type,network_id,img_url,remarks,record,create_time from customer_telemarke_follow where network_id = #{id}
+  </select>
 </mapper>

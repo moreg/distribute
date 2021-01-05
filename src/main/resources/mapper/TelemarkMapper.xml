@@ -67,6 +67,7 @@
     <result column="last_follow_name"  property="lastFollowName" />
     <result column="track_id"  property="trackId" />
     <result column="corporate_name"  property="corporateName" />
+    <result column="conduct"  property="conduct" />
   </resultMap>
   <sql id="Base_Column_List">
     id,name, corporate_name, corporate_phone, contacts, contacts_phone, source, follow_number,state,last_follow_up,
@@ -151,7 +152,7 @@
   </select>
 
   <select id="RecordingShowNetwork" resultMap="recording">
-    select name,corporate_name,source,track_id,create_time,last_follow_name from customer_telemarke where id = #{id}
+    select name,corporate_name,source,track_id,create_time,last_follow_name,conduct from customer_telemarke where id = #{id}
   </select>
   
   <select id="Unsettled" resultType="com.jdsw.distribute.model.Distribute">
@@ -162,6 +163,11 @@
     select leader_sign from customer_telemarke where id = #{id}
   </select>
 
+  <select id="qureyTelemarke" resultType="com.jdsw.distribute.vo.UpdateDistributeVo">
+    select id,name,corporate_name as corporateName,corporate_phone as corporatePhone,deal_time as dealTime,registered_capital as registeredCapital,operation,conduct,city,source,address
+    ,other_phone as otherPhone from customer_telemarke where id = #{id}
+  </select>
+
   <insert id="insertTelemarkting" parameterType="java.util.List">
     insert into customer_telemarke(name,corporate_name,corporate_phone,contacts,contacts_phone,source,follow_number,state,
     last_follow_up,last_follow_content,last_follow_time,last_follow_name,create_time,status)
@@ -169,6 +175,25 @@
         (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.contacts},#{item.contactsPhone},
         #{item.source},#{item.followNumber},#{item.state},#{item.lastFollowUp},#{item.lastFollowContent},#{item.lastFollowTime},#{item.lastFollowName},
       sysdate()  ,1)
+    </foreach>
+  </insert>
+
+  <insert id="insertTelemarke" parameterType="com.jdsw.distribute.model.Distribute">
+    insert into customer_telemarke(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,conduct,city,source,address
+    ,create_time,status,issue,other_phone)
+    values (
+    #{name},#{corporateName},#{corporatePhone},#{dealTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
+    0,0,#{otherPhone}
+    )
+  </insert>
+
+  <insert id="excelTelemarke" parameterType="java.util.List">
+    insert into customer_telemarke(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,address
+    ,create_time,status,issue,other_phone)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.dealTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),
+      0,0,#{item.otherPhone})
     </foreach>
   </insert>
 
@@ -209,10 +234,6 @@
     update customer_telemarke set overdue_time = #{overdueTime},activation = #{activation} where id = #{id}
   </update>
 
-  <update id="assign" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set leader_sign = #{leaderSign},last_follow_name = #{lastFollowName} where id = #{id}
-  </update>
-
   <update id="setOvertime" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_telemarke set overdue_time = null ,last_follow_name = null,leader_name = #{leaderName},leader_sign =#{leaderSign}
     <if test="status != null and status != ''">
@@ -228,12 +249,12 @@
         update customer_telemarke
         <set>
           <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != '">
-            last_follow_name =#{Distribute.lastFollowName}
+            last_follow_name =#{Distribute.lastFollowName},
           </if>
           <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
-            leader_name = #{Distribute.leaderName}
-
+            leader_name = #{Distribute.leaderName},
           </if>
+          leader_sign = 1
         </set>
         <where>
           id=#{Distribute.id}
@@ -242,4 +263,13 @@
       </foreach>
     </if>
   </update>
+
+  <update id="updateTelemarke" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_telemarke set name = #{name},corporate_name = #{corporateName},corporate_phone = #{corporatePhone},deal_time = #{dealTime},registered_capital = #{registeredCapital},
+    operation = #{operation},conduct = #{conduct},city = #{city},source = #{source},address = #{address},other_phone = #{otherPhone} where id = #{id}
+  </update>
+
+  <delete id="deleteTelemarke" parameterType="com.jdsw.distribute.model.Distribute">
+   delete from customer_telemarke where id = #{id}
+ </delete>
 </mapper>

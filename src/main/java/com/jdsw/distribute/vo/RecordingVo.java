@@ -7,7 +7,15 @@ public class RecordingVo {
     private String trackId;
     private String createTime;
     private String lastFollowName;
+    private String conduct;
 
+    public String getConduct() {
+        return conduct;
+    }
+
+    public void setConduct(String conduct) {
+        this.conduct = conduct;
+    }
 
     public String getName() {
         return name;

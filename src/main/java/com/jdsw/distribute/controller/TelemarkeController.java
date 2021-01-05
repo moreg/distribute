@@ -6,10 +6,7 @@ import com.jdsw.distribute.service.TelemarkeService;
 import com.jdsw.distribute.util.ImageUtil;
 import com.jdsw.distribute.util.Message;
 import com.jdsw.distribute.util.VideoUtil;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -40,7 +37,68 @@ public class TelemarkeController {
     public Message armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime){
         return Message.success("操作成功",telemarkService.armyListPoolList(pageNum,limit,content,strtime,endtime),0);
     }
+    /**
+     * 新增
+     * @param distribute
+     * @return
+     */
+    @RequestMapping("/insertTelemarke")
+    public Message insertTelemarke(@RequestBody Distribute distribute){
+        int i = telemarkService.insertTelemarke(distribute);
+        if (i > 0){
+            return Message.success();
+        }
+        return Message.fail();
+    }
+    /**
+     * 导入电销线索
+     * @param file
+     * @return
+     */
+    @RequestMapping("/excelTelemarke")
+    public Message excelTelemarke(@RequestParam("file") MultipartFile file) throws Exception {
+        int i = telemarkService.excelTelemarke(file);
+        if (i > 0){
+            return Message.success("导入成功");
+        }
+        return Message.fail();
+    }
+    /**
+     * 删除
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/deleteTelemarke",method = RequestMethod.POST,produces="application/json")
+    public Message deleteTelemarke(@RequestBody Distribute distribute){
+        int i = telemarkService.deleteTelemarke(distribute);
+        if (i > 0){
+            return Message.success();
+        }
+        return Message.fail();
+    }
 
+    /**
+     * 编辑
+     * @param distribute
+     * @return
+     */
+    @RequestMapping(value = "/updateTelemarke",method = RequestMethod.POST,produces="application/json")
+    public Message updateTelemarke(@RequestBody Distribute distribute){
+        int i = telemarkService.updateTelemarke(distribute);
+        if (i > 0){
+            return  Message.success();
+        }
+        return  Message.fail();
+    }
+    /**
+     * 编辑获取客户资料接口
+     * @param id
+     * @return
+     */
+    @RequestMapping("/qureyTelemarke")
+    public Message qureyTelemarke(Integer id){
+        return Message.success("操作成功",telemarkService.qureyTelemarke(id));
+    }
     /**
      * 抢单列表
      * @param pageNum
@@ -212,6 +270,30 @@ public class TelemarkeController {
     public Message customerTransfer(@RequestBody List<Distribute> distribute){
         return Message.success("操作成功",telemarkService.customerTransfer(distribute),0);
     }
+    /**
+     * 财务查询页面
+     * @param pageNum
+     * @param limit
+     * @param content
+     * @param strtime
+     * @param endtime
+     *
+     * @return
+     */
+    @RequestMapping("/cashierListNetwork")
+    public Message cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime){
+        return Message.success("操作成功",telemarkService.cashierListNetwork(pageNum,limit,content,strtime,endtime),0);
+    }
+    /**
+     * 查询跟进列表
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/qureyFollowList")
+    public Message qureyFollowList(Integer id)throws IOException{
+        return Message.success("操作成功",telemarkService.qureyFollowList(id));
+    }
+
     /**
      * 让订单超时
      * @param distribute

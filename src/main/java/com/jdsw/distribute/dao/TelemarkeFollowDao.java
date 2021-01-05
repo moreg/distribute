@@ -31,4 +31,11 @@ public interface TelemarkeFollowDao {
      * @return
      */
     String qureyFollowByLastName(Distribute distribute);
+
+    /**
+     * 查询跟进列表
+     * @param id
+     * @return
+     */
+    List<DistributeFollow> qureyFollowList(Integer id);
 }

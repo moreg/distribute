@@ -153,9 +153,9 @@
   <select id="Unsettled" resultType="com.jdsw.distribute.model.Distribute">
     select id,overdue_time from customer_network where status = 0
   </select>
-  <select id="qureyNetwork" resultType="Map">
+  <select id="qureyNetwork" resultType="com.jdsw.distribute.vo.UpdateDistributeVo">
     select id,name,corporate_name as corporateName,corporate_phone as corporatePhone,deal_time as dealTime,registered_capital as registeredCapital,operation,conduct,city,source,address
-    ,create_time as createTime,other_phone as otherPhone from customer_network where id = #{id}
+    ,other_phone as otherPhone from customer_network where id = #{id}
   </select>
 
   <select id="notice" resultMap="DistributeMap">
@@ -185,12 +185,13 @@
         <foreach collection="list" item="distribute" index= "index" open="" close="" separator =";">
             update customer_network
             <set>
-              department = #{distribute.department},
+              branch = #{distribute.department},
               last_follow_name = #{distribute.firstFollowName},
               first_follow_name = #{distribute.firstFollowName},
               appoint = 1,
               issue = 1,
-              track_id = #{distribute.trackId}
+              track_id = #{distribute.trackId},
+              overdue_time = #{distribute.overdueTime}
             </set>
                 <where>
                   id = #{distribute.id}
@@ -202,6 +203,7 @@
   <update id="updateNetworkTrackId" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set track_id = #{trackId} where id = #{id}
   </update>
+
   <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName} where id = #{id}
   </update>
@@ -241,6 +243,7 @@
   <update id="setOverdueTime" parameterType="com.jdsw.distribute.vo.AirForcePool">
     update customer_network set overdue_time = #{overdueTime} where id = #{id}
   </update>
+
  <delete id="deleteNetwork" parameterType="com.jdsw.distribute.model.Distribute">
    delete from customer_network where id = #{id}
  </delete>

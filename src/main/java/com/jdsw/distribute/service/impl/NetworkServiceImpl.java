@@ -55,6 +55,7 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.setId(network.get(i).getId());
             distribute.setDepartment(network.get(i).getDepartment());
             distribute.setFirstFollowName(network.get(i).getFirstFollowName());
+            distribute.setOverdueTime(DateUtil.getOverTime(600000));
             if (StringUtil.isEmpty(network.get(i).getDepartment())){
                 distribute.setDepartment("总部");
                 networkFollow.setFollowName(name);
@@ -97,7 +98,8 @@ public class NetworkServiceImpl implements NetworkService {
 
 
     @Override
-    public PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime) {
+    public PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username) {
+
         PageHelper.startPage(pageNum, limit);
         List<Distribute> Network = networkDao.airForcePoolList(content,strtime,endtime);
         PageInfo result = new PageInfo(Network);

@@ -194,7 +194,18 @@ public class Distribute {
      * 主管分发标记
      */
     Integer leaderSign;
+    /**
+     * 分公司
+     */
+    String branch;
 
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
 
     public Integer getLeaderSign() {
         return leaderSign;

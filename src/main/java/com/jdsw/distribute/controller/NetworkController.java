@@ -4,12 +4,14 @@ import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.NetworkService;
 
+import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.ImageUtil;
 import com.jdsw.distribute.util.Message;
 
 import com.jdsw.distribute.util.VideoUtil;
 import com.jdsw.distribute.vo.AirForcePool;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
@@ -30,15 +32,17 @@ public class NetworkController {
 
     @Resource
     private NetworkService distributeService;
-
+    @Autowired
+    private UserService userService;
 
 
     /**
      * 空军池列表
      */
     @RequestMapping("/airForcePoolList")
-    public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute network){
-        return Message.success("操作成功",distributeService.airForcePoolList(pageNum,limit,network,content,strtime,endtime),0);
+    public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute network,HttpSession session){
+        String username = (String) session.getAttribute("username");
+        return Message.success("操作成功",distributeService.airForcePoolList(pageNum,limit,network,content,strtime,endtime,username),0);
     }
     /**
      * 抢单列表
