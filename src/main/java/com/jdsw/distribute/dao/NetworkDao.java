@@ -125,11 +125,17 @@ public interface NetworkDao {
      */
     int SubmitRecordingNetwork(Distribute network);
     /**
+     * 提交财务
+     * @param network
+     * @return
+     */
+    int SubmitRecordingNetwork2(Distribute network);
+    /**
      * 录单弹窗信息
      * @param id
      * @return
      */
-    List<RecordingVo> RecordingShowNetwork(Integer id);
+    RecordingVo RecordingShowNetwork(Integer id);
     /**
      * 财务录单
      * @param network
@@ -153,6 +159,8 @@ public interface NetworkDao {
      * @return
      */
     int setOverdueTime(AirForcePool airForcePool);
+
+    int insertDealOrder(Distribute distribute);
 
     /**
      *

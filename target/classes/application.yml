@@ -66,6 +66,7 @@ pagehelper:
 
 logging:
   level:
-    com.mys.mbackstage.dao: DEBUG
-
+    org:
+      hibernate:
+        SQL: DEBUG
 

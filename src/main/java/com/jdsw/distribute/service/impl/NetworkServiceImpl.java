@@ -40,8 +40,6 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
-        //int nw = networkDao.appoint(network);
-
         Distribute distribute;
         DistributeFollow networkFollow;
         String str = "给"+network.get(0).getFirstFollowName()+"转交了一条线索";
@@ -50,14 +48,13 @@ public class NetworkServiceImpl implements NetworkService {
         for (int i=0;i<network.size();i++){
             distribute = new Distribute();
             networkFollow = new DistributeFollow();
-            String trackId = Rand.getTrackId("WL");//获得跟踪单号
-            distribute.setTrackId(trackId);
             distribute.setId(network.get(i).getId());
             distribute.setDepartment(network.get(i).getDepartment());
             distribute.setFirstFollowName(network.get(i).getFirstFollowName());
             distribute.setOverdueTime(DateUtil.getOverTime(600000));
-            if (StringUtil.isEmpty(network.get(i).getDepartment())){
-                distribute.setDepartment("总部");
+            distribute.setAppoint(0);
+            if (StringUtil.isEmpty(network.get(i).getBranch())){
+                distribute.setAppoint(1);
                 networkFollow.setFollowName(name);
                 networkFollow.setNetworkId(network.get(i).getId());
                 networkFollow.setFollowResult(str);
@@ -136,6 +133,17 @@ public class NetworkServiceImpl implements NetworkService {
         //复制操作
         file.transferTo(newFile);
         List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,-1, Excel.class);
+/*        Distribute distribute = null;
+        System.out.println(result.size());
+        for (int i = 0;i<result.size();i++){
+            Object ob = result.get(0);
+            System.out.println(ob.getClass().getName());
+        }
+        for (Object obj:result){
+            Object ob = (Object[]) obj;
+            //System.out.println(ob[0]);
+        }*/
+
         networkDao.excelNetwork(result);
         return 1;
     }
@@ -165,23 +173,41 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     @Transactional
     public int followupNetwork(DistributeFollow networkFollow) {
+        Distribute distribute = new Distribute();
+        if(networkFollow.getReturnPool() == 1){
+            distribute = networkDao.selectNetworkById(networkFollow.getNetworkId());
+            if (distribute.getInvalid() != null && distribute.getInvalid() == 1){
+                distribute.setStatus(5);
+                distribute.setInvalid(0);
+            }else {
+                distribute.setStatus(1);
+                distribute.setInvalid(1);
+            }
+        }
+        networkDao.SubmitRecordingNetwork(distribute);
         networkFollowDao.updateFolloupNetwork(networkFollow);
-          return networkFollowDao.insertNetworkFollow(networkFollow);
+        return networkFollowDao.insertNetworkFollow(networkFollow);
     }
     @Override
-    public int SubmitRecordingNetwork(Distribute network) {
-        network.setStatus(3);
-        return networkDao.SubmitRecordingNetwork(network);
+    @Transactional
+    public int SubmitRecordingNetwork(Distribute distribute) {
+        Distribute distribute2 = new Distribute();
+        distribute.setStatus(3);
+        distribute2 = networkDao.selectNetworkById(distribute.getId());
+        networkDao.insertDealOrder(distribute2);
+        return networkDao.SubmitRecordingNetwork(distribute);
     }
 
     @Override
-    public List<RecordingVo> RecordingShowNetwork(Integer id) {
+    public RecordingVo RecordingShowNetwork(Integer id) {
         return networkDao.RecordingShowNetwork(id);
     }
 
     @Override
-    public int UpdateRecordingNetwork(Distribute network) {
-        return networkDao.UpdateRecordingNetwork(network);
+    public int UpdateRecordingNetwork(Distribute distribute) {
+        distribute.setStatus(4);
+        networkDao.SubmitRecordingNetwork(distribute);
+        return networkDao.UpdateRecordingNetwork(distribute);
     }
 
     @Override
@@ -240,6 +266,26 @@ public class NetworkServiceImpl implements NetworkService {
             }
         }
         return ls2;
+    }
+
+    @Override
+    public int invalid(Distribute distribute) {
+        distribute = networkDao.selectNetworkById(distribute.getId());
+        if (distribute.getInvalid() != null && distribute.getInvalid() == 1){
+            distribute.setStatus(5);
+            distribute.setInvalid(0);
+        }else {
+            distribute.setStatus(1);
+            distribute.setInvalid(1);
+        }
+        return networkDao.SubmitRecordingNetwork(distribute);
+    }
+
+    @Override
+    public int chargeback(Distribute distribute) {
+        distribute.setStatus(1);
+        System.out.println(distribute);
+        return networkDao.SubmitRecordingNetwork2(distribute);
     }
 
 

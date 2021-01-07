@@ -1,5 +1,6 @@
 package com.jdsw.distribute;
 
+import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.Excel;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.service.MenuService;

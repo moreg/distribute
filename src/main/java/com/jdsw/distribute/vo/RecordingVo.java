@@ -8,6 +8,15 @@ public class RecordingVo {
     private String createTime;
     private String lastFollowName;
     private String conduct;
+    private Integer orderState;
+
+    public Integer getOrderState() {
+        return orderState;
+    }
+
+    public void setOrderState(Integer orderState) {
+        this.orderState = orderState;
+    }
 
     public String getConduct() {
         return conduct;

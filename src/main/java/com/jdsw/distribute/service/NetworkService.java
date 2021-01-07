@@ -114,7 +114,7 @@ public interface NetworkService {
      * @param id
      * @return
      */
-    List<RecordingVo> RecordingShowNetwork(Integer id);
+    RecordingVo RecordingShowNetwork(Integer id);
     /**
      * 财务录单
      * @param network
@@ -160,6 +160,21 @@ public interface NetworkService {
      */
     List<DistributeFollow> qureyFollowList(Integer id);
 
+
     List<Distribute> notice() throws Exception;
+
+    /**
+     *  标记无效，给客服审核
+     * @param distribute
+     * @return
+     */
+
+    int invalid(Distribute distribute);
+    /**
+     * 退回给业务员
+     * @param distribute
+     * @return
+     */
+    int chargeback(Distribute distribute);
 
 }

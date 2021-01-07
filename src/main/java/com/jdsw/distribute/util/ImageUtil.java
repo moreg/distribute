@@ -25,35 +25,38 @@ public class ImageUtil {
     public static String saveImage(Integer userId, MultipartFile[] files,String str) throws IOException {
         //从pathUtil中获取图片基础路径和相对路径
         String basePath = PathUtil.getBasePath();
-        String uploadPath = PathUtil.getImgPath(userId,str);
+        String uploadPath = null;
 
         //输入输出流
         FileOutputStream fileOutputStream = null;
         InputStream inputStream = null;
-
+        StringBuffer str2 = new StringBuffer();
         try {
             if (files != null && files.length > 0) {
-                //获取文件原本名
-                String fileName = files[0].getOriginalFilename();
-                if (StringUtils.isNotBlank(fileName)) {
-                    // 获取不重复的随机名
-                    String realFileName = getRandomFileName();
-                    // 获取文件的扩展名如png,jpg等
-                    String extension = getFileExtension(fileName);
-                    //生成新的文件名
-                    fileName = realFileName + extension;
+                for (int i = 0;i<files.length;i++){
+                    uploadPath = PathUtil.getImgPath(userId,str);
+                    //获取文件原本名
+                    String fileName = files[i].getOriginalFilename();
+                    if (StringUtils.isNotBlank(fileName)) {
+                        // 获取不重复的随机名
+                        String realFileName = getRandomFileName();
+                        // 获取文件的扩展名如png,jpg等
+                        String extension = getFileExtension(fileName);
+                        //生成新的文件名
+                        fileName = realFileName + extension;
+                        //生成最终路径
+                        String fileFinallyPath = basePath + uploadPath + fileName;
+                        //生成相对路径，存储与数据库
+                        uploadPath = uploadPath + fileName;
+                        File outputFile = new File(fileFinallyPath);
+                        makeDirPath(outputFile);
 
-                    //生成最终路径
-                    String fileFinallyPath = basePath + uploadPath + fileName;
-                    //生成相对路径，存储与数据库
-                    uploadPath = uploadPath + fileName;
+                        fileOutputStream = new FileOutputStream(outputFile);
+                        inputStream = files[i].getInputStream();
+                        IOUtils.copy(inputStream, fileOutputStream);
 
-                    File outputFile = new File(fileFinallyPath);
-                    makeDirPath(outputFile);
-
-                    fileOutputStream = new FileOutputStream(outputFile);
-                    inputStream = files[0].getInputStream();
-                    IOUtils.copy(inputStream, fileOutputStream);
+                    }
+                    str2.append(uploadPath).append(",");
                 }
             }
         } catch (IOException e) {
@@ -65,7 +68,7 @@ public class ImageUtil {
                 fileOutputStream.close();
             }
         }
-        return uploadPath;
+        return str2.substring(0, str2.length()-1);
     }
 
     /**

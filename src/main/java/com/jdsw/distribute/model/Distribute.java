@@ -198,6 +198,18 @@ public class Distribute {
      * 分公司
      */
     String branch;
+    /**
+     * 无效线索标记
+     */
+    Integer invalid;
+
+    public Integer getInvalid() {
+        return invalid;
+    }
+
+    public void setInvalid(Integer invalid) {
+        this.invalid = invalid;
+    }
 
     public String getBranch() {
         return branch;
@@ -643,6 +655,8 @@ public class Distribute {
                 ", overdueTime='" + overdueTime + '\'' +
                 ", activation=" + activation +
                 ", leaderSign=" + leaderSign +
+                ", branch='" + branch + '\'' +
+                ", invalid=" + invalid +
                 '}';
     }
 }
