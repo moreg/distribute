@@ -342,24 +342,17 @@ public class NetworkController {
     public Message notice() throws Exception{
         return Message.success("操作成功",distributeService.notice());
     }
-
-    /**
-     *  标记无效，给客服审核
-     * @param distribute
-     * @return
-     */
-    @RequestMapping("/invalid")
-    public Message invalid(@RequestBody Distribute distribute){
-        return Message.success("操作成功",distributeService.invalid(distribute));
-    }
     /**
      * 退回给业务员
      * @param distribute
      * @return
      */
     @RequestMapping("/chargeback")
-    public Message chargeback(@RequestBody Distribute distribute){
-        return Message.success("操作成功",distributeService.chargeback(distribute));
+    public Message chargeback(@RequestBody Distribute distribute) {
+        int i = distributeService.chargeback(distribute);
+        if (i > 0) {
+            return Message.success("操作成功");
+        }
+        return Message.fail();
     }
-
 }

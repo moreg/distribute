@@ -164,13 +164,6 @@ public interface NetworkService {
     List<Distribute> notice() throws Exception;
 
     /**
-     *  标记无效，给客服审核
-     * @param distribute
-     * @return
-     */
-
-    int invalid(Distribute distribute);
-    /**
      * 退回给业务员
      * @param distribute
      * @return

@@ -245,7 +245,7 @@
 
   <update id="SubmitRecordingNetwork2" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network
-    set status = #{status}
+    set status = 0
     where id = #{id}
   </update>
 

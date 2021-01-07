@@ -269,22 +269,7 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public int invalid(Distribute distribute) {
-        distribute = networkDao.selectNetworkById(distribute.getId());
-        if (distribute.getInvalid() != null && distribute.getInvalid() == 1){
-            distribute.setStatus(5);
-            distribute.setInvalid(0);
-        }else {
-            distribute.setStatus(1);
-            distribute.setInvalid(1);
-        }
-        return networkDao.SubmitRecordingNetwork(distribute);
-    }
-
-    @Override
     public int chargeback(Distribute distribute) {
-        distribute.setStatus(1);
-        System.out.println(distribute);
         return networkDao.SubmitRecordingNetwork2(distribute);
     }
 
