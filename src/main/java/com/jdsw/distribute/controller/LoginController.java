@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -41,15 +43,22 @@ public class LoginController {
         token.setRememberMe(true);
         Subject subject = SecurityUtils.getSubject();
         try {
+            User user2 = userService.findByUserName(username);
             subject.login(token);
             session.setAttribute("username",username);
-            session.setAttribute("name",userService.findByUserName(username).getName());
+            session.setAttribute("name",user2.getName());
             String toToken = JwtUtil.sign(username,pwd);
+
+            List li = new ArrayList();
+            li = menuService.getMenuLsit();
             Map map = new HashMap();
             map.put("token",toToken);
-            map.put("permission",userService.findPermissionByUserName(username));
-            map.put("role",userService.findRoleByUserName(username));
-            System.out.println(map);
+            //map.put("permission",userService.findPermissionByUserName(username));
+            //map.put("role",userService.findRoleByUserName(username));
+            map.put("userId",user2.getId());
+            map.put("name",user2.getName());
+            map.put("username",username);
+            map.put("menus",li);
             return Message.success("登录成功",map);
         }  catch (IncorrectCredentialsException e) {
             msg = "登录密码错误. Password for account " + token.getPrincipal() + " was incorrect.";

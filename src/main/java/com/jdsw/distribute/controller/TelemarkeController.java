@@ -113,19 +113,6 @@ public class TelemarkeController {
         return Message.success("操作成功",telemarkService.grabbingOrdersList(pageNum,limit,content,strtime,endtime),0);
     }
     /**
-     * 放客户线索到空军池
-     * @param distribute
-     * @return
-     */
-    @RequestMapping("/putarmyPoll")
-    public Message putarmyPoll(@RequestBody Distribute distribute){
-        int i = telemarkService.putarmyPoll(distribute);
-        if (i > 0){
-            return Message.success();
-        }
-        return Message.fail();
-    }
-    /**
      * 线索分发
      * @param
      * @return
@@ -228,27 +215,6 @@ public class TelemarkeController {
         return Message.fail("提交失败");
     }
     /**
-     * 弹出录单页面
-     * @return
-     */
-    @RequestMapping("/recordingShowNetwork")
-    public Message recordingShowNetwork(Integer id){
-        return Message.success("操作成功",telemarkService.RecordingShowNetwork(id),0);
-    }
-    /**
-     * 财务录单
-     * @return
-     */
-    @RequestMapping("/recordingNetwork")
-    public Message recordingNetwork(@RequestBody Distribute network){
-        int i = telemarkService.UpdateRecordingNetwork(network);
-        if (i > 0){
-            return Message.success();
-        }
-        return Message.fail();
-    }
-
-    /**
      * 主管分配
      * @param distribute
      * @return
@@ -270,20 +236,7 @@ public class TelemarkeController {
     public Message customerTransfer(@RequestBody List<Distribute> distribute){
         return Message.success("操作成功",telemarkService.customerTransfer(distribute),0);
     }
-    /**
-     * 财务查询页面
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     *
-     * @return
-     */
-    @RequestMapping("/cashierListNetwork")
-    public Message cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime){
-        return Message.success("操作成功",telemarkService.cashierListNetwork(pageNum,limit,content,strtime,endtime),0);
-    }
+
     /**
      * 查询跟进列表
      * @return

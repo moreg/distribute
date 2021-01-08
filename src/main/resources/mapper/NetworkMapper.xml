@@ -267,19 +267,19 @@
 
   <insert id="insertNetwoork" parameterType="com.jdsw.distribute.model.Distribute">
     insert into customer_network(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,conduct,city,source,address
-    ,create_time,status,issue,other_phone)
+    ,create_time,status,issue,other_phone,track_id)
     values (
     #{name},#{corporateName},#{corporatePhone},#{dealTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
-    0,0,#{otherPhone}
+    0,0,#{otherPhone},#{trackId}
     )
   </insert>
 
   <insert id="excelNetwork" parameterType="java.util.List">
-    insert into customer_network(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,address
+    insert into customer_network(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,address
     ,create_time,status,issue,other_phone)
     values
     <foreach collection="list" item="item" separator=",">
-    (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.establishTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),
+    (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.dealTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),
       0,0,#{item.otherPhone})
     </foreach>
   </insert>

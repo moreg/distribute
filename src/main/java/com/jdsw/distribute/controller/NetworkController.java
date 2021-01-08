@@ -10,18 +10,15 @@ import com.jdsw.distribute.util.Message;
 
 import com.jdsw.distribute.util.VideoUtil;
 import com.jdsw.distribute.vo.AirForcePool;
-import org.apache.ibatis.annotations.Param;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Encoder;
+
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -323,7 +320,6 @@ public class NetworkController {
         distributeService.setOverdueTime(airForcePool);
         return Message.success();
     }
-
     /**
      * 查询跟进列表
      * @return

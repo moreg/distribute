@@ -180,10 +180,10 @@
 
   <insert id="insertTelemarke" parameterType="com.jdsw.distribute.model.Distribute">
     insert into customer_telemarke(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,conduct,city,source,address
-    ,create_time,status,issue,other_phone)
+    ,create_time,status,issue,other_phone,track_id)
     values (
     #{name},#{corporateName},#{corporatePhone},#{dealTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
-    0,0,#{otherPhone}
+    0,0,#{otherPhone},#{trackId}
     )
   </insert>
 
@@ -207,13 +207,22 @@
   </update>
 
   <update id="appoint" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName},appoint = #{appoint},issue = #{issue}
+    update customer_telemarke
+    <set>
+    <if test="firstFollowName != null and firstFollowName != ''"></if>
+      <if test=""></if>
+      <if test=""></if>
+
+    </set>
+    last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName},appoint = #{appoint},issue = #{issue},overdue_time = #{overdueTime},
+    branch = #{branch}
      where id = #{id}
   </update>
 
   <update id="updateNetworkTrackId" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_telemarke set track_id = #{trackId} where id = #{id}
   </update>
+
   <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_telemarke set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName} where id = #{id}
   </update>

@@ -23,8 +23,8 @@
         LEFT JOIN `user` us on us.id = ur.userid
         WHERE us.username = #{username}
     </select>
-    <select id="getMenuList" resultMap="BaseResultMap">
-        SELECT  sy.id,sy.`name`,sy.parentId,sy.`order`,sy.url,sy.icon
+    <select id="getMenuList" resultType="com.jdsw.distribute.model.SysMune">
+        SELECT  sy.menuId,sy.parentId,sy.resourceDesc,sy.resourceName,sy.resourceString,sy.resourceType,sy.resourceTypeName
         FROM sys_menu sy
     </select>
     <select id="findBranch" resultMap="BaseResultMap">

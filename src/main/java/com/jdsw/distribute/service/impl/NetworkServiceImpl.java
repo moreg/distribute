@@ -53,6 +53,7 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.setFirstFollowName(network.get(i).getFirstFollowName());
             distribute.setOverdueTime(DateUtil.getOverTime(600000));
             distribute.setAppoint(0);
+            distribute.setBranch(network.get(i).getBranch());
             if (StringUtil.isEmpty(network.get(i).getBranch())){
                 distribute.setAppoint(1);
                 networkFollow.setFollowName(name);
@@ -118,6 +119,8 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public int insertNetwoork(Distribute distribute) {
+        String trackId = Rand.getTrackId("WL");//获得跟踪单号
+        distribute.setTrackId(trackId);
         return networkDao.insertNetwoork(distribute);
     }
 

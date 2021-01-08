@@ -41,6 +41,8 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
     @Override
     public int insertTelemarke(Distribute distribute) {
+        String trackId = Rand.getTrackId("WL");//获得跟踪单号
+        distribute.setTrackId(trackId);
         return telemarkDao.insertTelemarke(distribute);
     }
     @Override
@@ -90,13 +92,12 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         for (int i=0;i<network.size();i++){
             distribute = new Distribute();
             networkFollow = new DistributeFollow();
-            String trackId = Rand.getTrackId("WL");//获得跟踪单号
-            distribute.setTrackId(trackId);
             distribute.setId(network.get(i).getId());
             distribute.setDepartment(network.get(i).getDepartment());
             distribute.setFirstFollowName(network.get(i).getFirstFollowName());
-            if (StringUtil.isEmpty(network.get(i).getDepartment())){
-                distribute.setDepartment("总部");
+            distribute.setOverdueTime(DateUtil.getOverTime(600000));
+            distribute.setBranch(network.get(i).getBranch());
+            if (StringUtil.isEmpty(network.get(i).getBranch())){
                 networkFollow.setFollowName(name);
                 networkFollow.setNetworkId(network.get(i).getId());
                 networkFollow.setFollowResult(str);
