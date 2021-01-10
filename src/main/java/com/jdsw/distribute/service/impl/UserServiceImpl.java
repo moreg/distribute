@@ -78,14 +78,14 @@ public class UserServiceImpl implements UserService {
             list.add(temp[i]);
         }
         List<UsersVo> ls = userMapper.queryDepartment(list);
-        List<UsersVo> li = new ArrayList<UsersVo>();
+        List li = new ArrayList();
         User user  = new User();
-        Map<String,String> map = new HashMap<String, String>();
+        Map<String,Object> map = new HashMap<String, Object>();
         for(int i=0;i<ls.size();i++){
             if (StringUtil.isNotEmpty(ls.get(i).getName())){
                 map.put("name",ls.get(i).getName());
                 map.put("department",ls.get(i).getDepartment());
-                li.add((UsersVo) map);
+                li.add(map);
             }
         }
         return li;

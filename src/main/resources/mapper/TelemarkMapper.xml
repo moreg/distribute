@@ -207,15 +207,11 @@
   </update>
 
   <update id="appoint" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke
-    <set>
-    <if test="firstFollowName != null and firstFollowName != ''"></if>
-      <if test=""></if>
-      <if test=""></if>
+    update customer_telemarke set
 
-    </set>
-    last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName},appoint = #{appoint},issue = #{issue},overdue_time = #{overdueTime},
-    branch = #{branch}
+      last_follow_name = '123',first_follow_name = '123',branch = '123',
+      appoint = 0,issue = 1,overdue_time = '2020-2-10'
+
      where id = #{id}
   </update>
 
