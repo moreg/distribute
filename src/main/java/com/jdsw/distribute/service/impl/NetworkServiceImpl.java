@@ -52,6 +52,7 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.setId(network.get(i).getId());
             distribute.setDepartment(network.get(i).getDepartment());
             distribute.setFirstFollowName(network.get(i).getFirstFollowName());
+            distribute.setLastFollowName(network.get(i).getFirstFollowName());
             distribute.setOverdueTime(DateUtil.getOverTime(600000));
             distribute.setAppoint(0);
             distribute.setBranch(network.get(i).getBranch());
