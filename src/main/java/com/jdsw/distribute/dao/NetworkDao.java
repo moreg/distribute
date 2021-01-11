@@ -13,12 +13,6 @@ import java.util.Map;
 
 public interface NetworkDao {
     /**
-     * 新增导入的网络数据
-     * @param list
-     * @return
-     */
-    int insertTelemarkting(List<Distribute> list);
-    /**
      * 指定接单人
      * @param distribute
      * @return
@@ -56,7 +50,7 @@ public interface NetworkDao {
      */
     Distribute selectNetworkById(Integer id);
     /**
-     * 查询我的订单
+     * 查询我的客户
      * @param
      * @return
      */
@@ -73,12 +67,6 @@ public interface NetworkDao {
      * @return
      */
     List<Distribute> grabbingOrdersList(String content, String strtime, String endtime);
-    /**
-     * 放客户线索到空军池
-     * @param distribute
-     * @return
-     */
-    int putAirForcePoll(Distribute distribute);
     /**
      * 新增
      * @param distribute

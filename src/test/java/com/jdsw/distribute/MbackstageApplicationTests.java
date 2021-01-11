@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -206,5 +207,11 @@ public class MbackstageApplicationTests {
         System.out.println(result2.size());
         System.out.println(result2);
     }
-
+    @Test
+    public void role(){
+        Set s = us.findRoleByUserName("cz");
+        for (Object str : s) {
+            System.out.println(Integer.parseInt((String) str) == 6);
+        }
+    }
 }

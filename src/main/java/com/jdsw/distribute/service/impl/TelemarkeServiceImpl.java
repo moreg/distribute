@@ -96,8 +96,10 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             distribute.setDepartment(network.get(i).getDepartment());
             distribute.setFirstFollowName(network.get(i).getFirstFollowName());
             distribute.setOverdueTime(DateUtil.getOverTime(600000));
+            distribute.setAppoint(0);
             distribute.setBranch(network.get(i).getBranch());
             if (StringUtil.isEmpty(network.get(i).getBranch())){
+                distribute.setAppoint(1);
                 networkFollow.setFollowName(name);
                 networkFollow.setNetworkId(network.get(i).getId());
                 networkFollow.setFollowResult(str);
@@ -158,7 +160,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Transactional
     public int followupNetwork(DistributeFollow distributeFollow) {
         Distribute distribute = new Distribute();
-        distribute.setOverdueTime(DateUtil.getSanDay());
+        distribute.setOverdueTime(distributeFollow.getFollowTime());
         distribute.setActivation(1);
         distribute.setId(distributeFollow.getNetworkId());
         int repool = distributeFollow.getReturnPool();
@@ -170,10 +172,9 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         }else if (releader == 1){
             distribute.setOverdueTime("");
             distribute.setActivation(0);
-
+            distribute.setStatus(5);
         }
-       // telemarkDao.updateRetuen(distribute);
-        telemarkDao.updateworkOverdueTime(distribute);//修改激活时间为3天后
+        telemarkDao.updateworkOverdueTime(distribute);
         telemarkeFollowDao.updateFolloupNetwork(distributeFollow);
         return telemarkeFollowDao.insertNetworkFollow(distributeFollow);
     }
@@ -192,9 +193,12 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
-    public int SubmitRecordingNetwork(Distribute network) {
-        network.setStatus(3);
-        return telemarkDao.SubmitRecordingNetwork(network);
+    public int SubmitRecordingNetwork(Distribute distribute) {
+        Distribute distribute2 = new Distribute();
+        distribute.setStatus(3);
+        distribute2 = telemarkDao.selectNetworkById(distribute.getId());
+        telemarkDao.insertDealOrder(distribute2);
+        return telemarkDao.SubmitRecordingNetwork(distribute);
     }
 
     @Override
@@ -240,7 +244,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public int customerTransfer(List<Distribute> distribute) {
         return telemarkDao.assign(distribute);
     }
-
 
     @Override
     public List<DistributeFollow> qureyFollowList(Integer id) {

@@ -194,7 +194,24 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils{
         long min = diff % 86400000 % 3600000 / 60000;//以分钟为单位取整
         long seconds = diff % 86400000 % 3600000 % 60000 / 1000;//以秒为单位取整a
 
-        return hour+(day*24)+"小时"+min+"分"+seconds+"秒";
+        //return hour+(day*24)+"小时"+min+"分"+seconds+"秒";
+        return min+"分"+seconds+"秒";
+
+    }
+    public static String getMinutesCount2(Date startDate, Date endDate) {
+        // 根据起始日期计算起始的毫秒
+        long startTime = startDate.getTime();
+        // 根据终止日期计算终止的毫秒
+        long endTime = endDate.getTime();
+        // 通过起始毫秒和终止毫秒的差值，计分钟
+        long diff = startTime - endTime;
+        long day = diff / 86400000;
+        long hour= diff % 86400000 / 3600000;//以小时为单位取整
+        long min = diff % 86400000 % 3600000 / 60000;//以分钟为单位取整
+        long seconds = diff % 86400000 % 3600000 % 60000 / 1000;//以秒为单位取整a
+
+        //return hour+(day*24)+"小时"+min+"分"+seconds+"秒";
+        return min+"分"+seconds+"秒";
 
     }
 
@@ -298,15 +315,9 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils{
     public static void main(String[] args) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();
-        Date start = sdf.parse("2021-01-04 09:18:00");
-        Date end = new Date(now.getTime());
-        long cha = start.getTime() - end.getTime();
-        System.out.println(cha);
-        if(cha <=300000 && cha > 0){
-           System.out.println("trun");
-        }else{
-            System.out.println("false");
-        }
+        Date start = sdf.parse("2021-01-11 16:20:00");
+        System.out.println("超时"+getMinutesCount2(now,start));
+        System.out.println(start.getTime()-now.getTime());
 
     }
 

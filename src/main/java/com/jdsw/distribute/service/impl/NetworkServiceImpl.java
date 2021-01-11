@@ -4,10 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.dao.NetworkDao;
 import com.jdsw.distribute.dao.NetworkFollowDao;
-import com.jdsw.distribute.model.Distribute;
-import com.jdsw.distribute.model.DistributeFollow;
-import com.jdsw.distribute.model.Excel;
-import com.jdsw.distribute.model.Role;
+import com.jdsw.distribute.dao.UserDao;
+import com.jdsw.distribute.model.*;
 import com.jdsw.distribute.service.NetworkService;
 import com.jdsw.distribute.util.*;
 import com.github.pagehelper.util.StringUtil;
@@ -25,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -36,7 +36,8 @@ public class NetworkServiceImpl implements NetworkService {
     private NetworkDao networkDao;
     @Autowired
     private NetworkFollowDao networkFollowDao;
-
+    @Autowired
+    private UserDao userDao;
     @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
@@ -87,7 +88,7 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) {
+    public PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) throws ParseException {
         PageHelper.startPage(pageNum, limit);
         List<Distribute> Network = networkDao.queryNetworkByLastName(content,strtime,endtime,lastFollowName);
         PageInfo result = new PageInfo(Network);
@@ -110,17 +111,24 @@ public class NetworkServiceImpl implements NetworkService {
         PageInfo result = new PageInfo(Network);
         return result;
     }
-    @Override
-    public int putAirForcePoll(Distribute distribute) {
-        String trackId = Rand.getTrackId("WL");//获得跟踪单号
-        distribute.setTrackId(trackId);
-        return networkDao.putAirForcePoll(distribute);
-    }
+
 
     @Override
-    public int insertNetwoork(Distribute distribute) {
+    public int insertNetwoork(Distribute distribute,String username) {
         String trackId = Rand.getTrackId("WL");//获得跟踪单号
         distribute.setTrackId(trackId);
+        Set set = userDao.findRoleByUserName(username);
+        User user = userDao.findByUserName(username);
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 6){
+                distribute.setLastFollowName(user.getName());
+                distribute.setFirstFollowName(user.getName());
+                distribute.setIssue(1);
+                distribute.setAppoint(0);
+                return networkDao.insertNetwoork(distribute);
+            }
+        }
+        distribute.setIssue(0);
         return networkDao.insertNetwoork(distribute);
     }
 

@@ -4,19 +4,24 @@
   <resultMap id="DistributeMap" type="com.jdsw.distribute.model.Distribute">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name"  property="name" />
-    <result column="corporate_name"  property="corporate_name" />
-    <result column="corporate_phone"  property="corporate_phone" />
+    <result column="corporate_name"  property="corporateName" />
+    <result column="corporate_phone"  property="corporatePhone" />
     <result column="contacts"  property="contacts" />
-    <result column="contacts_phone"  property="contacts_phone" />
+    <result column="contacts_phone"  property="contactsPhone" />
     <result column="source"  property="source" />
-    <result column="follow_number"  property="follow_number" />
+    <result column="follow_number"  property="followNumber" />
     <result column="state"  property="state" />
-    <result column="last_follow_up"  property="last_follow_up" />
-    <result column="last_follow_content"  property="last_follow_content" />
-    <result column="last_follow_time"  property="last_follow_time" />
-    <result column="last_follow_name"  property="last_follow_name" />
-    <result column="last_follow_name"  property="last_follow_name" />
+    <result column="last_follow_up"  property="lastFollowUp" />
+    <result column="last_follow_content"  property="lastFollowContent" />
+    <result column="last_follow_time"  property="lastFollowTime" />
+    <result column="last_follow_name"  property="lastFollowName" />
+    <result column="track_id"  property="trackId" />
+    <result column="overdue_time"  property="overdueTime" />
     <result column="status"  property="status" />
+    <result column="track_id"  property="trackId" />
+    <result column="conduct"  property="conduct" />
+    <result column="create_time"  property="createTime" />
+    <result column="industry"  property="industry" />
 
   </resultMap>
   <resultMap id="pool" type="com.jdsw.distribute.vo.ComePool">
@@ -77,7 +82,7 @@
     select track_id from customer_telemarke where id = #{id}
   </select>
 
-  <select id="selectNetworkById" resultType="com.jdsw.distribute.model.Distribute">
+  <select id="selectNetworkById" resultMap="DistributeMap">
     select *
     from customer_telemarke where id =#{id}
   </select>
@@ -168,6 +173,7 @@
     ,other_phone as otherPhone from customer_telemarke where id = #{id}
   </select>
 
+
   <insert id="insertTelemarkting" parameterType="java.util.List">
     insert into customer_telemarke(name,corporate_name,corporate_phone,contacts,contacts_phone,source,follow_number,state,
     last_follow_up,last_follow_content,last_follow_time,last_follow_name,create_time,status)
@@ -197,6 +203,11 @@
     </foreach>
   </insert>
 
+  <insert id="insertDealOrder" parameterType="com.jdsw.distribute.model.Distribute">
+    insert into deal_order(name,corporate_name,create_time,source,last_follow_name,track_id,conduct,order_state)
+    values (#{name},#{corporateName},#{createTime},#{source},#{lastFollowName},#{trackId},#{conduct},0)
+  </insert>
+
   <update id="UpdateRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_telemarke set order_state = 1,status = 1,conduct = #{conduct},contract_no = #{contractNo},pay = #{pay},cost = #{cost},deal_time = #{dealTime},recording_name = #{recordingName}
     where id = #{id}
@@ -206,17 +217,24 @@
     update customer_telemarke set status = #{status},last_follow_name = #{lastFollowName} where id = #{id}
   </update>
 
-  <update id="appoint" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke
-    <set>
-    <if test="firstFollowName != null and firstFollowName != ''"></if>
-      <if test=""></if>
-      <if test=""></if>
+  <update id="appoint" parameterType="java.util.List">
+    <foreach collection="list" item="distribute" index= "index" open="" close="" separator =";">
+      update customer_telemarke
+      <set>
+        branch = #{distribute.department},
+        last_follow_name = #{distribute.firstFollowName},
+        first_follow_name = #{distribute.firstFollowName},
+        appoint = 1,
+        issue = 1,
+        track_id = #{distribute.trackId},
+        overdue_time = #{distribute.overdueTime}
+      </set>
+      <where>
+        id = #{distribute.id}
+      </where>
+    </foreach>
 
-    </set>
-    last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName},appoint = #{appoint},issue = #{issue},overdue_time = #{overdueTime},
-    branch = #{branch}
-     where id = #{id}
+
   </update>
 
   <update id="updateNetworkTrackId" parameterType="com.jdsw.distribute.model.Distribute">

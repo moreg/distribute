@@ -1,5 +1,6 @@
 package com.jdsw.distribute.dao;
 
+import com.jdsw.distribute.model.Enterprise;
 import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.vo.UsersVo;
@@ -36,7 +37,7 @@ public interface UserDao {
      * @param department
      * @return
      */
-    List<UsersVo> queryDepartment(List<String> department);
+    List<User> queryDepartment(List<String> department);
 
     /**
      * 查询部门主管
@@ -44,4 +45,11 @@ public interface UserDao {
      * @return
      */
     List<UsersVo> queryCharge(List<String> department);
+
+    /**
+     * 查询企业信息
+     * @param
+     * @return
+     */
+    List<Enterprise> queryEnterprise(String corporatePhone);
 }

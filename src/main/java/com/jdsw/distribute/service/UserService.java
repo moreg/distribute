@@ -1,6 +1,7 @@
 package com.jdsw.distribute.service;
 
 import com.github.pagehelper.PageInfo;
+import com.jdsw.distribute.model.Enterprise;
 import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.vo.UsersVo;
@@ -16,13 +17,15 @@ public interface UserService {
     int insertUser(User user);
     Set<String> findRoleByUserName(String username);
 
-    List<UsersVo> queryDepartment(String department);
+    List<User> queryDepartment(String department);
 
     /**
      * 查询部门主管
      * @return
      */
     List<UsersVo> queryCharge(String department);
+
+    List<Enterprise> queryEnterprise(String corporatePhone);
 
 
 }

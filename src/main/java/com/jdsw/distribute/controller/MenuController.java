@@ -4,8 +4,10 @@ package com.jdsw.distribute.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jdsw.distribute.model.Menu;
+import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.service.MenuService;
 
+import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,14 +17,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/menu")
 public class MenuController {
     @Autowired
     private MenuService menuService;
-
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/menujson")
     @ResponseBody
@@ -39,14 +45,16 @@ public class MenuController {
         return json.toString();
     }
     @RequestMapping(value = "/menuList")
-    public String menuLsit(HttpSession session, Model model){
-      //  String username = session.getAttribute;
+    public Message menuLsit(HttpSession session){
+        String username = (String) session.getAttribute("username");
+        User user2 = userService.findByUserName(username);
         List<Menu> menu = menuService.findTree("user");
         List<Menu> menuslist = menuService.getMenuLsit();
-        model.addAttribute("menu",menuslist);
-        model.addAttribute("menus",menu);
-        model.addAttribute("abc","123456");
-        return "/menu/sysMenu";
+        Map map = new HashMap<>();
+        map.put("menus",menuslist);
+        map.put("userId",user2.getId());
+        map.put("username",username);
+        return Message.success("查询成功",map);
     }
 
     /**

@@ -54,19 +54,7 @@ public class NetworkController {
     public Message grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime){
         return Message.success("操作成功",distributeService.grabbingOrdersList(pageNum,limit,content,strtime,endtime),0);
     }
-    /**
-     * 放客户线索到空军池
-     * @param distribute
-     * @return
-     */
-    @RequestMapping("/putAirForcePoll")
-    public Message putAirForcePoll(@RequestBody Distribute distribute){
-        int i = distributeService.putAirForcePoll(distribute);
-        if (i > 0){
-            return Message.success();
-        }
-        return Message.fail();
-    }
+
 
     /**
      * 新增
@@ -74,8 +62,9 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/insertNetwoork")
-    public Message insertNetwoork(@RequestBody Distribute distribute){
-        int i = distributeService.insertNetwoork(distribute);
+    public Message insertNetwoork(@RequestBody Distribute distribute,HttpSession session){
+        String username = (String) session.getAttribute("username");
+        int i = distributeService.insertNetwoork(distribute,username);
         if (i > 0){
             return Message.success();
         }
@@ -169,8 +158,9 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/queryNetworkByLastName")
-    public Message queryNetworkByLastName(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime){
-        String lastFollowName = (String) session.getAttribute("name");
+    public Message queryNetworkByLastName(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
+       // String lastFollowName = (String) session.getAttribute("name");
+        String lastFollowName = "陈真";
         return Message.success("操作成功",distributeService.queryNetworkByLastName(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
     /**

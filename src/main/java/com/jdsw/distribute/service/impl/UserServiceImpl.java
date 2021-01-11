@@ -1,6 +1,7 @@
 package com.jdsw.distribute.service.impl;
 
 import com.github.pagehelper.util.StringUtil;
+import com.jdsw.distribute.model.Enterprise;
 import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.DateUtil;
@@ -10,6 +11,7 @@ import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.util.MD5Utils;
 import com.jdsw.distribute.vo.UsersVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,35 +23,35 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     @Autowired
 
-    private UserDao userMapper;
+    private UserDao userDao;
 
     @Override
     public PageInfo<UsersVo> findAllUser(int pageNum, int pageSize) {
         //将参数传给这个方法就可以实现物理分页了，非常简单。
         PageHelper.startPage(pageNum, pageSize);
-        List<UsersVo> userDomains = userMapper.selectUsers();
+        List<UsersVo> userDomains = userDao.selectUsers();
         PageInfo result = new PageInfo(userDomains);
         return result;
     }
 
     @Override
     public User findByUserName(String username) {
-        return userMapper.findByUserName(username);
+        return userDao.findByUserName(username);
     }
 
     @Override
     public Set<String> findPermissionByUserName(String username) {
-        return userMapper.findPermissionByUserName(username);
+        return userDao.findPermissionByUserName(username);
     }
 
     @Override
     public int countUser() {
-        return userMapper.countUser();
+        return userDao.countUser();
     }
 
     @Override
     public int insertUser(User user) {
-         User user2 = userMapper.findByUserName(user.getUsername());
+         User user2 = userDao.findByUserName(user.getUsername());
         if (user2 != null){
             return 3;
         }
@@ -61,31 +63,31 @@ public class UserServiceImpl implements UserService {
         user.setSalt(rand);
         user.setState(0);
         user.setAddtime(date);
-        return userMapper.insert(user);
+        return userDao.insert(user);
     }
 
     @Override
     public Set<String> findRoleByUserName(String username) {
-        return userMapper.findRoleByUserName(username);
+        return userDao.findRoleByUserName(username);
     }
 
     @Override
-    public List<UsersVo> queryDepartment(String department) {
+    public List<User> queryDepartment(String department) {
         String temp[]=department.split(",");
         List<String> list = new ArrayList();
         for (int i=0;i<temp.length;i++){
             String string1 = temp[i];
             list.add(temp[i]);
         }
-        List<UsersVo> ls = userMapper.queryDepartment(list);
-        List<UsersVo> li = new ArrayList<UsersVo>();
-        User user  = new User();
-        Map<String,String> map = new HashMap<String, String>();
+        List<User> ls = userDao.queryDepartment(list);
+        List li = new ArrayList<>();
+
         for(int i=0;i<ls.size();i++){
-            if (StringUtil.isNotEmpty(ls.get(i).getName())){
+            Map<String,Object> map = new HashMap<String, Object>();
+            if (StringUtils.isNotEmpty(ls.get(i).getName())){
                 map.put("name",ls.get(i).getName());
                 map.put("department",ls.get(i).getDepartment());
-                li.add((UsersVo) map);
+                li.add( map);
             }
         }
         return li;
@@ -99,7 +101,7 @@ public class UserServiceImpl implements UserService {
             String string1 = temp[i];
             list.add(temp[i]);
         }
-        List<UsersVo> ls = userMapper.queryCharge(list);
+        List<UsersVo> ls = userDao.queryCharge(list);
         List li = new ArrayList();
         User user  = new User();
         Map map = new HashMap<>();
@@ -111,5 +113,10 @@ public class UserServiceImpl implements UserService {
             }
         }
         return li;
+    }
+
+    @Override
+    public List<Enterprise> queryEnterprise(String corporatePhone) {
+        return userDao.queryEnterprise(corporatePhone);
     }
 }

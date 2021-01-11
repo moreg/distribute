@@ -193,4 +193,31 @@ public class AirForcePool {
     public void setIndustry(String industry) {
         this.industry = industry;
     }
+
+    @Override
+    public String toString() {
+        return "AirForcePool{" +
+                "id=" + id +
+                ", trackId='" + trackId + '\'' +
+                ", name='" + name + '\'' +
+                ", corporateName='" + corporateName + '\'' +
+                ", corporatePhone='" + corporatePhone + '\'' +
+                ", registeredCapital='" + registeredCapital + '\'' +
+                ", establishTime='" + establishTime + '\'' +
+                ", operation='" + operation + '\'' +
+                ", issue=" + issue +
+                ", state=" + state +
+                ", createTime=" + createTime +
+                ", lastFollowName='" + lastFollowName + '\'' +
+                ", source=" + source +
+                ", lastFollowTime=" + lastFollowTime +
+                ", city='" + city + '\'' +
+                ", otherPhone='" + otherPhone + '\'' +
+                ", address='" + address + '\'' +
+                ", status=" + status +
+                ", industry='" + industry + '\'' +
+                ", msec=" + msec +
+                ", overdueTime='" + overdueTime + '\'' +
+                '}';
+    }
 }

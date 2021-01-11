@@ -143,6 +143,12 @@ public interface TelemarkeDao {
     List<Distribute> Unsettled();
 
     /**
+     * 插入财务表
+     * @param distribute
+     * @return
+     */
+    int insertDealOrder(Distribute distribute);
+    /**
      * 修改激活时间
      * @param distribute
      * @return

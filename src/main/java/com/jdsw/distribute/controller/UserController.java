@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,5 +68,28 @@ public class UserController {
     @RequestMapping("/queryCharge")
     public Message queryCharge(String department){
         return Message.success("操作成功",userService.queryCharge(department));
+    }
+
+    /**
+     * 查询企业信息
+     * @return
+     */
+    @RequestMapping("/queryEnterprise")
+    public Message queryEnterprise(String corporatePhone){
+        return Message.success("操作成功",userService.queryEnterprise(corporatePhone));
+    }
+
+    /**
+     * 获得角色权限
+     * @param session
+     * @return
+     */
+    @RequestMapping("/queryRoles")
+    public Message queryRoles(HttpSession session){
+        String username = (String) session.getAttribute("username");
+        Map map = new HashMap();
+        map.put("permission",userService.findPermissionByUserName(username));
+        map.put("role",userService.findRoleByUserName(username));
+        return Message.success("操作成功",map);
     }
 }

@@ -64,9 +64,4 @@ pagehelper:
     params: count=countSql
     returnPageInfo: check
 
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
 

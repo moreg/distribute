@@ -50,6 +50,7 @@
     <result column="city"  property="city" />
     <result column="other_phone"  property="otherPhone" />
     <result column="address"  property="address" />
+    <result column="overdue_time"  property="overdueTime" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -120,7 +121,7 @@
 
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address from customer_network
+    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network
     where 1 = 1 and last_follow_name = #{lastFollowName}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -249,10 +250,6 @@
     where id = #{id}
   </update>
 
-  <update id="putAirForcePoll" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set issue = 1,appoint = 0,track_id = #{trackId} where id = #{id}
-  </update>
-
   <update id="updateNetwork" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set name = #{name},corporate_name = #{corporateName},corporate_phone = #{corporatePhone},deal_time = #{dealTime},registered_capital = #{registeredCapital},
     operation = #{operation},conduct = #{conduct},city = #{city},source = #{source},address = #{address},other_phone = #{otherPhone} where id = #{id}
@@ -267,10 +264,35 @@
 
   <insert id="insertNetwoork" parameterType="com.jdsw.distribute.model.Distribute">
     insert into customer_network(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,conduct,city,source,address
-    ,create_time,status,issue,other_phone,track_id)
+    ,create_time,status,other_phone,track_id
+    <if test="lastFollowName !=null and lastFollowName !=''">
+      ,last_follow_name
+    </if>
+    <if test="firstFollowName !=null and firstFollowName !=''">
+      ,first_follow_name
+    </if>
+    <if test="issue !=null">
+      ,issue
+    </if>
+    <if test="appoint !=null">
+      ,appoint
+    </if>
+    )
     values (
     #{name},#{corporateName},#{corporatePhone},#{dealTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
-    0,0,#{otherPhone},#{trackId}
+    0,#{otherPhone},#{trackId}
+    <if test="lastFollowName !=null and lastFollowName !=''">
+      ,#{lastFollowName}
+    </if>
+    <if test="firstFollowName !=null and firstFollowName !=''">
+      ,#{firstFollowName}
+    </if>
+    <if test="issue !=null">
+      ,#{issue}
+    </if>
+    <if test="appoint !=null">
+      ,#{appoint}
+    </if>
     )
   </insert>
 

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public interface NetworkService {
      * @param
      * @return
      */
-    PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName);
+    PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) throws ParseException;
 
 
     /**
@@ -52,17 +53,13 @@ public interface NetworkService {
      * @return
      */
     PageInfo<Distribute> grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime);
-    /**
-     * 放客户线索到空军池
-     */
-    int putAirForcePoll(Distribute distribute);
 
     /**
      * 新增
      * @param distribute
      * @return
      */
-    int insertNetwoork(Distribute distribute);
+    int insertNetwoork(Distribute distribute,String username);
 
     /**
      * 导入网销线索

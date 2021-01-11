@@ -202,6 +202,18 @@ public class Distribute {
      * 无效线索标记
      */
     Integer invalid;
+    /**
+     * 剩余时间
+     */
+    Long surplusTime;
+
+    public Long getSurplusTime() {
+        return surplusTime;
+    }
+
+    public void setSurplusTime(Long surplusTime) {
+        this.surplusTime = surplusTime;
+    }
 
     public Integer getInvalid() {
         return invalid;
@@ -657,6 +669,7 @@ public class Distribute {
                 ", leaderSign=" + leaderSign +
                 ", branch='" + branch + '\'' +
                 ", invalid=" + invalid +
+                ", surplusTime=" + surplusTime +
                 '}';
     }
 }

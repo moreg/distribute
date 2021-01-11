@@ -54,11 +54,11 @@ public class LoginController {
             Map map = new HashMap();
             map.put("token",toToken);
             //map.put("permission",userService.findPermissionByUserName(username));
-            //map.put("role",userService.findRoleByUserName(username));
+            map.put("role",userService.findRoleByUserName(username));
             map.put("userId",user2.getId());
             map.put("name",user2.getName());
             map.put("username",username);
-            map.put("menus",li);
+            //map.put("menus",li);
             return Message.success("登录成功",map);
         }  catch (IncorrectCredentialsException e) {
             msg = "登录密码错误. Password for account " + token.getPrincipal() + " was incorrect.";
