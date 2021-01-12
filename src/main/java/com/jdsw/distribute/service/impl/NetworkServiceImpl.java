@@ -1,5 +1,6 @@
 package com.jdsw.distribute.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.dao.NetworkDao;
@@ -99,9 +100,18 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username) {
-
         PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = networkDao.airForcePoolList(content,strtime,endtime);
+        Set set = userDao.findRoleByUserName(username);
+        User user = userDao.findByUserName(username);
+        List<Distribute> Network = null;
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 1){
+                Network = networkDao.airForcePoolList(content,strtime,endtime);
+            }else if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 4){
+                 Network = networkDao.airForcePoolList2(content,strtime,endtime);
+            }
+        }
+
         PageInfo result = new PageInfo(Network);
         return result;
     }
@@ -134,7 +144,7 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public int excelNetwork(MultipartFile file) throws Exception {
+    public int excelNetwork(MultipartFile file,String username) throws Exception {
         String filePath = "E:\\upexl\\";
         File dir = new File(filePath);
         if (!dir.exists()) {
@@ -144,20 +154,35 @@ public class NetworkServiceImpl implements NetworkService {
         File newFile = new File(filePath + newFileName);
         //复制操作
         file.transferTo(newFile);
-        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,-1, Excel.class);
-/*        Distribute distribute = null;
-        System.out.println(result.size());
-        for (int i = 0;i<result.size();i++){
-            Object ob = result.get(0);
-            System.out.println(ob.getClass().getName());
+        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,5, Excel.class);
+        List ls = new ArrayList();
+        Set set = userDao.findRoleByUserName(username);
+        User user = userDao.findByUserName(username);
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 6){
+                for (int i = 0;i<result.size();i++){
+                    Object ob = result.get(i);
+                    Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
+                    String trackId = Rand.getTrackId("WL");//获得跟踪单号
+                    map.put("trackId",trackId);
+                    map.put("lastFollowName",user.getName());
+                    map.put("firstFollowName",user.getName());
+                    map.put("issue",1);
+                    map.put("appoint",0);
+                    ls.add(map);
+                }
+                return networkDao.excelNetwork(ls);
+            }
         }
-        for (Object obj:result){
-            Object ob = (Object[]) obj;
-            //System.out.println(ob[0]);
-        }*/
-
-        networkDao.excelNetwork(result);
-        return 1;
+        for (int i = 0;i<result.size();i++){
+            Object ob = result.get(i);
+            Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
+            String trackId = Rand.getTrackId("WL");//获得跟踪单号
+            map.put("trackId",trackId);
+            map.put("issue",0);
+            ls.add(map);
+        }
+        return networkDao.excelNetwork(ls);
     }
 
     @Override

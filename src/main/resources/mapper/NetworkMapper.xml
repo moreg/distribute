@@ -51,6 +51,7 @@
     <result column="other_phone"  property="otherPhone" />
     <result column="address"  property="address" />
     <result column="overdue_time"  property="overdueTime" />
+    <result column="status"  property="status" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -102,6 +103,22 @@
         </if>
   </select>
 
+  <select id="airForcePoolList2" resultMap="aMap" parameterType="String">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address,overdue_time from customer_network
+    where  issue = 1 and `status`in (0,1,2)
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+  </select>
+
   <select id="grabbingOrdersList" resultMap="aMap" parameterType="String">
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
@@ -120,9 +137,9 @@
   </select>
 
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network
-    where 1 = 1 and last_follow_name = #{lastFollowName}
+    where 1 = 1 and (last_follow_name = #{lastFollowName} or leader_name = #{lastFollowName})
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -168,15 +185,9 @@
     select id,track_id,overdue_time,last_follow_name FROM customer_network  where status = 0 and issue = 1
   </select>
 
-  <insert id="insertTelemarkting" parameterType="java.util.List">
-    insert into customer_network(name,corporate_name,corporate_phone,contacts,contacts_phone,source,follow_number,state,
-    last_follow_up,last_follow_content,last_follow_time,last_follow_name,create_time,status)
-    <foreach collection="list" item="item" index="index" separator=",">
-        (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.contacts},#{item.contactsPhone},
-        #{item.source},#{item.followNumber},#{item.state},#{item.lastFollowUp},#{item.lastFollowContent},#{item.lastFollowTime},#{item.lastFollowName},
-      sysdate()  ,1)
-    </foreach>
-  </insert>
+  <select id="queryOverTime" resultMap="DistributeMap">
+    select id,overdue_time from customer_network
+  </select>
 
   <update id="UpdateRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
     update deal_order set order_state = 1,conduct = #{conduct},contract_no = #{contractNo},pay = #{pay},cost = #{cost},deal_time = #{dealTime},recording_name = #{recordingName}
@@ -196,7 +207,6 @@
               first_follow_name = #{distribute.firstFollowName},
               appoint = 1,
               issue = 1,
-              track_id = #{distribute.trackId},
               overdue_time = #{distribute.overdueTime}
             </set>
                 <where>
@@ -263,7 +273,7 @@
  </delete>
 
   <insert id="insertNetwoork" parameterType="com.jdsw.distribute.model.Distribute">
-    insert into customer_network(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,conduct,city,source,address
+    insert into customer_network(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,conduct,city,source,address
     ,create_time,status,other_phone,track_id
     <if test="lastFollowName !=null and lastFollowName !=''">
       ,last_follow_name
@@ -279,7 +289,7 @@
     </if>
     )
     values (
-    #{name},#{corporateName},#{corporatePhone},#{dealTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
+    #{name},#{corporateName},#{corporatePhone},#{establishTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
     0,#{otherPhone},#{trackId}
     <if test="lastFollowName !=null and lastFollowName !=''">
       ,#{lastFollowName}
@@ -297,12 +307,15 @@
   </insert>
 
   <insert id="excelNetwork" parameterType="java.util.List">
-    insert into customer_network(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,address
-    ,create_time,status,issue,other_phone)
+    insert into customer_network(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,address
+    ,create_time,status,other_phone,track_id,last_follow_name,first_follow_name,issue,appoint
+    )
     values
     <foreach collection="list" item="item" separator=",">
-    (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.dealTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),
-      0,0,#{item.otherPhone})
+    (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.establishTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),
+      0,#{item.otherPhone},#{item.trackId},#{item.lastFollowName},#{item.firstFollowName},#{item.issue},#{item.appoint}
+
+      )
     </foreach>
   </insert>
 

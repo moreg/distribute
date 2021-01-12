@@ -59,6 +59,8 @@ public interface NetworkDao {
      * 空军池列表
      */
     List<Distribute> airForcePoolList(String content, String strtime, String endtime);
+
+    List<Distribute> airForcePoolList2(String content, String strtime, String endtime);
     /**
      * 抢单列表
      * @param content
@@ -156,4 +158,9 @@ public interface NetworkDao {
      */
     List<Distribute> notice();
 
+    /**
+     * 查询超时时间
+     * @return
+     */
+    List<Distribute> queryOverTime();
 }

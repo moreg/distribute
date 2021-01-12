@@ -34,8 +34,9 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/armyListPoolList")
-    public Message armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime){
-        return Message.success("操作成功",telemarkService.armyListPoolList(pageNum,limit,content,strtime,endtime),0);
+    public Message armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,HttpSession session){
+        String username = (String) session.getAttribute("username");
+        return Message.success("操作成功",telemarkService.armyListPoolList(pageNum,limit,content,strtime,endtime,username),0);
     }
     /**
      * 新增
@@ -56,8 +57,9 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/excelTelemarke")
-    public Message excelTelemarke(@RequestParam("file") MultipartFile file) throws Exception {
-        int i = telemarkService.excelTelemarke(file);
+    public Message excelTelemarke(@RequestParam("file") MultipartFile file,HttpSession session) throws Exception {
+        String username = (String) session.getAttribute("username");
+        int i = telemarkService.excelTelemarke(file,username);
         if (i > 0){
             return Message.success("导入成功");
         }

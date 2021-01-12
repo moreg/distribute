@@ -16,6 +16,8 @@ public interface TelemarkeDao {
      * @return
      */
     List<Distribute> armyListPoolList(String content, String strtime, String endtime);
+
+    List<Distribute> armyListPoolList2(String content, String strtime, String endtime);
     /**
      * 新增
      * @param distribute

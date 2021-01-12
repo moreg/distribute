@@ -66,7 +66,7 @@ public interface NetworkService {
      * @param file
      * @return
      */
-    int excelNetwork(MultipartFile file) throws Exception;
+    int excelNetwork(MultipartFile file,String username) throws Exception;
     /**
      * 删除
      * @param

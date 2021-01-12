@@ -1,13 +1,16 @@
 package com.jdsw.distribute.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.jdsw.distribute.dao.TelemarkeDao;
 import com.jdsw.distribute.dao.TelemarkeFollowDao;
+import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.model.Excel;
+import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.service.TelemarkeService;
 import com.jdsw.distribute.util.DateUtil;
 import com.jdsw.distribute.util.FileUtil;
@@ -25,6 +28,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class TelemarkeServiceImpl implements TelemarkeService {
@@ -32,10 +36,22 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     private TelemarkeDao telemarkDao;
     @Autowired
     private TelemarkeFollowDao telemarkeFollowDao;
+    @Autowired
+    private UserDao userDao;
     @Override
-    public PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime) {
+    public PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,String username) {
         PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = telemarkDao.armyListPoolList(content,strtime,endtime);
+        Set set = userDao.findRoleByUserName(username);
+        User user = userDao.findByUserName(username);
+        List<Distribute> Network = null;
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 1){
+                Network = telemarkDao.armyListPoolList(content,strtime,endtime);
+            }else if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 4){
+                Network = telemarkDao.armyListPoolList2(content,strtime,endtime);
+            }
+        }
+
         PageInfo result = new PageInfo(Network);
         return result;
     }
@@ -46,7 +62,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         return telemarkDao.insertTelemarke(distribute);
     }
     @Override
-    public int excelTelemarke(MultipartFile file) throws Exception {
+    public int excelTelemarke(MultipartFile file,String username) throws Exception {
         String filePath = "E:\\upexl\\";
         File dir = new File(filePath);
         if (!dir.exists()) {
@@ -56,9 +72,35 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         File newFile = new File(filePath + newFileName);
         //复制操作
         file.transferTo(newFile);
-        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,-1, Excel.class);
-        telemarkDao.excelTelemarke(result);
-        return 1;
+        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,5, Excel.class);
+        List ls = new ArrayList();
+        Set set = userDao.findRoleByUserName(username);
+        User user = userDao.findByUserName(username);
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 6){
+                for (int i = 0;i<result.size();i++){
+                    Object ob = result.get(i);
+                    Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
+                    String trackId = Rand.getTrackId("WL");//获得跟踪单号
+                    map.put("trackId",trackId);
+                    map.put("lastFollowName",user.getName());
+                    map.put("firstFollowName",user.getName());
+                    map.put("issue",1);
+                    map.put("appoint",0);
+                    ls.add(map);
+                }
+                return telemarkDao.excelTelemarke(ls);
+            }
+        }
+        for (int i = 0;i<result.size();i++){
+            Object ob = result.get(i);
+            Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
+            String trackId = Rand.getTrackId("WL");//获得跟踪单号
+            map.put("trackId",trackId);
+            map.put("issue",0);
+            ls.add(map);
+        }
+        return telemarkDao.excelTelemarke(ls);
     }
     @Override
     public int deleteTelemarke(Distribute distribute) {
@@ -144,12 +186,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         return result;
     }
 
-    @Override
-    public int putarmyPoll(Distribute distribute) {
-        String trackId = Rand.getTrackId("DX");//获得跟踪单号
-        distribute.setTrackId(trackId);
-        return telemarkDao.putarmyPoll(distribute);
-    }
+
 
     @Override
     public int overTime(Distribute network) {
@@ -202,26 +239,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         telemarkDao.insertDealOrder(distribute2);
         return telemarkDao.SubmitRecordingNetwork(distribute);
     }
-
-    @Override
-    public List<RecordingVo> RecordingShowNetwork(Integer id) {
-        return telemarkDao.RecordingShowNetwork(id);
-    }
-
-    @Override
-    public int UpdateRecordingNetwork(Distribute network) {
-        return telemarkDao.UpdateRecordingNetwork(network);
-    }
-
-    @Override
-    public PageInfo<CashierVo> cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime) {
-        PageHelper.startPage(pageNum, limit);
-        List<CashierVo> CashierVo = telemarkDao.cashierListNetwork(content,strtime,endtime);
-        PageInfo result = new PageInfo(CashierVo);
-        return result;
-
-    }
-
     @Override
     public int Unsettled() {
         List<Distribute> ls = telemarkDao.Unsettled();

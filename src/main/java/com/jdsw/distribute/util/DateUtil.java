@@ -210,8 +210,8 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils{
         long min = diff % 86400000 % 3600000 / 60000;//以分钟为单位取整
         long seconds = diff % 86400000 % 3600000 % 60000 / 1000;//以秒为单位取整a
 
-        //return hour+(day*24)+"小时"+min+"分"+seconds+"秒";
-        return min+"分"+seconds+"秒";
+        return hour+(day*24)+"小时"+min+"分"+seconds+"秒";
+        //return min+"分"+seconds+"秒";
 
     }
 
@@ -315,10 +315,8 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils{
     public static void main(String[] args) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();
-        Date start = sdf.parse("2021-01-11 16:20:00");
-        System.out.println("超时"+getMinutesCount2(now,start));
-        System.out.println(start.getTime()-now.getTime());
-
+        Date afterDate = new Date(now.getTime() + 600000);
+        System.out.println(afterDate);
     }
 
 }

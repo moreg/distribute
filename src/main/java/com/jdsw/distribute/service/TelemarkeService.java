@@ -21,7 +21,7 @@ public interface TelemarkeService {
      * @param endtime
      * @return
      */
-    PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime);
+    PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,String username);
     /**
      * 新增
      * @param distribute
@@ -29,11 +29,11 @@ public interface TelemarkeService {
      */
     int insertTelemarke(Distribute distribute);
     /**
-     * 导入网销线索
+     * 导入电销线索
      * @param file
      * @return
      */
-    int excelTelemarke(MultipartFile file) throws Exception;
+    int excelTelemarke(MultipartFile file,String username) throws Exception;
     /**
      * 删除
      * @param
@@ -84,10 +84,7 @@ public interface TelemarkeService {
      * @return
      */
     PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName);
-    /**
-     * 放客户线索到陆军池
-     */
-    int putarmyPoll(Distribute distribute);
+
     /**
      * 超时
      * @param network
@@ -112,24 +109,7 @@ public interface TelemarkeService {
      * 提交财务
      */
     int SubmitRecordingNetwork(Distribute network);
-    /**
-     * 录单弹窗
-     * @param id
-     * @return
-     */
-    List<RecordingVo> RecordingShowNetwork(Integer id);
-    /**
-     * 财务录单
-     * @param network
-     * @return
-     */
-    int UpdateRecordingNetwork(Distribute network);
-    /**
-     * 财务查询列表
-     * @param
-     * @return
-     */
-    PageInfo<CashierVo> cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime);
+
 
     /**
      * 未成交
@@ -168,4 +148,5 @@ public interface TelemarkeService {
      * @return
      */
     int setOvertime(Distribute distribute);
+
 }

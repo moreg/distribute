@@ -51,6 +51,7 @@
     <result column="city"  property="city" />
     <result column="other_phone"  property="otherPhone" />
     <result column="address"  property="address" />
+    <result column="status"  property="status" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -92,7 +93,7 @@
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address from customer_telemarke
-    where 1 = 1
+    where 1 = 1 and (issue = 0 or `status`in (1,2))
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -103,6 +104,23 @@
           <bind name="content" value="'%' + content + '%'" ></bind>
             and (corporate_name like #{content} or corporate_phone like #{content})
         </if>
+
+  </select>
+  <select id="armyListPoolList2" resultMap="aMap" parameterType="String">
+
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address from customer_telemarke
+    where issue = 1 and `status`in (0,1,2)
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
 
   </select>
   <select id="grabbingOrdersList" resultMap="aMap" parameterType="String">
@@ -125,8 +143,8 @@
   
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address from customer_telemarke
-    where 1 = 1 and last_follow_name = #{lastFollowName}
+    source,last_follow_time,city,other_phone,address,status from customer_telemarke
+    where 1 = 1 and (last_follow_name = #{lastFollowName} or leader_name = #{lastFollowName})
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -185,21 +203,22 @@
   </insert>
 
   <insert id="insertTelemarke" parameterType="com.jdsw.distribute.model.Distribute">
-    insert into customer_telemarke(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,conduct,city,source,address
+    insert into customer_telemarke(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,conduct,city,source,address
     ,create_time,status,issue,other_phone,track_id)
     values (
-    #{name},#{corporateName},#{corporatePhone},#{dealTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
+    #{name},#{corporateName},#{corporatePhone},#{establishTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
     0,0,#{otherPhone},#{trackId}
     )
   </insert>
 
   <insert id="excelTelemarke" parameterType="java.util.List">
-    insert into customer_telemarke(name,corporate_name,corporate_phone,deal_time,registered_capital,operation,address
-    ,create_time,status,issue,other_phone)
+    insert into customer_telemarke(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,address
+    ,create_time,status,other_phone,track_id,last_follow_name,first_follow_name,issue,appoint)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.dealTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),
-      0,0,#{item.otherPhone})
+      (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.establishTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),0,#{item.otherPhone}
+      ,#{item.trackId},#{item.lastFollowName},#{item.firstFollowName},#{item.issue},#{item.appoint}
+      )
     </foreach>
   </insert>
 
@@ -226,15 +245,12 @@
         first_follow_name = #{distribute.firstFollowName},
         appoint = 1,
         issue = 1,
-        track_id = #{distribute.trackId},
         overdue_time = #{distribute.overdueTime}
       </set>
       <where>
         id = #{distribute.id}
       </where>
     </foreach>
-
-
   </update>
 
   <update id="updateNetworkTrackId" parameterType="com.jdsw.distribute.model.Distribute">

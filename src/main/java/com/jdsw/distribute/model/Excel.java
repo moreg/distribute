@@ -12,13 +12,14 @@ public class Excel {
     @excelRescoure(value = "注册资本")
     String registeredCapital;
     @excelRescoure(value = "成立日期")
-    String dealTime;
+    String establishTime;
     @excelRescoure(value = "经营状态")
     String operation;
     @excelRescoure(value = "企业公示的联系电话（更多号码）")
     String otherPhone;
     @excelRescoure(value = "企业公示的地址")
     String address;
+
 
     public String getName() {
         return name;
@@ -52,12 +53,12 @@ public class Excel {
         this.registeredCapital = registeredCapital;
     }
 
-    public String getDealTime() {
-        return dealTime;
+    public String getEstablishTime() {
+        return establishTime;
     }
 
-    public void setDealTime(String dealTime) {
-        this.dealTime = dealTime;
+    public void setEstablishTime(String establishTime) {
+        this.establishTime = establishTime;
     }
 
     public String getOperation() {
@@ -91,7 +92,7 @@ public class Excel {
                 ", corporateName='" + corporateName + '\'' +
                 ", corporatePhone='" + corporatePhone + '\'' +
                 ", registeredCapital='" + registeredCapital + '\'' +
-                ", dealTime='" + dealTime + '\'' +
+                ", establishTime='" + establishTime + '\'' +
                 ", operation='" + operation + '\'' +
                 ", otherPhone='" + otherPhone + '\'' +
                 ", address='" + address + '\'' +

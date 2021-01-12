@@ -77,8 +77,9 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/excelNetwork")
-    public Message excelNetwork(@RequestParam("file") MultipartFile file) throws Exception {
-        int i = distributeService.excelNetwork(file);
+    public Message excelNetwork(@RequestParam("file") MultipartFile file,HttpSession session) throws Exception {
+        String username = (String) session.getAttribute("username");
+        int i = distributeService.excelNetwork(file,username);
         if (i > 0){
             return Message.success("导入成功");
         }
