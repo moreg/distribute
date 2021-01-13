@@ -91,12 +91,21 @@ public interface TelemarkeDao {
     Distribute selectNetworkById(Integer id);
 
     /**
-     * 查询我的订单
+     * 查询我的客户
      * @param
      * @return
      */
     List<Distribute> queryTelemarkeByLastName(String content, String strtime, String endtime,String lastFollowName);
 
+    /**
+     * 我客户待处理
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @param lastFollowName
+     * @return
+     */
+    List<Distribute> pendingNetworkList(String content, String strtime, String endtime,String lastFollowName);
     /**
      * 超时
      * @param network
@@ -116,7 +125,7 @@ public interface TelemarkeDao {
      * @param network
      * @return
      */
-    int SubmitRecordingNetwork(Distribute network);
+    int SubmitRecordingNetwork(List<Distribute> network);
 
     /**
      * 录单弹窗信息
@@ -174,4 +183,10 @@ public interface TelemarkeDao {
      * @return
      */
     int querySign(Integer id);
+    /**
+     * 状态查询
+     * @param
+     * @return
+     */
+    List<Distribute> statusList(Distribute distribute);
 }

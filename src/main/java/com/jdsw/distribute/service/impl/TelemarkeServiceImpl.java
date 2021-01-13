@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -186,6 +187,13 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         return result;
     }
 
+    @Override
+    public PageInfo<Distribute> pendingNetworkList(int pageNum, int limit, String content, String strtime, String endtime, String lastFollowName) throws ParseException {
+        PageHelper.startPage(pageNum, limit);
+        List<Distribute> Network = telemarkDao.pendingNetworkList(content,strtime,endtime,lastFollowName);
+        PageInfo result = new PageInfo(Network);
+        return result;
+    }
 
 
     @Override
@@ -232,11 +240,16 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
-    public int SubmitRecordingNetwork(Distribute distribute) {
-        Distribute distribute2 = new Distribute();
-        distribute.setStatus(3);
-        distribute2 = telemarkDao.selectNetworkById(distribute.getId());
-        telemarkDao.insertDealOrder(distribute2);
+    @Transactional
+    public int SubmitRecordingNetwork(List<Distribute> distribute) {
+        Distribute distribute2 = null;
+        for (int i=0;i<distribute.size();i++){
+            distribute2 = new Distribute();
+            distribute.get(i).setStatus(3);
+            distribute2 = telemarkDao.selectNetworkById(distribute.get(i).getId());
+            telemarkDao.insertDealOrder(distribute2);
+
+        }
         return telemarkDao.SubmitRecordingNetwork(distribute);
     }
     @Override
@@ -280,5 +293,15 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         distribute.setLastFollowName("");
         distribute.setLeaderSign(0);
         return telemarkDao.setOvertime(distribute);
+    }
+    @Override
+    public PageInfo<Distribute> statusList(int pageNum, int limit, Integer status,String name) {
+        Distribute distribute1 = new Distribute();
+        distribute1.setLastFollowName(name);
+        distribute1.setStatus(status);
+        PageHelper.startPage(pageNum, limit);
+        List<Distribute> distribute = telemarkDao.statusList(distribute1);
+        PageInfo result = new PageInfo(distribute);
+        return result;
     }
 }

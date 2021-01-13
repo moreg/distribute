@@ -1,6 +1,7 @@
 package com.jdsw.distribute.task;
 
 import com.jdsw.distribute.dao.NetworkDao;
+import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.model.Distribute;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import java.util.List;
 public class Task {
     @Autowired
     private NetworkDao networkDao;
+    @Autowired
+    private UserDao userDao;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     //每隔2秒执行一次
@@ -29,18 +32,22 @@ public class Task {
         System.out.println("定时任务执行时间：" + dateFormat.format(new Date()));
     }*/
 
-    //每天3：05执行
+    //一分钟执行一次
     @Async
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void setOvertime() throws Exception {
         List<Distribute> distribute = networkDao.queryOverTime();
         Date now = new Date();
-
-       /* for (int i=0;i<distribute.size();i++){
+        Distribute distribute1 = null;
+        for (int i=0;i<distribute.size();i++){
+            distribute1 = new Distribute();
             if (StringUtils.isNotEmpty(distribute.get(i).getOverdueTime())){
 
                 Date start = sdf.parse(distribute.get(i).getOverdueTime());
                 if (start.getTime() - now.getTime() > 0 && start.getTime() - now.getTime() <=300000){
+                    distribute1.setId(distribute.get(i).getId());
+                    distribute1.setStatus(6);
+                    networkDao.SubmitRecordingNetwork(distribute1);
                     System.out.println(distribute.get(i).getId());
                     System.out.println("提醒即将超时");
                 }else if (start.getTime() - now.getTime() <= -600000 && start.getTime() - now.getTime() >= -1200000){
@@ -51,9 +58,12 @@ public class Task {
                     System.out.println("超时二十分钟提醒");
                 }else if (start.getTime() - now.getTime() <= -1500000){
                     System.out.println(distribute.get(i).getId());
+                    distribute1.setId(distribute.get(i).getId());
+                    distribute1.setStatus(2);
+                    networkDao.SubmitRecordingNetwork(distribute1);
                     System.out.println("超时返回主管");
                 }
             }
-        }*/
+        }
     }
 }

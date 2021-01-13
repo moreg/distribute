@@ -138,6 +138,23 @@ public class TelemarkeController {
         return Message.success("操作成功",telemarkService.queryTelemarkeByLastName(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
     /**
+     * 我的客户待处理
+     * @param session
+     * @param pageNum
+     * @param limit
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/pendingNetworkList")
+    public Message pendingNetworkList(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
+        String lastFollowName = (String) session.getAttribute("name");
+
+        return Message.success("操作成功",telemarkService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
+    }
+    /**
      * 抢单接口
      * @return
      */
@@ -209,7 +226,7 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/submitRecordingNetwork")
-    public Message submitRecordingNetwork(@RequestBody Distribute network){
+    public Message submitRecordingNetwork(@RequestBody List<Distribute> network){
         int i = telemarkService.SubmitRecordingNetwork(network);
         if (i > 0){
             return Message.success("提交成功");
@@ -258,5 +275,18 @@ public class TelemarkeController {
     public Message setOvertime(@RequestBody Distribute distribute){
         telemarkService.setOvertime(distribute);
         return Message.success();
+    }
+    /**
+     * 状态查询
+     * @param pageNum
+     * @param limit
+     * @param status
+     * @param session
+     * @return
+     */
+    @RequestMapping("/statusList")
+    public Message statusList(int pageNum, int limit,Integer status,HttpSession session){
+        String name = (String) session.getAttribute("name");
+        return Message.success("查询成功",telemarkService.statusList(pageNum,limit,status,name));
     }
 }

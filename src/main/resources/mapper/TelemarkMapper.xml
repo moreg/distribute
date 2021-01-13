@@ -158,6 +158,22 @@
 
   </select>
 
+  <select id="pendingNetworkList" resultMap="aMap" parameterType="String">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address from customer_telemarke
+    where  leader_name = #{lastFollowName} and `status` = 5
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+
+  </select>
   <select id="cashierListNetwork" resultMap="cashierMap" parameterType="String">
     select id,name,corporate_name,corporate_phone,create_time,source,last_follow_name,track_id,order_state from customer_telemarke
     where 1 = 1 and status in(3,4)
@@ -191,6 +207,11 @@
     ,other_phone as otherPhone from customer_telemarke where id = #{id}
   </select>
 
+  <select id="statusList" resultMap="aMap" parameterType="com.jdsw.distribute.model.Distribute">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_telemarke
+    where status = #{status} and last_follow_name = #{lastFollowName}
+  </select>
 
   <insert id="insertTelemarkting" parameterType="java.util.List">
     insert into customer_telemarke(name,corporate_name,corporate_phone,contacts,contacts_phone,source,follow_number,state,
@@ -265,8 +286,16 @@
     update customer_telemarke set last_follow_name = #{lastFollowName} where id = #{id}
   </update>
 
-  <update id="SubmitRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set status = #{status} where id = #{id}
+  <update id="SubmitRecordingNetwork" parameterType="java.util.List">
+    <foreach collection="list" item="distribute" index= "index" open="" close="" separator =";">
+      update customer_telemarke
+      <set>
+        status = #{distribute.status}
+      </set>
+      <where>
+        id = #{distribute.id}
+      </where>
+    </foreach>
   </update>
 
   <update id="putarmyPoll" parameterType="com.jdsw.distribute.model.Distribute">

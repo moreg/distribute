@@ -1,6 +1,7 @@
 package com.jdsw.distribute.service.impl;
 
 import com.github.pagehelper.util.StringUtil;
+import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.Enterprise;
 import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.service.UserService;
@@ -79,6 +80,9 @@ public class UserServiceImpl implements UserService {
             String string1 = temp[i];
             list.add(temp[i]);
         }
+      /*  Map map2 = new HashMap();
+        map2.put("list",list);
+        map2.put("branch",branch);*/
         List<User> ls = userDao.queryDepartment(list);
         List li = new ArrayList<>();
 
@@ -101,6 +105,9 @@ public class UserServiceImpl implements UserService {
             String string1 = temp[i];
             list.add(temp[i]);
         }
+/*        Map map2 = new HashMap();
+        map2.put("list",list);
+        map2.put("branch",branch);*/
         List<UsersVo> ls = userDao.queryCharge(list);
         List li = new ArrayList();
         User user  = new User();

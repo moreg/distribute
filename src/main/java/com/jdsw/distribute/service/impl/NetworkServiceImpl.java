@@ -97,24 +97,51 @@ public class NetworkServiceImpl implements NetworkService {
         return result;
     }
 
+    @Override
+    public PageInfo<Distribute> pendingNetworkList(int pageNum, int limit, String content, String strtime, String endtime, String lastFollowName) throws ParseException  {
+        PageHelper.startPage(pageNum, limit);
+        List<Distribute> Network = networkDao.pendingNetworkList(content,strtime,endtime,lastFollowName);
+        PageInfo result = new PageInfo(Network);
+        return result;
+    }
+
 
     @Override
     public PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username) {
         PageHelper.startPage(pageNum, limit);
         Set set = userDao.findRoleByUserName(username);
         User user = userDao.findByUserName(username);
+
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 1){
+                List<Distribute> Network = networkDao.airForcePoolList(content,strtime,endtime);
+                PageInfo result = new PageInfo(Network,10);
+                return result;
+            }else if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 4){
+                List<Distribute> Network = networkDao.airForcePoolList2(content,strtime,endtime);
+                PageInfo result = new PageInfo(Network,10);
+                return result;
+            }
+        }
+        return null;
+
+    }
+
+    @Override
+    public PageInfo<Distribute> pendingPoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime, String username) {
+        PageHelper.startPage(pageNum, limit);
+        Set set = userDao.findRoleByUserName(username);
+        User user = userDao.findByUserName(username);
         List<Distribute> Network = null;
         for (Object str : set) {
             if (Integer.parseInt((String) str) == 1){
-                Network = networkDao.airForcePoolList(content,strtime,endtime);
-            }else if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 4){
-                 Network = networkDao.airForcePoolList2(content,strtime,endtime);
+                Network = networkDao.pendingPoolList(content,strtime,endtime);
             }
         }
-
         PageInfo result = new PageInfo(Network);
         return result;
     }
+
     @Override
     public PageInfo<Distribute> grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime) {
         PageHelper.startPage(pageNum, limit);
@@ -227,12 +254,18 @@ public class NetworkServiceImpl implements NetworkService {
     }
     @Override
     @Transactional
-    public int SubmitRecordingNetwork(Distribute distribute) {
-        Distribute distribute2 = new Distribute();
-        distribute.setStatus(3);
-        distribute2 = networkDao.selectNetworkById(distribute.getId());
-        networkDao.insertDealOrder(distribute2);
-        return networkDao.SubmitRecordingNetwork(distribute);
+    public int SubmitRecordingNetwork(List<Distribute> distribute) {
+        for (int i=0;i<distribute.size();i++){
+            Distribute distribute2 = new Distribute();
+            distribute.get(i).setStatus(3);
+            distribute2 = networkDao.selectNetworkById(distribute.get(i).getId());
+            networkDao.insertDealOrder(distribute2);
+        }
+
+
+
+
+        return networkDao.SubmitRecordingNetwork2(distribute);
     }
 
     @Override
@@ -241,6 +274,7 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
+    @Transactional
     public int UpdateRecordingNetwork(Distribute distribute) {
         distribute.setStatus(4);
         networkDao.SubmitRecordingNetwork(distribute);
@@ -278,9 +312,9 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public int setOverdueTime(AirForcePool airForcePool) {
-        airForcePool.setOverdueTime(DateUtil.getOverTime(airForcePool.getMsec()));
-        return networkDao.setOverdueTime(airForcePool);
+    public int setOverdueTime(Distribute distribute) {
+        distribute.setOverdueTime(DateUtil.getOverTime(distribute.getMsec()));
+        return networkDao.setOverdueTime(distribute);
     }
 
     @Override
@@ -307,7 +341,25 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public int chargeback(Distribute distribute) {
-        return networkDao.SubmitRecordingNetwork2(distribute);
+        distribute.setStatus(0);
+        return networkDao.SubmitRecordingNetwork(distribute);
+    }
+
+    @Override
+    public PageInfo<Distribute> statusList(int pageNum, int limit, Integer status,String name) {
+        Distribute distribute1 = new Distribute();
+        distribute1.setLastFollowName(name);
+        distribute1.setStatus(status);
+        PageHelper.startPage(pageNum, limit);
+        List<Distribute> distribute = networkDao.statusList(distribute1);
+        PageInfo result = new PageInfo(distribute);
+        return result;
+    }
+
+    @Override
+    public int setOvertime(Distribute distribute) {
+        distribute.setStatus(0);
+        return networkDao.SubmitRecordingNetwork(distribute);
     }
 
 

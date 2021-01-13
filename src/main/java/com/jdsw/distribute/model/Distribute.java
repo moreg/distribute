@@ -206,6 +206,18 @@ public class Distribute {
      * 剩余时间
      */
     Long surplusTime;
+    /**
+     * 超时时间（毫秒）
+     */
+    Integer msec;
+
+    public Integer getMsec() {
+        return msec;
+    }
+
+    public void setMsec(Integer msec) {
+        this.msec = msec;
+    }
 
     public Long getSurplusTime() {
         return surplusTime;
@@ -670,6 +682,7 @@ public class Distribute {
                 ", branch='" + branch + '\'' +
                 ", invalid=" + invalid +
                 ", surplusTime=" + surplusTime +
+                ", msec=" + msec +
                 '}';
     }
 }

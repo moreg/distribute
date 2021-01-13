@@ -6,6 +6,8 @@ import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.vo.UsersVo;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,12 +53,15 @@ public class UserController {
         return pageInfo;
     }
     /**
-     * 查询多部门下的人员
+     * 查询部门下的人员
      * @param department
      * @return
      */
     @RequestMapping("/queryDepartment")
     public Message queryDepartment(String department){
+/*        if (StringUtils.isEmpty(department) && StringUtils.isEmpty(branch)){
+            return Message.fail("参数不能为空");
+        }*/
         return Message.success("操作成功",userService.queryDepartment(department));
     }
 
@@ -67,6 +72,9 @@ public class UserController {
      */
     @RequestMapping("/queryCharge")
     public Message queryCharge(String department){
+/*        if (StringUtils.isEmpty(department) && StringUtils.isEmpty(branch)){
+            return Message.fail("参数不能为空");
+        }*/
         return Message.success("操作成功",userService.queryCharge(department));
     }
 

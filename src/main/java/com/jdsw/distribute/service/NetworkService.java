@@ -37,12 +37,37 @@ public interface NetworkService {
      */
     PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) throws ParseException;
 
-
+    /**
+     * 主管待处理
+     * @param pageNum
+     * @param limit
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @param
+     * @return
+     * @throws ParseException
+     */
+    PageInfo<Distribute> pendingNetworkList(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) throws ParseException;
     /**
      * 空军池列表
      * @return
      */
     PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username);
+
+    /**
+     * 待处理
+     * @param pageNum
+     * @param limit
+     * @param network
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @param username
+     * @return
+     */
+    PageInfo<Distribute> pendingPoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username);
+
     /**
      * 抢单列表
      * @param pageNum
@@ -105,7 +130,7 @@ public interface NetworkService {
     /**
     * 提交财务
      */
-    int SubmitRecordingNetwork(Distribute network);
+    int SubmitRecordingNetwork(List<Distribute> network);
     /**
      * 录单弹窗
      * @param id
@@ -149,7 +174,7 @@ public interface NetworkService {
      * @param
      * @return
      */
-    int setOverdueTime(AirForcePool airForcePool);
+    int setOverdueTime(Distribute distribute);
 
     /**
      * 查询跟进列表
@@ -157,7 +182,11 @@ public interface NetworkService {
      */
     List<DistributeFollow> qureyFollowList(Integer id);
 
-
+    /**
+     * 通知
+     * @return
+     * @throws Exception
+     */
     List<Distribute> notice() throws Exception;
 
     /**
@@ -166,5 +195,22 @@ public interface NetworkService {
      * @return
      */
     int chargeback(Distribute distribute);
+
+    /**
+     * 跟单状态
+     * @param pageNum
+     * @param limit
+     * @param status
+     * @param name
+     * @return
+     */
+    PageInfo<Distribute> statusList(int pageNum, int limit, Integer status,String name);
+
+    /**
+     * 主动设置订单超时
+     * @param distribute
+     * @return
+     */
+    int setOvertime(Distribute distribute);
 
 }

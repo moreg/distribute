@@ -55,12 +55,33 @@ public interface NetworkDao {
      * @return
      */
     List<Distribute> queryNetworkByLastName(String content, String strtime, String endtime,String lastFollowName);
+
+    /**
+     * 主管待处理
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @param lastFollowName
+     * @return
+     */
+    List<Distribute> pendingNetworkList(String content, String strtime, String endtime,String lastFollowName);
+
     /*
      * 空军池列表
      */
     List<Distribute> airForcePoolList(String content, String strtime, String endtime);
 
     List<Distribute> airForcePoolList2(String content, String strtime, String endtime);
+
+    /**
+     * 客服待处理
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @return
+     */
+    List<Distribute> pendingPoolList(String content, String strtime, String endtime);
+
     /**
      * 抢单列表
      * @param content
@@ -119,7 +140,7 @@ public interface NetworkDao {
      * @param network
      * @return
      */
-    int SubmitRecordingNetwork2(Distribute network);
+    int SubmitRecordingNetwork2(List<Distribute> network);
     /**
      * 录单弹窗信息
      * @param id
@@ -148,7 +169,7 @@ public interface NetworkDao {
      * @param
      * @return
      */
-    int setOverdueTime(AirForcePool airForcePool);
+    int setOverdueTime(Distribute distribute);
 
     int insertDealOrder(Distribute distribute);
 
@@ -163,4 +184,11 @@ public interface NetworkDao {
      * @return
      */
     List<Distribute> queryOverTime();
+
+    /**
+     * 状态查询
+     * @param
+     * @return
+     */
+    List<Distribute> statusList(Distribute distribute);
 }

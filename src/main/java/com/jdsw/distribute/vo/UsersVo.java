@@ -9,6 +9,15 @@ public class UsersVo {
     private String rolename;
     private String leader;
     private String department;
+    private String branch;
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
 
     public String getDepartment() {
         return department;
@@ -85,6 +94,7 @@ public class UsersVo {
                 ", rolename='" + rolename + '\'' +
                 ", leader='" + leader + '\'' +
                 ", department='" + department + '\'' +
+                ", branch='" + branch + '\'' +
                 '}';
     }
 }

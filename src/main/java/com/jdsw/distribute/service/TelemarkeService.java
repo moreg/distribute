@@ -8,6 +8,7 @@ import com.jdsw.distribute.vo.RecordingVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +87,18 @@ public interface TelemarkeService {
     PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName);
 
     /**
+     * 我的客户待处理
+     * @param pageNum
+     * @param limit
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @param lastFollowName
+     * @return
+     * @throws ParseException
+     */
+    PageInfo<Distribute> pendingNetworkList(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) throws ParseException;
+    /**
      * 超时
      * @param network
      * @return
@@ -108,7 +121,7 @@ public interface TelemarkeService {
     /**
      * 提交财务
      */
-    int SubmitRecordingNetwork(Distribute network);
+    int SubmitRecordingNetwork(List<Distribute> network);
 
 
     /**
@@ -149,4 +162,5 @@ public interface TelemarkeService {
      */
     int setOvertime(Distribute distribute);
 
+    PageInfo<Distribute> statusList(int pageNum, int limit, Integer status,String name);
 }

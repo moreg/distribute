@@ -22,8 +22,6 @@ public class AirForcePool {
     private String otherPhone;
     private String address;
     private Integer status;
-    private String industry;
-    private Integer msec;
     private String overdueTime;
 
     public String getOverdueTime() {
@@ -32,14 +30,6 @@ public class AirForcePool {
 
     public void setOverdueTime(String overdueTime) {
         this.overdueTime = overdueTime;
-    }
-
-    public Integer getMsec() {
-        return msec;
-    }
-
-    public void setMsec(Integer msec) {
-        this.msec = msec;
     }
 
     public Integer getId() {
@@ -186,13 +176,6 @@ public class AirForcePool {
         this.status = status;
     }
 
-    public String getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
-    }
 
     @Override
     public String toString() {
@@ -215,8 +198,6 @@ public class AirForcePool {
                 ", otherPhone='" + otherPhone + '\'' +
                 ", address='" + address + '\'' +
                 ", status=" + status +
-                ", industry='" + industry + '\'' +
-                ", msec=" + msec +
                 ", overdueTime='" + overdueTime + '\'' +
                 '}';
     }

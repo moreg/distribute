@@ -38,8 +38,27 @@ public class NetworkController {
      */
     @RequestMapping("/airForcePoolList")
     public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute network,HttpSession session){
-        String username = (String) session.getAttribute("username");
+       // String username = (String) session.getAttribute("username");
+        String username = "wangfei";
         return Message.success("操作成功",distributeService.airForcePoolList(pageNum,limit,network,content,strtime,endtime,username),0);
+    }
+
+    /**
+     * 客服待处理
+     * @param pageNum
+     * @param limit
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @param network
+     * @param session
+     * @return
+     */
+    @RequestMapping("/pendingPoolList")
+    public Message pendingPoolList(int pageNum, int limit,String content, String strtime, String endtime, Distribute network,HttpSession session,HttpServletRequest request){
+        request.getHeader("token");
+        String username = (String) session.getAttribute("username");
+        return Message.success("操作成功",distributeService.pendingPoolList(pageNum,limit,network,content,strtime,endtime,username),0);
     }
     /**
      * 抢单列表
@@ -160,9 +179,26 @@ public class NetworkController {
      */
     @RequestMapping("/queryNetworkByLastName")
     public Message queryNetworkByLastName(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-       // String lastFollowName = (String) session.getAttribute("name");
-        String lastFollowName = "陈真";
+        String lastFollowName = (String) session.getAttribute("name");
         return Message.success("操作成功",distributeService.queryNetworkByLastName(pageNum,limit,content,strtime,endtime,lastFollowName),0);
+    }
+
+    /**
+     * 我的客户待处理
+     * @param session
+     * @param pageNum
+     * @param limit
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/pendingNetworkList")
+    public Message pendingNetworkList(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
+        String lastFollowName = (String) session.getAttribute("name");
+
+        return Message.success("操作成功",distributeService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
     /**
      * 超时接口
@@ -238,7 +274,7 @@ public class NetworkController {
      * @return
      */
     @RequestMapping(value = "/submitRecordingNetwork",method = RequestMethod.POST,produces="application/json")
-    public Message submitRecordingNetwork(@RequestBody Distribute network){
+    public Message submitRecordingNetwork(@RequestBody List<Distribute> network){
         int i = distributeService.SubmitRecordingNetwork(network);
         if (i > 0){
             return Message.success("提交成功");
@@ -246,14 +282,14 @@ public class NetworkController {
         return Message.fail("提交失败");
     }
 
-    /**
+/*    *//**
      * 弹出录单页面
      * @return
-     */
+     *//*
     @RequestMapping("/recordingShowNetwork")
     public Message recordingShowNetwork(Integer id){
         return Message.success("操作成功",distributeService.RecordingShowNetwork(id),0);
-    }
+    }*/
     /**
      * 财务录单
      * @return
@@ -302,13 +338,13 @@ public class NetworkController {
         return Message.success("操作成功",distributeService.customerTransfer(distribute),0);
     }
     /**
-     * 设置过期时间
+     * 设置超时时间
      * @param
      * @return
      */
     @RequestMapping("/setOverdueTime")
-    public Message setOverdueTime(@RequestBody AirForcePool airForcePool){
-        distributeService.setOverdueTime(airForcePool);
+    public Message setOverdueTime(@RequestBody Distribute distribute){
+        distributeService.setOverdueTime(distribute);
         return Message.success();
     }
     /**
@@ -342,4 +378,28 @@ public class NetworkController {
         }
         return Message.fail();
     }
+
+    /**
+     * 状态查询
+     * @param pageNum
+     * @param limit
+     * @param status
+     * @param session
+     * @return
+     */
+    @RequestMapping("/statusList")
+    public Message statusList(int pageNum, int limit,Integer status,HttpSession session){
+        String name = (String) session.getAttribute("name");
+        return Message.success("查询成功",distributeService.statusList(pageNum,limit,status,name));
+    }
+    /**
+     * 主动设置订单超时
+     */
+    @RequestMapping("/setOvertime")
+    public Message setOvertime(@RequestBody Distribute distribute){
+        distributeService.setOvertime(distribute);
+        return Message.success();
+
+    }
+
 }

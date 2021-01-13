@@ -89,7 +89,7 @@
 
   <select id="airForcePoolList" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,overdue_time from customer_network
+    source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
     where 1 = 1 and (issue = 0 or `status`in (1,2))
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -105,8 +105,24 @@
 
   <select id="airForcePoolList2" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,overdue_time from customer_network
+    source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
     where  issue = 1 and `status`in (0,1,2)
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+  </select>
+
+  <select id="pendingPoolList" resultMap="aMap" parameterType="String">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
+    where  `status` = 7
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -139,7 +155,24 @@
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network
-    where 1 = 1 and (last_follow_name = #{lastFollowName} or leader_name = #{lastFollowName})
+    where  last_follow_name = #{lastFollowName}
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+
+  </select>
+
+  <select id="pendingNetworkList" resultMap="aMap" parameterType="String">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address from customer_network
+    where  leader_name = #{lastFollowName} and `status` = 5
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -186,7 +219,13 @@
   </select>
 
   <select id="queryOverTime" resultMap="DistributeMap">
-    select id,overdue_time from customer_network
+    select id,overdue_time from customer_network where status in(0,6)  and issue = 1
+  </select>
+
+  <select id="statusList" resultMap="aMap" parameterType="com.jdsw.distribute.model.Distribute">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network
+    where status = #{status} and last_follow_name = #{lastFollowName}
   </select>
 
   <update id="UpdateRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
@@ -249,22 +288,29 @@
   <update id="SubmitRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network
     set
-        invalid = #{invalid},
         status = #{status}
     where id = #{id}
   </update>
 
-  <update id="SubmitRecordingNetwork2" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network
-    set status = 0
-    where id = #{id}
+  <update id="SubmitRecordingNetwork2" parameterType="java.util.List">
+    <if test="list!=null">
+      <foreach collection="list" item="Distribute" index="index" open="" close="" separator=";">
+        update customer_network
+        <set>
+          status = #{Distribute.status}
+        </set>
+        <where>
+          id=#{Distribute.id}
+        </where>
+      </foreach>
+    </if>
   </update>
 
   <update id="updateNetwork" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set name = #{name},corporate_name = #{corporateName},corporate_phone = #{corporatePhone},deal_time = #{dealTime},registered_capital = #{registeredCapital},
     operation = #{operation},conduct = #{conduct},city = #{city},source = #{source},address = #{address},other_phone = #{otherPhone} where id = #{id}
   </update>
-  <update id="setOverdueTime" parameterType="com.jdsw.distribute.vo.AirForcePool">
+  <update id="setOverdueTime" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set overdue_time = #{overdueTime} where id = #{id}
   </update>
 

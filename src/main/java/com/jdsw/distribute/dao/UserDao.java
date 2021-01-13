@@ -4,9 +4,11 @@ import com.jdsw.distribute.model.Enterprise;
 import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.vo.UsersVo;
+import org.apache.ibatis.annotations.Param;
 
 import javax.xml.ws.Service;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface UserDao {
@@ -41,7 +43,7 @@ public interface UserDao {
 
     /**
      * 查询部门主管
-     * @param department
+     * @param
      * @return
      */
     List<UsersVo> queryCharge(List<String> department);

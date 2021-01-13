@@ -17,6 +17,12 @@ public interface UserService {
     int insertUser(User user);
     Set<String> findRoleByUserName(String username);
 
+    /**
+     * 查询部门下的人员
+     * @param department
+     * @param
+     * @return
+     */
     List<User> queryDepartment(String department);
 
     /**
