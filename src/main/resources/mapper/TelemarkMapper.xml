@@ -104,7 +104,7 @@
           <bind name="content" value="'%' + content + '%'" ></bind>
             and (corporate_name like #{content} or corporate_phone like #{content})
         </if>
-
+    ORDER BY id DESC
   </select>
   <select id="armyListPoolList2" resultMap="aMap" parameterType="String">
 
@@ -121,7 +121,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
-
+    ORDER BY id DESC
   </select>
   <select id="grabbingOrdersList" resultMap="aMap" parameterType="String">
 
@@ -138,7 +138,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
-
+    ORDER BY id DESC
   </select>
   
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="String">
@@ -155,7 +155,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
-
+    ORDER BY id DESC
   </select>
 
   <select id="pendingNetworkList" resultMap="aMap" parameterType="String">
@@ -172,7 +172,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
-
+    ORDER BY id DESC
   </select>
   <select id="cashierListNetwork" resultMap="cashierMap" parameterType="String">
     select id,name,corporate_name,corporate_phone,create_time,source,last_follow_name,track_id,order_state from customer_telemarke
@@ -188,6 +188,8 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
+    ORDER BY id DESC
+
   </select>
 
   <select id="RecordingShowNetwork" resultMap="recording">
@@ -211,6 +213,10 @@
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_telemarke
     where status = #{status} and last_follow_name = #{lastFollowName}
+  </select>
+
+  <select id="queryOverTime" resultMap="DistributeMap">
+    select id,overdue_time from customer_telemarke where status in(0,6)  and issue = 1
   </select>
 
   <insert id="insertTelemarkting" parameterType="java.util.List">

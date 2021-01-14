@@ -108,18 +108,17 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username) {
-        PageHelper.startPage(pageNum, limit);
         Set set = userDao.findRoleByUserName(username);
-        User user = userDao.findByUserName(username);
-
         for (Object str : set) {
-            if (Integer.parseInt((String) str) == 1){
+            if (Integer.parseInt((String) str) == 1){//线索管理员
+                PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.airForcePoolList(content,strtime,endtime);
-                PageInfo result = new PageInfo(Network,10);
+                PageInfo result = new PageInfo(Network);
                 return result;
-            }else if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 4){
+            }else if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 4){//4:主管，6：业务员
+                PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.airForcePoolList2(content,strtime,endtime);
-                PageInfo result = new PageInfo(Network,10);
+                PageInfo result = new PageInfo(Network);
                 return result;
             }
         }
@@ -269,11 +268,6 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public RecordingVo RecordingShowNetwork(Integer id) {
-        return networkDao.RecordingShowNetwork(id);
-    }
-
-    @Override
     @Transactional
     public int UpdateRecordingNetwork(Distribute distribute) {
         distribute.setStatus(4);
@@ -341,7 +335,7 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public int chargeback(Distribute distribute) {
-        distribute.setStatus(0);
+        distribute.setStatus(8);
         return networkDao.SubmitRecordingNetwork(distribute);
     }
 

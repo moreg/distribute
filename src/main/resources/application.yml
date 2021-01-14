@@ -64,4 +64,6 @@ pagehelper:
     params: count=countSql
     returnPageInfo: check
 
-
+filter:
+  config:
+    excludeUrls: /login,/distribute/airForcePoolList,/telemark/armyListPoolList #登录和注册不需过滤，直接放行

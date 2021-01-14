@@ -18,10 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
-
 
 @RestController
 @RequestMapping("/distribute")
@@ -37,9 +37,9 @@ public class NetworkController {
      * 空军池列表
      */
     @RequestMapping("/airForcePoolList")
-    public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute network,HttpSession session){
+    public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute network, HttpServletRequest request, HttpServletResponse response){
        // String username = (String) session.getAttribute("username");
-        String username = "wangfei";
+        String username = (String) request.getAttribute("username");
         return Message.success("操作成功",distributeService.airForcePoolList(pageNum,limit,network,content,strtime,endtime,username),0);
     }
 
@@ -57,7 +57,7 @@ public class NetworkController {
     @RequestMapping("/pendingPoolList")
     public Message pendingPoolList(int pageNum, int limit,String content, String strtime, String endtime, Distribute network,HttpSession session,HttpServletRequest request){
         request.getHeader("token");
-        String username = (String) session.getAttribute("username");
+        String username = (String) request.getAttribute("username");
         return Message.success("操作成功",distributeService.pendingPoolList(pageNum,limit,network,content,strtime,endtime,username),0);
     }
     /**
@@ -81,8 +81,8 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/insertNetwoork")
-    public Message insertNetwoork(@RequestBody Distribute distribute,HttpSession session){
-        String username = (String) session.getAttribute("username");
+    public Message insertNetwoork(@RequestBody Distribute distribute,HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
         int i = distributeService.insertNetwoork(distribute,username);
         if (i > 0){
             return Message.success();
@@ -96,8 +96,8 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/excelNetwork")
-    public Message excelNetwork(@RequestParam("file") MultipartFile file,HttpSession session) throws Exception {
-        String username = (String) session.getAttribute("username");
+    public Message excelNetwork(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
+        String username = (String) request.getAttribute("username");
         int i = distributeService.excelNetwork(file,username);
         if (i > 0){
             return Message.success("导入成功");
@@ -147,8 +147,8 @@ public class NetworkController {
      * @return
      */
     @RequestMapping(value = "/orderTaking",method = RequestMethod.POST,produces="application/json")
-    public Message orderTaking(HttpSession session,@RequestBody Distribute distribute){
-        String lastFollowName = (String) session.getAttribute("name");
+    public Message orderTaking(HttpServletRequest request,@RequestBody Distribute distribute){
+        String lastFollowName = (String) request.getAttribute("name");
         distribute.setLastFollowName(lastFollowName);
         int i = distributeService.orderTaking(distribute);
         if (i == 1){
@@ -165,8 +165,8 @@ public class NetworkController {
      * @return
      */
     @RequestMapping(value = "/appoint" ,method = RequestMethod.POST,produces="application/json")
-    public Message appoint(@RequestBody List<Distribute> network, HttpSession session){
-        String name = (String) session.getAttribute("name");
+    public Message appoint(@RequestBody List<Distribute> network,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
         int i = distributeService.appoint(network,name);
         if (i > 0){
             return Message.success();
@@ -178,14 +178,14 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/queryNetworkByLastName")
-    public Message queryNetworkByLastName(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        String lastFollowName = (String) session.getAttribute("name");
+    public Message queryNetworkByLastName(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
+        String lastFollowName = (String) request.getAttribute("name");
         return Message.success("操作成功",distributeService.queryNetworkByLastName(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
 
     /**
      * 我的客户待处理
-     * @param session
+     * @param
      * @param pageNum
      * @param limit
      * @param content
@@ -195,8 +195,8 @@ public class NetworkController {
      * @throws Exception
      */
     @RequestMapping("/pendingNetworkList")
-    public Message pendingNetworkList(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        String lastFollowName = (String) session.getAttribute("name");
+    public Message pendingNetworkList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
+        String lastFollowName = (String) request.getAttribute("name");
 
         return Message.success("操作成功",distributeService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
@@ -219,8 +219,8 @@ public class NetworkController {
      * @return
      */
     @RequestMapping(value = "/followupNetwork",method = RequestMethod.POST,produces="application/json")
-    public Message followupNetwork(@RequestBody DistributeFollow networkFollow, HttpSession session){
-        String name = (String) session.getAttribute("name");
+    public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
         networkFollow.setFollowName(name);
         int i = distributeService.followupNetwork(networkFollow);
         if (i > 0){
@@ -282,14 +282,7 @@ public class NetworkController {
         return Message.fail("提交失败");
     }
 
-/*    *//**
-     * 弹出录单页面
-     * @return
-     *//*
-    @RequestMapping("/recordingShowNetwork")
-    public Message recordingShowNetwork(Integer id){
-        return Message.success("操作成功",distributeService.RecordingShowNetwork(id),0);
-    }*/
+
     /**
      * 财务录单
      * @return
@@ -304,7 +297,7 @@ public class NetworkController {
     }
 
     /**
-     * 财务查询页面
+     * 财务列表
      * @param pageNum
      * @param limit
      * @param content
@@ -325,7 +318,11 @@ public class NetworkController {
      */
     @RequestMapping("/transferNetwork")
     public Message transferNetwork(@RequestBody List<Distribute> distribute){
-        return Message.success("操作成功",distributeService.transferNetwork(distribute),0);
+        int i = distributeService.transferNetwork(distribute);
+        if ( i > 0){
+            return Message.success();
+        }
+        return Message.fail();
     }
 
     /**
@@ -335,7 +332,11 @@ public class NetworkController {
      */
     @RequestMapping("/customerTransfer")
     public Message customerTransfer(@RequestBody List<Distribute> distribute){
-        return Message.success("操作成功",distributeService.customerTransfer(distribute),0);
+        int i = distributeService.customerTransfer(distribute);
+        if (i > 0) {
+            return Message.success();
+        }
+        return Message.fail();
     }
     /**
      * 设置超时时间
@@ -344,8 +345,11 @@ public class NetworkController {
      */
     @RequestMapping("/setOverdueTime")
     public Message setOverdueTime(@RequestBody Distribute distribute){
-        distributeService.setOverdueTime(distribute);
-        return Message.success();
+        int i = distributeService.setOverdueTime(distribute);
+        if (i > 0){
+            Message.success();
+        }
+        return Message.fail();
     }
     /**
      * 查询跟进列表
@@ -384,12 +388,12 @@ public class NetworkController {
      * @param pageNum
      * @param limit
      * @param status
-     * @param session
+     * @param
      * @return
      */
     @RequestMapping("/statusList")
-    public Message statusList(int pageNum, int limit,Integer status,HttpSession session){
-        String name = (String) session.getAttribute("name");
+    public Message statusList(int pageNum, int limit,Integer status,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
         return Message.success("查询成功",distributeService.statusList(pageNum,limit,status,name));
     }
     /**
@@ -399,7 +403,6 @@ public class NetworkController {
     public Message setOvertime(@RequestBody Distribute distribute){
         distributeService.setOvertime(distribute);
         return Message.success();
-
     }
 
 }

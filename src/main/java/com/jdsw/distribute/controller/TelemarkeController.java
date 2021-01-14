@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 @RestController
 @RequestMapping("/telemark")
 public class TelemarkeController {
@@ -34,8 +33,8 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/armyListPoolList")
-    public Message armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,HttpSession session){
-        String username = (String) session.getAttribute("username");
+    public Message armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
         return Message.success("操作成功",telemarkService.armyListPoolList(pageNum,limit,content,strtime,endtime,username),0);
     }
     /**
@@ -57,8 +56,8 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/excelTelemarke")
-    public Message excelTelemarke(@RequestParam("file") MultipartFile file,HttpSession session) throws Exception {
-        String username = (String) session.getAttribute("username");
+    public Message excelTelemarke(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
+        String username = (String) request.getAttribute("username");
         int i = telemarkService.excelTelemarke(file,username);
         if (i > 0){
             return Message.success("导入成功");
@@ -120,8 +119,8 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/appoint")
-    public Message appoint(@RequestBody List<Distribute> network, HttpSession session){
-        String name = (String) session.getAttribute("name");
+    public Message appoint(@RequestBody List<Distribute> network,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
         int i = telemarkService.appoint(network,name);
         if (i > 0){
             return Message.success();
@@ -133,13 +132,13 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/queryTelemarkeByLastName")
-    public Message queryTelemarkeByLastName(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime){
-        String lastFollowName = (String) session.getAttribute("name");
+    public Message queryTelemarkeByLastName(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime){
+        String lastFollowName = (String) request.getAttribute("name");
         return Message.success("操作成功",telemarkService.queryTelemarkeByLastName(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
     /**
      * 我的客户待处理
-     * @param session
+     * @param
      * @param pageNum
      * @param limit
      * @param content
@@ -149,8 +148,8 @@ public class TelemarkeController {
      * @throws Exception
      */
     @RequestMapping("/pendingNetworkList")
-    public Message pendingNetworkList(HttpSession session,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        String lastFollowName = (String) session.getAttribute("name");
+    public Message pendingNetworkList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
+        String lastFollowName = (String) request.getAttribute("name");
 
         return Message.success("操作成功",telemarkService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
@@ -159,8 +158,8 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/orderTaking")
-    public Message orderTaking(HttpSession session,@RequestBody Distribute distribute){
-        String lastFollowName = (String) session.getAttribute("name");
+    public Message orderTaking(HttpServletRequest request,@RequestBody Distribute distribute){
+        String lastFollowName = (String) request.getAttribute("name");
         distribute.setLastFollowName(lastFollowName);
         int i = telemarkService.orderTaking(distribute);
         if (i > 0){
@@ -173,8 +172,8 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/followupNetwork")
-    public Message followupNetwork(@RequestBody DistributeFollow networkFollow, HttpSession session){
-        String name = (String) session.getAttribute("name");
+    public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
         networkFollow.setFollowName(name);
         int i = telemarkService.followupNetwork(networkFollow);
         if (i > 0){
@@ -281,12 +280,12 @@ public class TelemarkeController {
      * @param pageNum
      * @param limit
      * @param status
-     * @param session
+     * @param
      * @return
      */
     @RequestMapping("/statusList")
-    public Message statusList(int pageNum, int limit,Integer status,HttpSession session){
-        String name = (String) session.getAttribute("name");
+    public Message statusList(int pageNum, int limit,Integer status,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
         return Message.success("查询成功",telemarkService.statusList(pageNum,limit,status,name));
     }
 }

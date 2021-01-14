@@ -101,6 +101,7 @@
           <bind name="content" value="'%' + content + '%'" ></bind>
             and (corporate_name like #{content} or corporate_phone like #{content})
         </if>
+    ORDER BY id DESC
   </select>
 
   <select id="airForcePoolList2" resultMap="aMap" parameterType="String">
@@ -117,6 +118,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
+    ORDER BY id DESC
   </select>
 
   <select id="pendingPoolList" resultMap="aMap" parameterType="String">
@@ -133,6 +135,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
+    ORDER BY id DESC
   </select>
 
   <select id="grabbingOrdersList" resultMap="aMap" parameterType="String">
@@ -150,6 +153,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
+    ORDER BY id DESC
   </select>
 
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
@@ -166,7 +170,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
-
+    ORDER BY id DESC
   </select>
 
   <select id="pendingNetworkList" resultMap="aMap" parameterType="String">
@@ -183,7 +187,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
-
+    ORDER BY id DESC
   </select>
 
   <select id="cashierListNetwork" resultMap="cashierMap" parameterType="String">
@@ -199,10 +203,7 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
-  </select>
-
-  <select id="RecordingShowNetwork" resultMap="recording">
-    select name,corporate_name,source,track_id,create_time,last_follow_name,order_state from deal_order where id = #{id}
+    ORDER BY id DESC
   </select>
   
   <select id="Unsettled" resultType="com.jdsw.distribute.model.Distribute">
@@ -269,8 +270,8 @@
     <foreach collection="list" item="Distribute" index="index" open="" close="" separator=";">
       update customer_network
       <set>
-      <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != '">
-        last_follow_name =#{Distribute.lastFollowName}
+      <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != ''">
+        last_follow_name =#{Distribute.lastFollowName},
       </if>
         <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
           leader_name = #{Distribute.leaderName}

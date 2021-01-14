@@ -131,12 +131,7 @@ public interface NetworkService {
     * 提交财务
      */
     int SubmitRecordingNetwork(List<Distribute> network);
-    /**
-     * 录单弹窗
-     * @param id
-     * @return
-     */
-    RecordingVo RecordingShowNetwork(Integer id);
+
     /**
      * 财务录单
      * @param network

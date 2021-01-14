@@ -12,10 +12,12 @@ import com.jdsw.distribute.util.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,8 +47,8 @@ public class MenuController {
         return json.toString();
     }
     @RequestMapping(value = "/menuList")
-    public Message menuLsit(HttpSession session){
-        String username = (String) session.getAttribute("username");
+    public Message menuLsit(HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
         User user2 = userService.findByUserName(username);
         List<Menu> menu = menuService.findTree("user");
         List<Menu> menuslist = menuService.getMenuLsit();

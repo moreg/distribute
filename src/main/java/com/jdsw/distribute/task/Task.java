@@ -1,6 +1,7 @@
 package com.jdsw.distribute.task;
 
 import com.jdsw.distribute.dao.NetworkDao;
+import com.jdsw.distribute.dao.TelemarkeDao;
 import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.model.Distribute;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,9 @@ public class Task {
     private NetworkDao networkDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private TelemarkeDao telemarkeDao;
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     //每隔2秒执行一次
@@ -59,11 +63,22 @@ public class Task {
                 }else if (start.getTime() - now.getTime() <= -1500000){
                     System.out.println(distribute.get(i).getId());
                     distribute1.setId(distribute.get(i).getId());
-                    distribute1.setStatus(2);
+                    distribute1.setStatus(9);
                     networkDao.SubmitRecordingNetwork(distribute1);
                     System.out.println("超时返回主管");
                 }
             }
         }
+    }
+    @Async
+    @Scheduled(cron = "0 0/1 * * * ? ")
+    public void Notactivation() throws  Exception{
+        List<Distribute> distribute = telemarkeDao.queryOverTime();
+        for (int i=0;i<distribute.size();i++){
+            if (StringUtils.isNotEmpty(distribute.get(i).getOverdueTime())){
+
+            }
+        }
+
     }
 }

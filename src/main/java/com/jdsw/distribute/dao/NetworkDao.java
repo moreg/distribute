@@ -141,12 +141,7 @@ public interface NetworkDao {
      * @return
      */
     int SubmitRecordingNetwork2(List<Distribute> network);
-    /**
-     * 录单弹窗信息
-     * @param id
-     * @return
-     */
-    RecordingVo RecordingShowNetwork(Integer id);
+
     /**
      * 财务录单
      * @param network

@@ -11,12 +11,10 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +33,7 @@ public class LoginController {
     }
     @RequestMapping("/login")
     @ResponseBody
-    public Message login(HttpSession session, HttpServletRequest request , @RequestBody User user) {
+    public Message login(HttpSession session, HttpServletRequest request , @RequestBody User user, HttpServletResponse response) {
         String msg = "";
         String username = user.getUsername();
         String pwd = user.getPassword();
@@ -45,12 +43,13 @@ public class LoginController {
         try {
             User user2 = userService.findByUserName(username);
             subject.login(token);
-            session.setAttribute("username",username);
-            session.setAttribute("name",user2.getName());
-            String toToken = JwtUtil.sign(username,pwd);
-
-            List li = new ArrayList();
-            li = menuService.getMenuLsit();
+            //session.setAttribute("username",username);
+            //session.setAttribute("name",user2.getName());
+            String toToken = JwtUtil.sign(username,user2.getId().toString(),user2.getName(),pwd);
+           // session.setAttribute("token",toToken);
+            //response.setHeader("token",toToken);
+            /*List li = new ArrayList();
+            li = menuService.getMenuLsit();*/
             Map map = new HashMap();
             map.put("token",toToken);
             //map.put("permission",userService.findPermissionByUserName(username));

@@ -189,4 +189,9 @@ public interface TelemarkeDao {
      * @return
      */
     List<Distribute> statusList(Distribute distribute);
+    /**
+     * 查询超时时间
+     * @return
+     */
+    List<Distribute> queryOverTime();
 }
