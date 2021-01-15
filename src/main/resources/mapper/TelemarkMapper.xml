@@ -93,7 +93,7 @@
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address from customer_telemarke
-    where 1 = 1 and (issue = 0 or `status`in (1,2))
+    where  issue in(0,1) and `status`in (0,1,2)
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -216,7 +216,7 @@
   </select>
 
   <select id="queryOverTime" resultMap="DistributeMap">
-    select id,overdue_time from customer_telemarke where status in(0,6)  and issue = 1
+    select id,overdue_time,activation,leader_sign,last_follow_name from customer_telemarke where status in(0,6)  and issue = 1
   </select>
 
   <insert id="insertTelemarkting" parameterType="java.util.List">
@@ -231,10 +231,35 @@
 
   <insert id="insertTelemarke" parameterType="com.jdsw.distribute.model.Distribute">
     insert into customer_telemarke(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,conduct,city,source,address
-    ,create_time,status,issue,other_phone,track_id)
+    ,create_time,status,other_phone,track_id
+    <if test="lastFollowName !=null and lastFollowName !=''">
+      ,last_follow_name
+    </if>
+    <if test="firstFollowName !=null and firstFollowName !=''">
+      ,first_follow_name
+    </if>
+    <if test="issue !=null">
+      ,issue
+    </if>
+    <if test="appoint !=null">
+      ,appoint
+    </if>
+    )
     values (
     #{name},#{corporateName},#{corporatePhone},#{establishTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
-    0,0,#{otherPhone},#{trackId}
+    0,#{otherPhone},#{trackId}
+    <if test="lastFollowName !=null and lastFollowName !=''">
+      ,#{lastFollowName}
+    </if>
+    <if test="firstFollowName !=null and firstFollowName !=''">
+      ,#{firstFollowName}
+    </if>
+    <if test="issue !=null">
+      ,#{issue}
+    </if>
+    <if test="appoint !=null">
+      ,#{appoint}
+    </if>
     )
   </insert>
 
@@ -285,7 +310,7 @@
   </update>
 
   <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName} where id = #{id}
+    update customer_telemarke set last_follow_name = #{lastFollowName},first_follow_name = #{lastFollowName} where id = #{id}
   </update>
 
   <update id="updateNetworkLastFollowName" parameterType="com.jdsw.distribute.model.Distribute">
@@ -326,13 +351,13 @@
       <foreach collection="list" item="Distribute" index="index" open="" close="" separator=";">
         update customer_telemarke
         <set>
-          <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != '">
+          <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != ''">
             last_follow_name =#{Distribute.lastFollowName},
           </if>
           <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
             leader_name = #{Distribute.leaderName},
           </if>
-          leader_sign = 1
+          leader_sign = #{Distribute.leaderSign}
         </set>
         <where>
           id=#{Distribute.id}

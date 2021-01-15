@@ -96,8 +96,7 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/excelNetwork")
-    public Message excelNetwork(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
-        String username = (String) request.getAttribute("username");
+    public Message excelNetwork(@RequestParam("file") MultipartFile file,HttpServletRequest request,@RequestParam("userName")String username) throws Exception {
         int i = distributeService.excelNetwork(file,username);
         if (i > 0){
             return Message.success("导入成功");
@@ -347,7 +346,7 @@ public class NetworkController {
     public Message setOverdueTime(@RequestBody Distribute distribute){
         int i = distributeService.setOverdueTime(distribute);
         if (i > 0){
-            Message.success();
+           return Message.success();
         }
         return Message.fail();
     }

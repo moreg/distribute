@@ -60,7 +60,7 @@ public class Distribute {
     /**
      * 录入时间
      */
-    Date createTime;
+    String createTime;
     /**
      * 微信名称备注
      */
@@ -380,11 +380,11 @@ public class Distribute {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 

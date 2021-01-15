@@ -43,7 +43,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,String username) {
         PageHelper.startPage(pageNum, limit);
         Set set = userDao.findRoleByUserName(username);
-        User user = userDao.findByUserName(username);
         List<Distribute> Network = null;
         for (Object str : set) {
             if (Integer.parseInt((String) str) == 1){
@@ -57,9 +56,21 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         return result;
     }
     @Override
-    public int insertTelemarke(Distribute distribute) {
+    public int insertTelemarke(Distribute distribute,String username) {
         String trackId = Rand.getTrackId("WL");//获得跟踪单号
         distribute.setTrackId(trackId);
+        Set set = userDao.findRoleByUserName(username);
+        User user = userDao.findByUserName(username);
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 6) {
+                distribute.setLastFollowName(user.getName());
+                distribute.setFirstFollowName(user.getName());
+                distribute.setIssue(1);
+                distribute.setAppoint(0);
+                return telemarkDao.insertTelemarke(distribute);
+            }
+        }
+        distribute.setAppoint(0);
         return telemarkDao.insertTelemarke(distribute);
     }
     @Override
@@ -154,7 +165,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         if(ls.size() > 0){
             telemarkeFollowDao.insertNetworkFollow2(ls);
         }
-        System.out.println(ld);
         return telemarkDao.appoint(ld);
     }
     @Override
@@ -268,12 +278,24 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
-    public int assign(List<Distribute> distribute) {
+    public int assign(List<Distribute> distribute,String username) {
+        Distribute distribute1 = null;
+        for (int i = 0 ;i<distribute.size();i++){
+            distribute1 = new Distribute();
+            distribute1.setFirstFollowName(distribute.get(i).getLastFollowName());
+            distribute1.setLeaderSign(1);
+        }
         return telemarkDao.assign(distribute);
     }
 
     @Override
-    public int customerTransfer(List<Distribute> distribute) {
+    public int customerTransfer(List<Distribute> distribute,String username) {
+        Distribute distribute1 = null;
+        for (int i = 0 ;i<distribute.size();i++){
+            distribute1 = new Distribute();
+            distribute1.setLeaderName(distribute.get(i).getLeaderName());
+            distribute1.setLeaderSign(0);
+        }
         return telemarkDao.assign(distribute);
     }
 

@@ -43,8 +43,9 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/insertTelemarke")
-    public Message insertTelemarke(@RequestBody Distribute distribute){
-        int i = telemarkService.insertTelemarke(distribute);
+    public Message insertTelemarke(@RequestBody Distribute distribute,HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
+        int i = telemarkService.insertTelemarke(distribute,username);
         if (i > 0){
             return Message.success();
         }
@@ -56,8 +57,7 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/excelTelemarke")
-    public Message excelTelemarke(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
-        String username = (String) request.getAttribute("username");
+    public Message excelTelemarke(@RequestParam("file") MultipartFile file,HttpServletRequest request,@RequestParam("userName")String username) throws Exception {
         int i = telemarkService.excelTelemarke(file,username);
         if (i > 0){
             return Message.success("导入成功");
@@ -238,8 +238,9 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/transferTelemarke")
-    public Message assign(@RequestBody List<Distribute> distribute){
-        int i= telemarkService.assign(distribute);
+    public Message assign(@RequestBody List<Distribute> distribute,HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
+        int i= telemarkService.assign(distribute,username);
         if(i > 0){
             return Message.success();
         }
@@ -247,12 +248,18 @@ public class TelemarkeController {
     }
     /**
      * 客服转交
-     * @param distribute
+     * @param
      * @return
      */
     @RequestMapping("/customerTransfer")
-    public Message customerTransfer(@RequestBody List<Distribute> distribute){
-        return Message.success("操作成功",telemarkService.customerTransfer(distribute),0);
+    public Message customerTransfer(@RequestBody List<Distribute> distribute,HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
+        int i = telemarkService.customerTransfer(distribute,username);
+        if (i > 0 ){
+            return Message.success();
+        }
+        return Message.fail();
+
     }
 
     /**

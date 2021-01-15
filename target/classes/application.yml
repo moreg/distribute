@@ -66,4 +66,4 @@ pagehelper:
 
 filter:
   config:
-    excludeUrls: /login,/distribute/airForcePoolList,/telemark/armyListPoolList #登录和注册不需过滤，直接放行
+    excludeUrls: /login,/distribute/excelNetwork,/telemark/excelNetwork,/distribute/uploadImg,/telemark/uploadImg,/distribute/uploadFile,/telemark/uploadFile #登录和注册不需过滤，直接放行

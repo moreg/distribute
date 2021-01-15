@@ -182,7 +182,7 @@ public class NetworkServiceImpl implements NetworkService {
         file.transferTo(newFile);
         List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,5, Excel.class);
         List ls = new ArrayList();
-        Set set = userDao.findRoleByUserName(username);
+        Set set = userDao.findRoleByUserName(username.trim());
         User user = userDao.findByUserName(username);
         for (Object str : set) {
             if (Integer.parseInt((String) str) == 6){

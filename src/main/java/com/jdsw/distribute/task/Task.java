@@ -74,9 +74,28 @@ public class Task {
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void Notactivation() throws  Exception{
         List<Distribute> distribute = telemarkeDao.queryOverTime();
+        Distribute distribute1 = null;
+        Date now = new Date();
         for (int i=0;i<distribute.size();i++){
+            distribute1 = new Distribute();
             if (StringUtils.isNotEmpty(distribute.get(i).getOverdueTime())){
-
+                Date start = sdf.parse(distribute.get(i).getOverdueTime());
+                if (start.getTime() - now.getTime() < 0){
+                    if (distribute.get(i).getActivation() == 1){//已激活
+                        distribute1.setLastFollowName("");
+                        distribute1.setStatus(2);
+                        telemarkeDao.overTime(distribute1);
+                    }else if (distribute.get(i).getActivation() == 0){//未激活
+                        if (distribute.get(i).getLeaderSign() == 1){
+                            distribute1.setLastFollowName("");
+                            distribute1.setStatus(2);
+                            telemarkeDao.overTime(distribute1);
+                        }else if (distribute.get(i).getLeaderSign() == 0){
+                            distribute1.setStatus(5);
+                            telemarkeDao.overTime(distribute1);
+                        }
+                    }
+                }
             }
         }
 

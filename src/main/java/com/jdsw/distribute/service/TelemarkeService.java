@@ -28,7 +28,7 @@ public interface TelemarkeService {
      * @param distribute
      * @return
      */
-    int insertTelemarke(Distribute distribute);
+    int insertTelemarke(Distribute distribute,String username);
     /**
      * 导入电销线索
      * @param file
@@ -142,13 +142,13 @@ public interface TelemarkeService {
      * @param distribute
      * @return
      */
-    int assign(List<Distribute> distribute);
+    int assign(List<Distribute> distribute,String username);
     /**
      * 客服分配
      * @param distribute
      * @return
      */
-    int customerTransfer(List<Distribute> distribute);
+    int customerTransfer(List<Distribute> distribute,String username);
     /**
      * 查询跟进列表
      * @return

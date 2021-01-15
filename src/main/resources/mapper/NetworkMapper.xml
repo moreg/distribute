@@ -90,8 +90,8 @@
   <select id="airForcePoolList" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
-    where 1 = 1 and (issue = 0 or `status`in (1,2))
-        <if test="strtime != null and strtime!=''">
+    where issue in(0,1)  and `status`in (0,1,2)
+    <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
         <if test="endtime != null and endtime!=''">
@@ -308,8 +308,41 @@
   </update>
 
   <update id="updateNetwork" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set name = #{name},corporate_name = #{corporateName},corporate_phone = #{corporatePhone},deal_time = #{dealTime},registered_capital = #{registeredCapital},
-    operation = #{operation},conduct = #{conduct},city = #{city},source = #{source},address = #{address},other_phone = #{otherPhone} where id = #{id}
+    update customer_network set
+    <if test="name != null and name !=''">
+      name = #{name},
+    </if>
+    <if test="corporateName != null and corporateName !=''">
+      corporate_name = #{corporateName},
+    </if>
+    <if test="corporatePhone != null and corporatePhone != ''">
+      corporate_phone = #{corporatePhone},
+    </if>
+    <if test="dealTime != null and dealTime != ''">
+      deal_time = #{dealTime},
+    </if>
+    <if test="registeredCapital != null and registeredCapital != ''">
+      registered_capital = #{registeredCapital},
+    </if>
+    <if test="operation != null and operation != ''">
+      operation = #{operation},
+    </if>
+    <if test="conduct != null and conduct !=''">
+      conduct = #{conduct},
+    </if>
+    <if test="city != null and city != ''">
+      city = #{city},
+    </if>
+    <if test="source != null">
+      source = #{source},
+    </if>
+    <if test="address !=null and address != ''">
+      address = #{address},
+    </if>
+    <if test="otherPhone != null and otherPhone !=''">
+      other_phone = #{otherPhone}
+    </if>
+    where id = #{id}
   </update>
   <update id="setOverdueTime" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set overdue_time = #{overdueTime} where id = #{id}
