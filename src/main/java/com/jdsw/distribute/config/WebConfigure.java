@@ -1,4 +1,4 @@
-/*
+
 package com.jdsw.distribute.config;
 
 import com.jdsw.distribute.util.PathUtil;
@@ -21,4 +21,4 @@ public class WebConfigure implements WebMvcConfigurer {
     }
 
 }
-*/
+

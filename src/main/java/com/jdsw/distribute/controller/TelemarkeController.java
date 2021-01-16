@@ -101,19 +101,6 @@ public class TelemarkeController {
         return Message.success("操作成功",telemarkService.qureyTelemarke(id));
     }
     /**
-     * 抢单列表
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @return
-     */
-    @RequestMapping("/grabbingOrdersList")
-    public Message grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime){
-        return Message.success("操作成功",telemarkService.grabbingOrdersList(pageNum,limit,content,strtime,endtime),0);
-    }
-    /**
      * 线索分发
      * @param
      * @return
@@ -150,7 +137,6 @@ public class TelemarkeController {
     @RequestMapping("/pendingNetworkList")
     public Message pendingNetworkList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
         String lastFollowName = (String) request.getAttribute("name");
-
         return Message.success("操作成功",telemarkService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
     /**

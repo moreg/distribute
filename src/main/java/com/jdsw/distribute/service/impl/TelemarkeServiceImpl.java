@@ -127,13 +127,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public List<Map> qureyTelemarke(Integer id) {
         return telemarkDao.qureyTelemarke(id);
     }
-    @Override
-    public PageInfo<Distribute> grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime) {
-        PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = telemarkDao.grabbingOrdersList(content,strtime,endtime);
-        PageInfo result = new PageInfo(Network);
-        return result;
-    }
+
 
     @Override
     @Transactional
@@ -221,15 +215,10 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         distribute.setActivation(1);
         distribute.setId(distributeFollow.getNetworkId());
         int repool = distributeFollow.getReturnPool();
-        int releader = distributeFollow.getReturnLeader();
         if (repool == 1){
             distribute.setOverdueTime("");
             distribute.setActivation(0);
 
-        }else if (releader == 1){
-            distribute.setOverdueTime("");
-            distribute.setActivation(0);
-            distribute.setStatus(5);
         }
         telemarkDao.updateworkOverdueTime(distribute);
         telemarkeFollowDao.updateFolloupNetwork(distributeFollow);
@@ -252,9 +241,8 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Override
     @Transactional
     public int SubmitRecordingNetwork(List<Distribute> distribute) {
-        Distribute distribute2 = null;
+        Distribute distribute2;
         for (int i=0;i<distribute.size();i++){
-            distribute2 = new Distribute();
             distribute.get(i).setStatus(3);
             distribute2 = telemarkDao.selectNetworkById(distribute.get(i).getId());
             telemarkDao.insertDealOrder(distribute2);
@@ -305,7 +293,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
     @Override
     public int setOvertime(Distribute distribute) {
-
         int sing = telemarkDao.querySign(distribute.getId());
         if (sing > 0){
             distribute.setStatus(2);

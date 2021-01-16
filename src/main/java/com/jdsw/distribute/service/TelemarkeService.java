@@ -54,16 +54,7 @@ public interface TelemarkeService {
      * @return
      */
     List<Map> qureyTelemarke(Integer id);
-    /**
-     * 抢单列表
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @return
-     */
-    PageInfo<Distribute> grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime);
+
 
     /**
      * 指定接单人

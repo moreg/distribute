@@ -54,4 +54,11 @@ public interface UserDao {
      * @return
      */
     List<Enterprise> queryEnterprise(String corporatePhone);
+
+    /**
+     * 查询当前部门
+     * @param username
+     * @return
+     */
+    String queryDepartment2(String username);
 }

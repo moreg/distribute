@@ -54,11 +54,11 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.setDepartment(network.get(i).getDepartment());
             distribute.setFirstFollowName(network.get(i).getFirstFollowName());
             distribute.setLastFollowName(network.get(i).getFirstFollowName());
-            distribute.setOverdueTime(DateUtil.getOverTime(600000));
             distribute.setAppoint(0);
             distribute.setBranch(network.get(i).getBranch());
             if (StringUtil.isEmpty(network.get(i).getBranch())){
                 distribute.setAppoint(1);
+                distribute.setOverdueTime(DateUtil.getOverTime(600000));
                 networkFollow.setFollowName(name);
                 networkFollow.setNetworkId(network.get(i).getId());
                 networkFollow.setFollowResult(str);
@@ -81,6 +81,7 @@ public class NetworkServiceImpl implements NetworkService {
                 return 2;
             }*/
         }else {
+            System.out.println(network);
             int i = networkDao.updateNetworkFirstFollowName(network);
             if (i > 0){
                 return 1;
@@ -137,14 +138,6 @@ public class NetworkServiceImpl implements NetworkService {
                 Network = networkDao.pendingPoolList(content,strtime,endtime);
             }
         }
-        PageInfo result = new PageInfo(Network);
-        return result;
-    }
-
-    @Override
-    public PageInfo<Distribute> grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime) {
-        PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = networkDao.grabbingOrdersList(content,strtime,endtime);
         PageInfo result = new PageInfo(Network);
         return result;
     }
@@ -235,19 +228,24 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     @Transactional
-    public int followupNetwork(DistributeFollow networkFollow) {
-        Distribute distribute = new Distribute();
+    public int followupNetwork(DistributeFollow networkFollow,String username) {
+        Distribute distribute;
+        String dp = userDao.queryDepartment2(username);
         if(networkFollow.getReturnPool() == 1){
             distribute = networkDao.selectNetworkById(networkFollow.getNetworkId());
-            if (distribute.getInvalid() != null && distribute.getInvalid() == 1){
+            if (distribute.getInvalid() != null && distribute.getInvalid() == 1){//不服客户判断，退回主管
                 distribute.setStatus(5);
                 distribute.setInvalid(0);
-            }else {
-                distribute.setStatus(1);
+                distribute.setLeaderName(dp);
+                distribute.setId(networkFollow.getNetworkId());
+                return networkDao.SubmitRecordingNetwork(distribute);
+            }else {//退回客服
+                distribute.setStatus(7);
                 distribute.setInvalid(1);
+                distribute.setId(networkFollow.getNetworkId());
+                return networkDao.SubmitRecordingNetwork(distribute);
             }
         }
-        networkDao.SubmitRecordingNetwork(distribute);
         networkFollowDao.updateFolloupNetwork(networkFollow);
         return networkFollowDao.insertNetworkFollow(networkFollow);
     }
@@ -255,7 +253,7 @@ public class NetworkServiceImpl implements NetworkService {
     @Transactional
     public int SubmitRecordingNetwork(List<Distribute> distribute) {
         for (int i=0;i<distribute.size();i++){
-            Distribute distribute2 = new Distribute();
+            Distribute distribute2;
             distribute.get(i).setStatus(3);
             distribute2 = networkDao.selectNetworkById(distribute.get(i).getId());
             networkDao.insertDealOrder(distribute2);
@@ -276,12 +274,17 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public PageInfo<CashierVo> cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime) {
-        PageHelper.startPage(pageNum, limit);
-        List<CashierVo> CashierVo = networkDao.cashierListNetwork(content,strtime,endtime);
-        PageInfo result = new PageInfo(CashierVo);
-        return result;
-
+    public PageInfo<CashierVo> cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime,String username) {
+        Set set = userDao.findRoleByUserName(username);
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 5) {
+                PageHelper.startPage(pageNum, limit);
+                List<CashierVo> CashierVo = networkDao.cashierListNetwork(content,strtime,endtime);
+                PageInfo result = new PageInfo(CashierVo);
+                return result;
+            }
+        }
+       return null;
     }
 
     @Override

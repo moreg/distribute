@@ -85,7 +85,6 @@ public class UserServiceImpl implements UserService {
         map2.put("branch",branch);*/
         List<User> ls = userDao.queryDepartment(list);
         List li = new ArrayList<>();
-
         for(int i=0;i<ls.size();i++){
             Map<String,Object> map = new HashMap<String, Object>();
             if (StringUtils.isNotEmpty(ls.get(i).getName())){
@@ -110,9 +109,8 @@ public class UserServiceImpl implements UserService {
         map2.put("branch",branch);*/
         List<UsersVo> ls = userDao.queryCharge(list);
         List li = new ArrayList();
-        User user  = new User();
-        Map map = new HashMap<>();
         for(int i=0;i<ls.size();i++){
+            Map map = new HashMap<>();
             if (StringUtil.isNotEmpty(ls.get(i).getName())){
                 map.put("name",ls.get(i).getName());
                 map.put("department",ls.get(i).getDepartment());

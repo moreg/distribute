@@ -209,9 +209,7 @@ public class MbackstageApplicationTests {
     }
     @Test
     public void role(){
-        Set s = us.findRoleByUserName("cz");
-        for (Object str : s) {
-            System.out.println(Integer.parseInt((String) str) == 6);
-        }
+        System.out.println();
+        us.queryDepartment("zc");
     }
 }

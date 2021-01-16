@@ -61,21 +61,6 @@ public class NetworkController {
         return Message.success("操作成功",distributeService.pendingPoolList(pageNum,limit,network,content,strtime,endtime,username),0);
     }
     /**
-     * 抢单列表
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @return
-     */
-    @RequestMapping("/grabbingOrdersList")
-    public Message grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime){
-        return Message.success("操作成功",distributeService.grabbingOrdersList(pageNum,limit,content,strtime,endtime),0);
-    }
-
-
-    /**
      * 新增
      * @param distribute
      * @return
@@ -89,7 +74,6 @@ public class NetworkController {
         }
         return Message.fail();
     }
-
     /**
      * 导入网销线索
      * @param file
@@ -149,6 +133,7 @@ public class NetworkController {
     public Message orderTaking(HttpServletRequest request,@RequestBody Distribute distribute){
         String lastFollowName = (String) request.getAttribute("name");
         distribute.setLastFollowName(lastFollowName);
+        distribute.setFirstFollowName(lastFollowName);
         int i = distributeService.orderTaking(distribute);
         if (i == 1){
             return Message.success("抢单成功");
@@ -166,6 +151,7 @@ public class NetworkController {
     @RequestMapping(value = "/appoint" ,method = RequestMethod.POST,produces="application/json")
     public Message appoint(@RequestBody List<Distribute> network,HttpServletRequest request){
         String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         int i = distributeService.appoint(network,name);
         if (i > 0){
             return Message.success();
@@ -220,8 +206,9 @@ public class NetworkController {
     @RequestMapping(value = "/followupNetwork",method = RequestMethod.POST,produces="application/json")
     public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
         String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         networkFollow.setFollowName(name);
-        int i = distributeService.followupNetwork(networkFollow);
+        int i = distributeService.followupNetwork(networkFollow,username);
         if (i > 0){
             return Message.success();
         }
@@ -280,8 +267,6 @@ public class NetworkController {
         }
         return Message.fail("提交失败");
     }
-
-
     /**
      * 财务录单
      * @return
@@ -306,8 +291,9 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/cashierListNetwork")
-    public Message cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime){
-        return Message.success("操作成功",distributeService.cashierListNetwork(pageNum,limit,content,strtime,endtime),0);
+    public Message cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
+        return Message.success("操作成功",distributeService.cashierListNetwork(pageNum,limit,content,strtime,endtime,username),0);
     }
 
     /**

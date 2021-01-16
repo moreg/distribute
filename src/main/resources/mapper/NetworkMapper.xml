@@ -52,6 +52,7 @@
     <result column="address"  property="address" />
     <result column="overdue_time"  property="overdueTime" />
     <result column="status"  property="status" />
+    <result column="leader_sign"  property="leaderSign" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -90,7 +91,7 @@
   <select id="airForcePoolList" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
-    where issue in(0,1)  and `status`in (0,1,2)
+    where issue = 0  and `status` = 0
     <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -138,28 +139,11 @@
     ORDER BY id DESC
   </select>
 
-  <select id="grabbingOrdersList" resultMap="aMap" parameterType="String">
-
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address from customer_network
-    where 1 = 1 and issue = 1 and appoint = 0
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY id DESC
-  </select>
 
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network
-    where  last_follow_name = #{lastFollowName}
+    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leade_sign from customer_network
+    where  (last_follow_name = #{lastFollowName} or  leader_name = #{lastFollowName}) and status in(0,4,5,6,8)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -274,9 +258,9 @@
         last_follow_name =#{Distribute.lastFollowName},
       </if>
         <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
-          leader_name = #{Distribute.leaderName}
-
+          leader_name = #{Distribute.leaderName},
         </if>
+        issue = 1
       </set>
         <where>
           id=#{Distribute.id}
@@ -289,7 +273,15 @@
   <update id="SubmitRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network
     set
-        status = #{status}
+    <if test="status  !=null">
+      status = #{status}
+    </if>
+    <if test="leaderName != null and leaderName != ''">
+      ,leader_name = #{leaderName}
+    </if>
+    <if test="invalid != null">
+      ,invalid = #{invalid}
+    </if>
     where id = #{id}
   </update>
 
@@ -367,6 +359,9 @@
     <if test="appoint !=null">
       ,appoint
     </if>
+    <if test="leaderName !=null">
+      ,leader_name
+    </if>
     )
     values (
     #{name},#{corporateName},#{corporatePhone},#{establishTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
@@ -382,6 +377,9 @@
     </if>
     <if test="appoint !=null">
       ,#{appoint}
+    </if>
+    <if test="leaderName !=null">
+      ,#{leaderName}
     </if>
     )
   </insert>

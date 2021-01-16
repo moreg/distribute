@@ -23,6 +23,15 @@ public class AirForcePool {
     private String address;
     private Integer status;
     private String overdueTime;
+    private Integer leaderSign;
+
+    public Integer getLeaderSign() {
+        return leaderSign;
+    }
+
+    public void setLeaderSign(Integer leaderSign) {
+        this.leaderSign = leaderSign;
+    }
 
     public String getOverdueTime() {
         return overdueTime;
@@ -199,6 +208,7 @@ public class AirForcePool {
                 ", address='" + address + '\'' +
                 ", status=" + status +
                 ", overdueTime='" + overdueTime + '\'' +
+                ", leaderSign=" + leaderSign +
                 '}';
     }
 }

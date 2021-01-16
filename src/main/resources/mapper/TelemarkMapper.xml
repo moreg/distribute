@@ -106,6 +106,7 @@
         </if>
     ORDER BY id DESC
   </select>
+
   <select id="armyListPoolList2" resultMap="aMap" parameterType="String">
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
@@ -123,28 +124,12 @@
     </if>
     ORDER BY id DESC
   </select>
-  <select id="grabbingOrdersList" resultMap="aMap" parameterType="String">
 
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address from customer_telemarke
-    where 1 = 1 and issue = 1 and appoint = 0
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY id DESC
-  </select>
   
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,status from customer_telemarke
-    where 1 = 1 and (last_follow_name = #{lastFollowName} or leader_name = #{lastFollowName})
+    where (last_follow_name = #{lastFollowName} or leader_name = #{lastFollowName}) and status in(0,4,8)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>

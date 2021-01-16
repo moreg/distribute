@@ -92,6 +92,10 @@
     select id,name,source,conduct,corporate_phone as corporatePhone,relation from enterprise WHERE corporate_phone = #{corporatePhone}
     </select>
 
+  <select id="queryDepartment2" resultType="String">
+    select department from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and username = #{username}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where id = #{id,jdbcType=INTEGER}

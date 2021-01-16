@@ -81,6 +81,9 @@ public class Task {
             if (StringUtils.isNotEmpty(distribute.get(i).getOverdueTime())){
                 Date start = sdf.parse(distribute.get(i).getOverdueTime());
                 if (start.getTime() - now.getTime() < 0){
+                    if (distribute.get(i).getActivation() == null){
+                        return;
+                    }
                     if (distribute.get(i).getActivation() == 1){//已激活
                         distribute1.setLastFollowName("");
                         distribute1.setStatus(2);

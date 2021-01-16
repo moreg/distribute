@@ -68,16 +68,6 @@ public interface NetworkService {
      */
     PageInfo<Distribute> pendingPoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username);
 
-    /**
-     * 抢单列表
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @return
-     */
-    PageInfo<Distribute> grabbingOrdersList(int pageNum, int limit, String content, String strtime, String endtime);
 
     /**
      * 新增
@@ -124,7 +114,7 @@ public interface NetworkService {
      * @param networkFollow
      * @return
      */
-    int followupNetwork(DistributeFollow networkFollow);
+    int followupNetwork(DistributeFollow networkFollow,String username);
 
 
     /**
@@ -143,7 +133,7 @@ public interface NetworkService {
      * @param
      * @return
      */
-    PageInfo<CashierVo> cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime);
+    PageInfo<CashierVo> cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime,String username);
 
     /**
      * 未成交
