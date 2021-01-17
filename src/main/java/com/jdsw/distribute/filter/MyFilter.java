@@ -59,7 +59,7 @@ public class MyFilter implements Filter {
                 }
                 chain.doFilter(req, resp); // 验证成功，放行
             }*/
-            chain.doFilter(req, resp); // 验证成功，放行
+            chain.doFilter(request, response); // 验证成功，放行
         } catch (Exception ex) {
             //log.error("Exception error", ex);
             response.setContentType("text/xml;charset=UTF-8");

@@ -4,6 +4,7 @@ import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.TelemarkeService;
 import com.jdsw.distribute.util.ImageUtil;
+import com.jdsw.distribute.util.JwtUtil;
 import com.jdsw.distribute.util.Message;
 import com.jdsw.distribute.util.VideoUtil;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,11 @@ public class TelemarkeController {
      */
     @RequestMapping("/armyListPoolList")
     public Message armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         return Message.success("操作成功",telemarkService.armyListPoolList(pageNum,limit,content,strtime,endtime,username),0);
     }
     /**
@@ -44,7 +49,11 @@ public class TelemarkeController {
      */
     @RequestMapping("/insertTelemarke")
     public Message insertTelemarke(@RequestBody Distribute distribute,HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         int i = telemarkService.insertTelemarke(distribute,username);
         if (i > 0){
             return Message.success();
@@ -107,7 +116,11 @@ public class TelemarkeController {
      */
     @RequestMapping("/appoint")
     public Message appoint(@RequestBody List<Distribute> network,HttpServletRequest request){
-        String name = (String) request.getAttribute("name");
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         int i = telemarkService.appoint(network,name);
         if (i > 0){
             return Message.success();
@@ -120,8 +133,12 @@ public class TelemarkeController {
      */
     @RequestMapping("/queryTelemarkeByLastName")
     public Message queryTelemarkeByLastName(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime){
-        String lastFollowName = (String) request.getAttribute("name");
-        return Message.success("操作成功",telemarkService.queryTelemarkeByLastName(pageNum,limit,content,strtime,endtime,lastFollowName),0);
+        //String lastFollowName = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String lastFollowName = (String) map.get("name");
+        return Message.success("操作成功",telemarkService.queryTelemarkeByLastName(pageNum,limit,content,strtime,endtime,lastFollowName,username),0);
     }
     /**
      * 我的客户待处理
@@ -136,7 +153,11 @@ public class TelemarkeController {
      */
     @RequestMapping("/pendingNetworkList")
     public Message pendingNetworkList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        String lastFollowName = (String) request.getAttribute("name");
+        //String lastFollowName = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String lastFollowName = (String) map.get("name");
         return Message.success("操作成功",telemarkService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
     /**
@@ -145,7 +166,11 @@ public class TelemarkeController {
      */
     @RequestMapping("/orderTaking")
     public Message orderTaking(HttpServletRequest request,@RequestBody Distribute distribute){
-        String lastFollowName = (String) request.getAttribute("name");
+        //String lastFollowName = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String lastFollowName = (String) map.get("name");
         distribute.setLastFollowName(lastFollowName);
         int i = telemarkService.orderTaking(distribute);
         if (i > 0){
@@ -159,7 +184,11 @@ public class TelemarkeController {
      */
     @RequestMapping("/followupNetwork")
     public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
-        String name = (String) request.getAttribute("name");
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         networkFollow.setFollowName(name);
         int i = telemarkService.followupNetwork(networkFollow);
         if (i > 0){
@@ -225,8 +254,12 @@ public class TelemarkeController {
      */
     @RequestMapping("/transferTelemarke")
     public Message assign(@RequestBody List<Distribute> distribute,HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
-        int i= telemarkService.assign(distribute,username);
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        int i= telemarkService.assign(distribute,username,name);
         if(i > 0){
             return Message.success();
         }
@@ -239,8 +272,12 @@ public class TelemarkeController {
      */
     @RequestMapping("/customerTransfer")
     public Message customerTransfer(@RequestBody List<Distribute> distribute,HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
-        int i = telemarkService.customerTransfer(distribute,username);
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        int i = telemarkService.customerTransfer(distribute,username,name);
         if (i > 0 ){
             return Message.success();
         }
@@ -278,7 +315,11 @@ public class TelemarkeController {
      */
     @RequestMapping("/statusList")
     public Message statusList(int pageNum, int limit,Integer status,HttpServletRequest request){
-        String name = (String) request.getAttribute("name");
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         return Message.success("查询成功",telemarkService.statusList(pageNum,limit,status,name));
     }
 }

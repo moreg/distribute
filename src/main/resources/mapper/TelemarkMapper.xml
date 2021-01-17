@@ -93,7 +93,7 @@
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address from customer_telemarke
-    where  issue in(0,1) and `status`in (0,1,2)
+    where  issue =0 and `status`=0
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -125,11 +125,28 @@
     ORDER BY id DESC
   </select>
 
-  
+  <!--主管我的客户-->
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,status from customer_telemarke
-    where (last_follow_name = #{lastFollowName} or leader_name = #{lastFollowName}) and status in(0,4,8)
+    where (last_follow_name = #{lastFollowName} or  leader_name = #{lastFollowName}) and status in(10,3,6)
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY id DESC
+  </select>
+  <!--业务员我的客户-->
+  <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="String">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address,status from customer_telemarke
+    where last_follow_name = #{lastFollowName}  and status in(10,3,6)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -229,6 +246,9 @@
     <if test="appoint !=null">
       ,appoint
     </if>
+    <if test="leaderName !=null">
+      ,leader_name
+    </if>
     )
     values (
     #{name},#{corporateName},#{corporatePhone},#{establishTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
@@ -244,6 +264,9 @@
     </if>
     <if test="appoint !=null">
       ,#{appoint}
+    </if>
+    <if test="leaderName !=null">
+      ,#{leaderName}
     </if>
     )
   </insert>
@@ -339,8 +362,17 @@
           <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != ''">
             last_follow_name =#{Distribute.lastFollowName},
           </if>
+          <if test="Distribute.firstFollowName != null and Distribute.firstFollowName != ''">
+            first_follow_name =#{Distribute.firstFollowName},
+          </if>
           <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
             leader_name = #{Distribute.leaderName},
+          </if>
+          <if test="Distribute.issue != null">
+            issue = #{Distribute.issue},
+          </if>
+          <if test="Distribute.status != null">
+            status = #{Distribute.status},
           </if>
           leader_sign = #{Distribute.leaderSign}
         </set>

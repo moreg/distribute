@@ -94,7 +94,7 @@ public class Task {
                             distribute1.setStatus(2);
                             telemarkeDao.overTime(distribute1);
                         }else if (distribute.get(i).getLeaderSign() == 0){
-                            distribute1.setStatus(5);
+                            distribute1.setStatus(9);
                             telemarkeDao.overTime(distribute1);
                         }
                     }

@@ -75,7 +75,7 @@ public interface TelemarkeService {
      * @param
      * @return
      */
-    PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName);
+    PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String username);
 
     /**
      * 我的客户待处理
@@ -133,13 +133,13 @@ public interface TelemarkeService {
      * @param distribute
      * @return
      */
-    int assign(List<Distribute> distribute,String username);
+    int assign(List<Distribute> distribute,String username,String name);
     /**
      * 客服分配
      * @param distribute
      * @return
      */
-    int customerTransfer(List<Distribute> distribute,String username);
+    int customerTransfer(List<Distribute> distribute,String username,String name);
     /**
      * 查询跟进列表
      * @return

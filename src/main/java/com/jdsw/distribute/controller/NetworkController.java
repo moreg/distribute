@@ -6,6 +6,7 @@ import com.jdsw.distribute.service.NetworkService;
 
 import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.ImageUtil;
+import com.jdsw.distribute.util.JwtUtil;
 import com.jdsw.distribute.util.Message;
 
 import com.jdsw.distribute.util.VideoUtil;
@@ -38,9 +39,12 @@ public class NetworkController {
      */
     @RequestMapping("/airForcePoolList")
     public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute network, HttpServletRequest request, HttpServletResponse response){
-       // String username = (String) session.getAttribute("username");
-        String username = (String) request.getAttribute("username");
-        return Message.success("操作成功",distributeService.airForcePoolList(pageNum,limit,network,content,strtime,endtime,username),0);
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        return Message.success("操作成功",distributeService.airForcePoolList(pageNum,limit,network,content,strtime,endtime,username,name),0);
     }
 
     /**
@@ -56,8 +60,11 @@ public class NetworkController {
      */
     @RequestMapping("/pendingPoolList")
     public Message pendingPoolList(int pageNum, int limit,String content, String strtime, String endtime, Distribute network,HttpSession session,HttpServletRequest request){
-        request.getHeader("token");
-        String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        //String username = (String) request.getAttribute("username");
         return Message.success("操作成功",distributeService.pendingPoolList(pageNum,limit,network,content,strtime,endtime,username),0);
     }
     /**
@@ -67,7 +74,11 @@ public class NetworkController {
      */
     @RequestMapping("/insertNetwoork")
     public Message insertNetwoork(@RequestBody Distribute distribute,HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         int i = distributeService.insertNetwoork(distribute,username);
         if (i > 0){
             return Message.success();
@@ -131,10 +142,14 @@ public class NetworkController {
      */
     @RequestMapping(value = "/orderTaking",method = RequestMethod.POST,produces="application/json")
     public Message orderTaking(HttpServletRequest request,@RequestBody Distribute distribute){
-        String lastFollowName = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String lastFollowName = (String) map.get("name");
+        //String lastFollowName = (String) request.getAttribute("name");
         distribute.setLastFollowName(lastFollowName);
         distribute.setFirstFollowName(lastFollowName);
-        int i = distributeService.orderTaking(distribute);
+        int i = distributeService.orderTaking(distribute,username);
         if (i == 1){
             return Message.success("抢单成功");
         }else if (i == 2){
@@ -150,8 +165,11 @@ public class NetworkController {
      */
     @RequestMapping(value = "/appoint" ,method = RequestMethod.POST,produces="application/json")
     public Message appoint(@RequestBody List<Distribute> network,HttpServletRequest request){
-        String name = (String) request.getAttribute("name");
-        String username = (String) request.getAttribute("username");
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         int i = distributeService.appoint(network,name);
         if (i > 0){
             return Message.success();
@@ -164,8 +182,12 @@ public class NetworkController {
      */
     @RequestMapping("/queryNetworkByLastName")
     public Message queryNetworkByLastName(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        String lastFollowName = (String) request.getAttribute("name");
-        return Message.success("操作成功",distributeService.queryNetworkByLastName(pageNum,limit,content,strtime,endtime,lastFollowName),0);
+        //String lastFollowName = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String lastFollowName = (String) map.get("name");
+        return Message.success("操作成功",distributeService.queryNetworkByLastName(pageNum,limit,content,strtime,endtime,lastFollowName,username),0);
     }
 
     /**
@@ -181,8 +203,11 @@ public class NetworkController {
      */
     @RequestMapping("/pendingNetworkList")
     public Message pendingNetworkList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        String lastFollowName = (String) request.getAttribute("name");
-
+        //String lastFollowName = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String lastFollowName = (String) map.get("name");
         return Message.success("操作成功",distributeService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
     }
     /**
@@ -205,8 +230,12 @@ public class NetworkController {
      */
     @RequestMapping(value = "/followupNetwork",method = RequestMethod.POST,produces="application/json")
     public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
-        String name = (String) request.getAttribute("name");
-        String username = (String) request.getAttribute("username");
+        //String name = (String) request.getAttribute("name");
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         networkFollow.setFollowName(name);
         int i = distributeService.followupNetwork(networkFollow,username);
         if (i > 0){
@@ -279,7 +308,20 @@ public class NetworkController {
         }
         return Message.fail();
     }
-
+    /**
+     * 财务录单完成列表
+     * @return
+     */
+    @RequestMapping("/cashierCompleteLis")
+    public Message cashierCompleteLis(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request){
+        //String username = (String) request.getAttribute("username");
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        return Message.success("操作成功",distributeService.cashierCompleteLis(pageNum,limit,content,strtime,endtime,username,name),0);
+    }
     /**
      * 财务列表
      * @param pageNum
@@ -292,7 +334,11 @@ public class NetworkController {
      */
     @RequestMapping("/cashierListNetwork")
     public Message cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         return Message.success("操作成功",distributeService.cashierListNetwork(pageNum,limit,content,strtime,endtime,username),0);
     }
 
@@ -302,8 +348,13 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/transferNetwork")
-    public Message transferNetwork(@RequestBody List<Distribute> distribute){
-        int i = distributeService.transferNetwork(distribute);
+    public Message transferNetwork(@RequestBody List<Distribute> distribute,HttpServletRequest request){
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        int i = distributeService.transferNetwork(distribute,name);
         if ( i > 0){
             return Message.success();
         }
@@ -316,8 +367,13 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/customerTransfer")
-    public Message customerTransfer(@RequestBody List<Distribute> distribute){
-        int i = distributeService.customerTransfer(distribute);
+    public Message customerTransfer(@RequestBody List<Distribute> distribute,HttpServletRequest request){
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        int i = distributeService.customerTransfer(distribute,name);
         if (i > 0) {
             return Message.success();
         }
@@ -378,7 +434,11 @@ public class NetworkController {
      */
     @RequestMapping("/statusList")
     public Message statusList(int pageNum, int limit,Integer status,HttpServletRequest request){
-        String name = (String) request.getAttribute("name");
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
         return Message.success("查询成功",distributeService.statusList(pageNum,limit,status,name));
     }
     /**

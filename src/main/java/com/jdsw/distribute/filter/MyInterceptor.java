@@ -1,3 +1,4 @@
+/*
 package com.jdsw.distribute.filter;
 
 import com.jdsw.distribute.util.JwtUtil;
@@ -27,3 +28,4 @@ public class MyInterceptor implements HandlerInterceptor {
         return false;
     }
 }
+*/

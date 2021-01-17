@@ -49,6 +49,12 @@ public interface UserDao {
     List<UsersVo> queryCharge(List<String> department);
 
     /**
+     * 查询部门主管
+     * @param department
+     * @return
+     */
+    String queryCharge(String department);
+    /**
      * 查询企业信息
      * @param
      * @return

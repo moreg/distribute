@@ -97,6 +97,8 @@ public interface TelemarkeDao {
      */
     List<Distribute> queryTelemarkeByLastName(String content, String strtime, String endtime,String lastFollowName);
 
+    List<Distribute> queryTelemarkeByLastName2(String content, String strtime, String endtime,String lastFollowName);
+
     /**
      * 我客户待处理
      * @param content

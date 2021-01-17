@@ -28,14 +28,14 @@ public interface NetworkService {
      * @param distribute
      * @return
      */
-    int orderTaking(Distribute distribute);
+    int orderTaking(Distribute distribute,String username);
 
     /**
      * 我的客户
      * @param
      * @return
      */
-    PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) throws ParseException;
+    PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String usernmae) throws ParseException;
 
     /**
      * 主管待处理
@@ -53,7 +53,7 @@ public interface NetworkService {
      * 空军池列表
      * @return
      */
-    PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username);
+    PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username,String name);
 
     /**
      * 待处理
@@ -128,6 +128,19 @@ public interface NetworkService {
      * @return
      */
     int UpdateRecordingNetwork(Distribute network);
+
+    /**
+     * 财务完成列表
+     * @param pageNum
+     * @param limit
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @param username
+     * @return
+     */
+    PageInfo<CashierVo> cashierCompleteLis(int pageNum, int limit, String content, String strtime, String endtime,String username,String name);
+
     /**
      * 财务查询列表
      * @param
@@ -147,13 +160,13 @@ public interface NetworkService {
      * @param distribute
      * @return
      */
-    int transferNetwork(List<Distribute> distribute);
+    int transferNetwork(List<Distribute> distribute,String name);
     /**
      * 客服转单
      * @param distribute
      * @return
      */
-    int customerTransfer(List<Distribute> distribute);
+    int customerTransfer(List<Distribute> distribute,String name);
     /**
      * 设置过期时间
      * @param

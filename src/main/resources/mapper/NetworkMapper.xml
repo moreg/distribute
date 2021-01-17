@@ -87,7 +87,7 @@
     select *
     from customer_network where id =#{id}
   </select>
-
+  <!--客服空军池-->
   <select id="airForcePoolList" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
@@ -104,11 +104,11 @@
         </if>
     ORDER BY id DESC
   </select>
-
+  <!--业务员、主管空军池-->
   <select id="airForcePoolList2" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
-    where  issue = 1 and `status`in (0,1,2)
+    where  issue = 1 and `status` in (1,2,0)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -121,7 +121,7 @@
     </if>
     ORDER BY id DESC
   </select>
-
+  <!--客服待处理-->
   <select id="pendingPoolList" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
@@ -139,11 +139,11 @@
     ORDER BY id DESC
   </select>
 
-
+  <!--主管我的客户-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leade_sign from customer_network
-    where  (last_follow_name = #{lastFollowName} or  leader_name = #{lastFollowName}) and status in(0,4,5,6,8)
+    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign from customer_network
+    where  (last_follow_name = #{lastFollowName}and status in(10,5,6,11)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -156,11 +156,27 @@
     </if>
     ORDER BY id DESC
   </select>
-
+  <!--业务员我的客户-->
+  <select id="queryNetworkByLastName2" resultMap="aMap" parameterType="String">
+    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign from customer_network
+    where  last_follow_name = #{lastFollowName} and status in(10,3,6)
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY id DESC
+  </select>
   <select id="pendingNetworkList" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address from customer_network
-    where  leader_name = #{lastFollowName} and `status` = 5
+    where  leader_name = #{lastFollowName} and `status` = 9
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -176,7 +192,7 @@
 
   <select id="cashierListNetwork" resultMap="cashierMap" parameterType="String">
     select id,name,corporate_name,create_time,source,last_follow_name,track_id,order_state from deal_order
-    where 1 = 1
+    where order_state = 0
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -189,7 +205,23 @@
     </if>
     ORDER BY id DESC
   </select>
-  
+
+  <select id="cashierListNetwork2" resultMap="cashierMap" parameterType="String">
+    select id,name,corporate_name,create_time,source,last_follow_name,track_id,order_state from deal_order
+    where order_state = 1
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY id DESC
+  </select>
+
   <select id="Unsettled" resultType="com.jdsw.distribute.model.Distribute">
     select id,overdue_time from customer_network where status = 0
   </select>
@@ -204,7 +236,7 @@
   </select>
 
   <select id="queryOverTime" resultMap="DistributeMap">
-    select id,overdue_time from customer_network where status in(0,6)  and issue = 1
+    select id,overdue_time from customer_network where status in(10,6)  and issue = 1
   </select>
 
   <select id="statusList" resultMap="aMap" parameterType="com.jdsw.distribute.model.Distribute">
@@ -246,7 +278,7 @@
   </update>
 
   <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName} where id = #{id}
+    update customer_network set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName},issue = 1,status = #{status} where id = #{id}
   </update>
 
   <update id="updateNetworkLastFollowName" parameterType="java.util.List">
@@ -257,8 +289,14 @@
       <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != ''">
         last_follow_name =#{Distribute.lastFollowName},
       </if>
+        <if test="Distribute.firstFollowName != null and Distribute.firstFollowName != ''">
+          first_follow_name =#{Distribute.firstFollowName},
+        </if>
         <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
           leader_name = #{Distribute.leaderName},
+        </if>
+        <if test="Distribute.overdueTime != null">
+          overdue_time = #{Distribute.overdueTime},
         </if>
         issue = 1
       </set>
@@ -302,48 +340,54 @@
   <update id="updateNetwork" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set
     <if test="name != null and name !=''">
-      name = #{name},
+      name = #{name}
     </if>
     <if test="corporateName != null and corporateName !=''">
-      corporate_name = #{corporateName},
+      ,corporate_name = #{corporateName}
     </if>
     <if test="corporatePhone != null and corporatePhone != ''">
-      corporate_phone = #{corporatePhone},
+      ,corporate_phone = #{corporatePhone}
     </if>
     <if test="dealTime != null and dealTime != ''">
-      deal_time = #{dealTime},
+      ,deal_time = #{dealTime}
     </if>
     <if test="registeredCapital != null and registeredCapital != ''">
-      registered_capital = #{registeredCapital},
+      ,registered_capital = #{registeredCapital}
     </if>
     <if test="operation != null and operation != ''">
-      operation = #{operation},
+      ,operation = #{operation}
     </if>
     <if test="conduct != null and conduct !=''">
-      conduct = #{conduct},
+      ,conduct = #{conduct}
     </if>
     <if test="city != null and city != ''">
-      city = #{city},
+      ,city = #{city}
     </if>
     <if test="source != null">
-      source = #{source},
+      ,source = #{source}
     </if>
     <if test="address !=null and address != ''">
-      address = #{address},
+      ,address = #{address}
     </if>
     <if test="otherPhone != null and otherPhone !=''">
-      other_phone = #{otherPhone}
+      ,other_phone = #{otherPhone}
     </if>
     where id = #{id}
   </update>
+  <!--设置超时时间-->
   <update id="setOverdueTime" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set overdue_time = #{overdueTime} where id = #{id}
+    update customer_network set overdue_time = #{overdueTime},leader_sign = 0 where id = #{id}
+  </update>
+  <!--强制超时-->
+  <update id="setOvertime" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network set overdue_time = "",status = 9 where track_id = #{trackId}
   </update>
 
+  <!--删除-->
  <delete id="deleteNetwork" parameterType="com.jdsw.distribute.model.Distribute">
    delete from customer_network where id = #{id}
  </delete>
-
+<!--新增-->
   <insert id="insertNetwoork" parameterType="com.jdsw.distribute.model.Distribute">
     insert into customer_network(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,conduct,city,source,address
     ,create_time,status,other_phone,track_id
@@ -361,6 +405,12 @@
     </if>
     <if test="leaderName !=null">
       ,leader_name
+    </if>
+    <if test="leaderSign !=null">
+      ,leader_sign
+    </if>
+    <if test="status !=null">
+      ,‘status’
     </if>
     )
     values (
@@ -381,17 +431,23 @@
     <if test="leaderName !=null">
       ,#{leaderName}
     </if>
+    <if test="leaderSign !=null">
+      ,#{leaderSign}
+    </if>
+    <if test="status !=null">
+      ,#{status}
+    </if>
     )
   </insert>
 
   <insert id="excelNetwork" parameterType="java.util.List">
     insert into customer_network(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,address
-    ,create_time,status,other_phone,track_id,last_follow_name,first_follow_name,issue,appoint
+    ,create_time,status,other_phone,track_id,last_follow_name,first_follow_name,issue,appoint,leader_name
     )
     values
     <foreach collection="list" item="item" separator=",">
     (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.establishTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),
-      0,#{item.otherPhone},#{item.trackId},#{item.lastFollowName},#{item.firstFollowName},#{item.issue},#{item.appoint}
+      0,#{item.otherPhone},#{item.trackId},#{item.lastFollowName},#{item.firstFollowName},#{item.issue},#{item.appoint},#{item.leaderName}
 
       )
     </foreach>

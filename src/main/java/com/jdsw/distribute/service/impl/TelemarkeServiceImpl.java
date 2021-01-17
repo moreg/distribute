@@ -62,15 +62,22 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         Set set = userDao.findRoleByUserName(username);
         User user = userDao.findByUserName(username);
         for (Object str : set) {
-            if (Integer.parseInt((String) str) == 6) {
+            if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 8) {
                 distribute.setLastFollowName(user.getName());
                 distribute.setFirstFollowName(user.getName());
                 distribute.setIssue(1);
                 distribute.setAppoint(0);
                 return telemarkDao.insertTelemarke(distribute);
             }
+            if (Integer.parseInt((String) str) == 4 ||Integer.parseInt((String) str) == 7){
+                distribute.setLeaderName(user.getName());
+                distribute.setIssue(0);
+                distribute.setAppoint(0);
+                return telemarkDao.insertTelemarke(distribute);
+            }
         }
         distribute.setAppoint(0);
+        distribute.setIssue(0);
         return telemarkDao.insertTelemarke(distribute);
     }
     @Override
@@ -89,7 +96,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         Set set = userDao.findRoleByUserName(username);
         User user = userDao.findByUserName(username);
         for (Object str : set) {
-            if (Integer.parseInt((String) str) == 6){
+            if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 8){
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
@@ -174,6 +181,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         }else {
             network.setOverdueTime(DateUtil.getNextDay());
             network.setActivation(0);
+            network.setStatus(10);
             telemarkDao.updateworkOverdueTime(network);//修改激活时间
             int i = telemarkDao.updateNetworkFirstFollowName(network);
             if (i > 0){
@@ -184,11 +192,22 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
-    public PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) {
-        PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = telemarkDao.queryTelemarkeByLastName(content,strtime,endtime,lastFollowName);
-        PageInfo result = new PageInfo(Network);
-        return result;
+    public PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String username) {
+        Set set = userDao.findRoleByUserName(username);
+        for (Object str : set) {
+            if (Integer.parseInt((String) str) == 4 || Integer.parseInt((String) str) == 7) {//主管
+                PageHelper.startPage(pageNum, limit);
+                List<Distribute> Network = telemarkDao.queryTelemarkeByLastName(content,strtime,endtime,lastFollowName);
+                PageInfo result = new PageInfo(Network);
+                return result;
+            }else if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 8){//业务员
+                PageHelper.startPage(pageNum, limit);
+                List<Distribute> Network = telemarkDao.queryTelemarkeByLastName2(content,strtime,endtime,lastFollowName);
+                PageInfo result = new PageInfo(Network);
+                return result;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -266,25 +285,55 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
-    public int assign(List<Distribute> distribute,String username) {
+    @Transactional
+    public int assign(List<Distribute> distribute,String username,String name) {
         Distribute distribute1 = null;
+        String str = "给"+distribute.get(0).getLeaderName()+"转交了一条线索";
+        DistributeFollow networkFollow;
+        List<Distribute> ld = new ArrayList<>();
+        List<DistributeFollow> ls = new ArrayList<>();
         for (int i = 0 ;i<distribute.size();i++){
+            networkFollow = new DistributeFollow();
+            networkFollow.setFollowName(name);
+            networkFollow.setNetworkId(distribute.get(i).getId());
+            networkFollow.setFollowResult(str);
+            ls.add(networkFollow);
             distribute1 = new Distribute();
-            distribute1.setFirstFollowName(distribute.get(i).getLastFollowName());
+            distribute1.setFirstFollowName(distribute.get(i).getLeaderName());
+            distribute1.setLastFollowName(distribute.get(i).getLeaderName());
             distribute1.setLeaderSign(1);
+            distribute1.setIssue(1);
+            distribute1.setStatus(10);
+            distribute1.setId(distribute.get(i).getId());
+            ld.add(distribute1);
+            telemarkeFollowDao.insertNetworkFollow2(ls);
         }
-        return telemarkDao.assign(distribute);
+        return telemarkDao.assign(ld);
     }
 
     @Override
-    public int customerTransfer(List<Distribute> distribute,String username) {
+    @Transactional
+    public int customerTransfer(List<Distribute> distribute,String username,String name) {
         Distribute distribute1 = null;
+        String str = "给"+distribute.get(0).getLeaderName()+"转交了一条线索";
+        List<Distribute> ld = new ArrayList<>();
+        List<DistributeFollow> ls = new ArrayList<>();
+        DistributeFollow networkFollow;
         for (int i = 0 ;i<distribute.size();i++){
+            networkFollow = new DistributeFollow();
+            networkFollow.setFollowName(name);
+            networkFollow.setNetworkId(distribute.get(i).getId());
+            networkFollow.setFollowResult(str);
             distribute1 = new Distribute();
             distribute1.setLeaderName(distribute.get(i).getLeaderName());
             distribute1.setLeaderSign(0);
+            distribute1.setIssue(1);
+            ld.add(distribute1);
+            telemarkeFollowDao.insertNetworkFollow2(ls);
         }
-        return telemarkDao.assign(distribute);
+        System.out.println(ld);
+
+        return telemarkDao.assign(ld);
     }
 
     @Override

@@ -37,6 +37,7 @@ public interface NetworkDao {
      * @return
      */
     int updateNetworkLastFollowName (List<Distribute> distribute);
+
     /**
      * 抢单修改第一接单人和当前接单人
      * @param network
@@ -55,7 +56,12 @@ public interface NetworkDao {
      * @return
      */
     List<Distribute> queryNetworkByLastName(String content, String strtime, String endtime,String lastFollowName);
-
+    /**
+     * 查询我的客户
+     * @param
+     * @return
+     */
+    List<Distribute> queryNetworkByLastName2(String content, String strtime, String endtime,String lastFollowName);
     /**
      * 主管待处理
      * @param content
@@ -71,7 +77,8 @@ public interface NetworkDao {
      */
     List<Distribute> airForcePoolList(String content, String strtime, String endtime);
 
-    List<Distribute> airForcePoolList2(String content, String strtime, String endtime);
+    List<Distribute> airForcePoolList2(String content, String strtime, String endtime,String name);
+
 
     /**
      * 客服待处理
@@ -153,6 +160,12 @@ public interface NetworkDao {
      * @param
      * @return
      */
+    List<CashierVo> cashierListNetwork2(String content, String strtime, String endtime,String name);
+    /**
+     * 财务查询列表
+     * @param
+     * @return
+     */
     List<CashierVo> cashierListNetwork(String content, String strtime, String endtime);
     /**
      * 未完成
@@ -186,4 +199,11 @@ public interface NetworkDao {
      * @return
      */
     List<Distribute> statusList(Distribute distribute);
+
+    /**
+     * 强制超时
+     * @param
+     * @return
+     */
+    int setOvertime(Distribute distribute);
 }

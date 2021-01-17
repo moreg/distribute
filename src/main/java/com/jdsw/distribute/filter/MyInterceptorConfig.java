@@ -1,3 +1,4 @@
+/*
 package com.jdsw.distribute.filter;
 
 import com.jdsw.distribute.util.PathUtil;
@@ -24,7 +25,7 @@ public class MyInterceptorConfig implements WebMvcConfigurer{
                 //设置入我们的基础路径
                         addResourceLocations(fileBasePath);
     }
-    @Override
+ @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 注册拦截器，要声明拦截器对象和要拦截的请求
         registry.addInterceptor(myInterceptor)
@@ -36,8 +37,10 @@ public class MyInterceptorConfig implements WebMvcConfigurer{
                 .excludePathPatterns("/telemark/uploadImg")
                 .excludePathPatterns("/distribute/uploadFile")
                 .excludePathPatterns("/telemark/uploadFile")
+
         ;
     }
 
 
 }
+*/
