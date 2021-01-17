@@ -162,6 +162,12 @@ public interface NetworkDao {
      */
     List<CashierVo> cashierListNetwork2(String content, String strtime, String endtime,String name);
     /**
+     * 财务查询列表(业务员)
+     * @param
+     * @return
+     */
+    List<CashierVo> cashierListNetwork3(String content, String strtime, String endtime,String name);
+    /**
      * 财务查询列表
      * @param
      * @return
@@ -201,9 +207,22 @@ public interface NetworkDao {
     List<Distribute> statusList(Distribute distribute);
 
     /**
+     * 完成录单修改订单状态
+     * @param distribute
+     * @return
+     */
+    int updateBytrackId(Distribute distribute);
+    /**
      * 强制超时
      * @param
      * @return
      */
     int setOvertime(Distribute distribute);
+
+    /**
+     * 查询合同的跟踪单号
+     * @param distribute
+     * @return
+     */
+    String qureydealOrder(Distribute distribute);
 }

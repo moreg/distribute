@@ -60,6 +60,11 @@
     select r.id from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
   </select>
 
+  <select id="findRoleByUserName2" parameterType="string" resultType="java.lang.String">
+    select r.rolename from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
+  </select>
+
+
   <select id="countUser" resultType="java.lang.Integer">
   select count(*) from user
   </select>
@@ -82,21 +87,24 @@
       #{department}
     </foreach>
   </select>
-  <!--<select id="queryCharge"  resultType="com.jdsw.distribute.vo.UsersVo" parameterType="Map">
-    select u.name,r.department,r.branch from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = '部门主管' and branch = #{branch} and r.department in
-    <foreach collection="list"  index="index" item="department" open="(" close=")" separator=",">
+  <select id="queryCharge2"  resultType="com.jdsw.distribute.vo.UsersVo" parameterType="Map">
+    select u.name from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = '部门主管' and branch = #{branch} and r.department in
+
       #{department}
-    </foreach>
-  </select>-->
+
+  </select>
   <select id="queryEnterprise" resultType="com.jdsw.distribute.model.Enterprise">
     select id,name,source,conduct,corporate_phone as corporatePhone,relation from enterprise WHERE corporate_phone = #{corporatePhone}
     </select>
 
   <select id="queryDepartment2" resultType="String">
     select u.`name` from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and r.id =
-(select leader from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and username = #{username} )
+(select leader from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and name = #{username} )
   </select>
-
+  <select id="queryDepartment3" resultType="String">
+    select u.`name` from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and r.id =
+     (select leader from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and name = #{name} )
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where id = #{id,jdbcType=INTEGER}

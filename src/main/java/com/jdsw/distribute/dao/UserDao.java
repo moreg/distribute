@@ -34,6 +34,8 @@ public interface UserDao {
 
     Set<String> findRoleByUserName(String username);
 
+    Set<String> findRoleByUserName2(String username);
+
     /**
      * 查询部门下的人员
      * @param department
@@ -53,7 +55,7 @@ public interface UserDao {
      * @param department
      * @return
      */
-    String queryCharge(String department);
+    String queryCharge2(String department);
     /**
      * 查询企业信息
      * @param
@@ -66,5 +68,11 @@ public interface UserDao {
      * @param username
      * @return
      */
-    String queryDepartment2(String username);
+     String queryDepartment2(String username);
+    /**
+     * 查询当前部门
+     * @param username
+     * @return
+     */
+    String queryDepartment3(String name);
 }

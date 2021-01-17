@@ -63,7 +63,7 @@ public class Task {
                 }else if (start.getTime() - now.getTime() <= -1500000){
                     System.out.println(distribute.get(i).getId());
                     distribute1.setId(distribute.get(i).getId());
-                    distribute1.setStatus(9);
+                    distribute1.setStatus(5);
                     networkDao.SubmitRecordingNetwork(distribute1);
                     System.out.println("超时返回主管");
                 }
@@ -94,7 +94,7 @@ public class Task {
                             distribute1.setStatus(2);
                             telemarkeDao.overTime(distribute1);
                         }else if (distribute.get(i).getLeaderSign() == 0){
-                            distribute1.setStatus(9);
+                            distribute1.setStatus(5);
                             telemarkeDao.overTime(distribute1);
                         }
                     }

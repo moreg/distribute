@@ -116,38 +116,11 @@ public interface TelemarkeDao {
     int overTime(Distribute network);
 
     /**
-     * 放客户线索到陆军池
-     * @param distribute
-     * @return
-     */
-    int putarmyPoll(Distribute distribute);
-
-    /**
      * 提交财务
      * @param network
      * @return
      */
     int SubmitRecordingNetwork(List<Distribute> network);
-
-    /**
-     * 录单弹窗信息
-     * @param id
-     * @return
-     */
-    List<RecordingVo> RecordingShowNetwork(Integer id);
-    /**
-     * 财务录单
-     * @param network
-     * @return
-     */
-    int UpdateRecordingNetwork(Distribute network);
-
-    /**
-     * 财务查询列表
-     * @param
-     * @return
-     */
-    List<CashierVo> cashierListNetwork(String content, String strtime, String endtime);
 
     /**
      * 未完成
@@ -196,4 +169,11 @@ public interface TelemarkeDao {
      * @return
      */
     List<Distribute> queryOverTime();
+
+    /**
+     * 完成订单修改状态
+     * @param distribute
+     * @return
+     */
+    int updateBytrackId(Distribute distribute);
 }

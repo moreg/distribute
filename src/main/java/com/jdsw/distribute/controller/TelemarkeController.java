@@ -54,7 +54,7 @@ public class TelemarkeController {
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
-        int i = telemarkService.insertTelemarke(distribute,username);
+        int i = telemarkService.insertTelemarke(distribute,username,name);
         if (i > 0){
             return Message.success();
         }
