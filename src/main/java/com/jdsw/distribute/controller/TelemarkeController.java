@@ -172,7 +172,7 @@ public class TelemarkeController {
         String username = (String) map.get("userName");
         String lastFollowName = (String) map.get("name");
         distribute.setLastFollowName(lastFollowName);
-        int i = telemarkService.orderTaking(distribute);
+        int i = telemarkService.orderTaking(distribute,lastFollowName);
         if (i > 0){
             return Message.success("抢单成功");
         }
@@ -248,7 +248,7 @@ public class TelemarkeController {
         return Message.fail("提交失败");
     }
     /**
-     * 主管分配
+     * 主管转发
      * @param distribute
      * @return
      */
@@ -296,7 +296,7 @@ public class TelemarkeController {
     }
 
     /**
-     * 让订单超时
+     * 强制超时
      * @param distribute
      * @return
      */
@@ -322,4 +322,5 @@ public class TelemarkeController {
         String name = (String) map.get("name");
         return Message.success("查询成功",telemarkService.statusList(pageNum,limit,status,name));
     }
+
 }

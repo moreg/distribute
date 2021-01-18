@@ -28,7 +28,7 @@ public interface NetworkService {
      * @param distribute
      * @return
      */
-    int orderTaking(Distribute distribute,String username);
+    int orderTaking(Distribute distribute,String username,String name);
 
     /**
      * 我的客户
@@ -211,4 +211,10 @@ public interface NetworkService {
      */
     int setOvertime(Distribute distribute);
 
+    /**
+     * 客服同意
+     * @param distribute
+     * @return
+     */
+    int agree(Distribute distribute);
 }

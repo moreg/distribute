@@ -24,6 +24,15 @@ public class AirForcePool {
     private Integer status;
     private String overdueTime;
     private Integer leaderSign;
+    private Integer activation;
+
+    public Integer getActivation() {
+        return activation;
+    }
+
+    public void setActivation(Integer activation) {
+        this.activation = activation;
+    }
 
     public Integer getLeaderSign() {
         return leaderSign;
@@ -209,6 +218,7 @@ public class AirForcePool {
                 ", status=" + status +
                 ", overdueTime='" + overdueTime + '\'' +
                 ", leaderSign=" + leaderSign +
+                ", activation=" + activation +
                 '}';
     }
 }

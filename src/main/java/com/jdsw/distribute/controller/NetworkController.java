@@ -149,7 +149,7 @@ public class NetworkController {
         //String lastFollowName = (String) request.getAttribute("name");
         distribute.setLastFollowName(lastFollowName);
         distribute.setFirstFollowName(lastFollowName);
-        int i = distributeService.orderTaking(distribute,username);
+        int i = distributeService.orderTaking(distribute,username,lastFollowName);
         if (i == 1){
             return Message.success("抢单成功");
         }else if (i == 2){
@@ -442,11 +442,22 @@ public class NetworkController {
         return Message.success("查询成功",distributeService.statusList(pageNum,limit,status,name));
     }
     /**
-     * 主动设置订单超时
+     * 强制超时
      */
     @RequestMapping("/setOvertime")
     public Message setOvertime(@RequestBody Distribute distribute){
         distributeService.setOvertime(distribute);
+        return Message.success();
+    }
+
+    /**
+     * 客服同意申请
+     * @param distribute
+     * @return
+     */
+    @RequestMapping("/agree")
+    public Message agree(@RequestBody Distribute distribute){
+        distributeService.agree(distribute);
         return Message.success();
     }
 

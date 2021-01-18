@@ -225,4 +225,11 @@ public interface NetworkDao {
      * @return
      */
     String qureydealOrder(Distribute distribute);
+
+    /**
+     * 客服同意
+     * @param distribute
+     * @return
+     */
+    int agree(Distribute distribute);
 }

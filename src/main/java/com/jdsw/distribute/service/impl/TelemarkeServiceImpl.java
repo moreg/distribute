@@ -97,7 +97,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         File newFile = new File(filePath + newFileName);
         //复制操作
         file.transferTo(newFile);
-        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,5, Excel.class);
+        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,9, Excel.class);
         List ls = new ArrayList();
         Set set = userDao.findRoleByUserName2(username);
         User user = userDao.findByUserName(username);
@@ -170,6 +170,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public int appoint(List<Distribute> network, String name) {
         Distribute distribute;
         DistributeFollow networkFollow;
+        String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
         String str = "给"+network.get(0).getFirstFollowName()+"转交了一条线索";
         List<DistributeFollow> ls = new ArrayList<>();
         List<Distribute> ld = new ArrayList<>();
@@ -181,6 +182,8 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             distribute.setAppoint(0);
             distribute.setStatus(0);
             distribute.setBranch(network.get(i).getBranch());
+            distribute.setLeaderName(leader);
+            distribute.setLeaderSign(0);
             if (StringUtil.isNotEmpty(network.get(i).getFirstFollowName())){
                 distribute.setFirstFollowName(network.get(i).getFirstFollowName());
                 distribute.setLastFollowName(network.get(i).getFirstFollowName());
@@ -201,14 +204,17 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
     @Override
     @Transactional
-    public int orderTaking(Distribute network) {
+    public int orderTaking(Distribute network,String name) {
         Distribute network2 = telemarkDao.selectNetworkById(network.getId());//查询是否是已经接过的线索
         Integer status = network2.getStatus();
+        network.setLeaderSign(0);
+        String leader = userDao.queryDepartment2(name);
+        network.setLeaderName(leader);
         if (status == 1 || status == 2){//如果是跟进无效或者超时的
-            int o = telemarkDao.updateNetworkLastFollowName(network);
+           /* int o = telemarkDao.updateNetworkLastFollowName(network);
             if (o > 0){
                 return 2;
-            }
+            }*/
         }else {
             network.setOverdueTime(DateUtil.getNextDay());
             network.setActivation(0);
@@ -373,14 +379,15 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
     @Override
     public int setOvertime(Distribute distribute) {
-        int sing = telemarkDao.querySign(distribute.getId());
+        int sing = telemarkDao.querySign(distribute.getTrackId());
         if (sing > 0){
             distribute.setStatus(2);
-            distribute.setLeaderName("");
+            distribute.setLeaderName(null);
+        }else {
+            distribute.setLastFollowName(null);
+            distribute.setLeaderSign(1);
+            distribute.setStatus(5);
         }
-        distribute.setOverdueTime("");
-        distribute.setLastFollowName("");
-        distribute.setLeaderSign(0);
         return telemarkDao.setOvertime(distribute);
     }
     @Override

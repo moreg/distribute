@@ -63,7 +63,7 @@ public class Task {
                 }else if (start.getTime() - now.getTime() <= -1500000){
                     System.out.println(distribute.get(i).getId());
                     distribute1.setId(distribute.get(i).getId());
-                    distribute1.setStatus(5);
+                    distribute1.setStatus(9);
                     networkDao.SubmitRecordingNetwork(distribute1);
                     System.out.println("超时返回主管");
                 }
@@ -85,16 +85,16 @@ public class Task {
                         return;
                     }
                     if (distribute.get(i).getActivation() == 1){//已激活
-                        distribute1.setLastFollowName("");
+                        distribute1.setLastFollowName(null);
                         distribute1.setStatus(2);
                         telemarkeDao.overTime(distribute1);
                     }else if (distribute.get(i).getActivation() == 0){//未激活
                         if (distribute.get(i).getLeaderSign() == 1){
-                            distribute1.setLastFollowName("");
+                            distribute1.setLastFollowName(null);
                             distribute1.setStatus(2);
                             telemarkeDao.overTime(distribute1);
                         }else if (distribute.get(i).getLeaderSign() == 0){
-                            distribute1.setStatus(5);
+                            distribute1.setStatus(9);
                             telemarkeDao.overTime(distribute1);
                         }
                     }

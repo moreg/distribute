@@ -80,10 +80,10 @@ public class NetworkServiceImpl implements NetworkService {
         return networkDao.appoint(ld);
     }
     @Override
-    public int orderTaking(Distribute network,String username) {
+    public int orderTaking(Distribute network,String username,String name) {
         Distribute network2 = networkDao.selectNetworkById(network.getId());
         Integer status = network2.getStatus();
-        String leader = userDao.queryDepartment2(username);
+        String leader = userDao.queryDepartment2(name);
         network.setLeaderName(leader);
         network.setStatus(10);
         if (status == 1 || status == 2){
@@ -205,7 +205,7 @@ public class NetworkServiceImpl implements NetworkService {
         File newFile = new File(filePath + newFileName);
         //复制操作
         file.transferTo(newFile);
-        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,5, Excel.class);
+        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,9, Excel.class);
         List ls = new ArrayList();
         Set set = userDao.findRoleByUserName2(username);
         User user = userDao.findByUserName(username);
@@ -289,7 +289,7 @@ public class NetworkServiceImpl implements NetworkService {
         if(networkFollow.getReturnPool() == 1){
             distribute = networkDao.selectNetworkById(networkFollow.getNetworkId());
             if (distribute.getStatus() == 8){//不服客户判断，退回主管
-                distribute.setStatus(5);
+                distribute.setStatus(9);
                 distribute.setInvalid(0);
                 distribute.setLeaderName(LeaderName);
                 distribute.setId(networkFollow.getNetworkId());
@@ -329,9 +329,7 @@ public class NetworkServiceImpl implements NetworkService {
 
         distribute.setTrackId(tid);
         int i = networkDao.updateBytrackId(distribute);
-        if (i < 0){
-            telemarkeDao.updateBytrackId(distribute);
-        }
+        telemarkeDao.updateBytrackId(distribute);
         return networkDao.UpdateRecordingNetwork(distribute);
     }
 
@@ -481,5 +479,10 @@ public class NetworkServiceImpl implements NetworkService {
         return networkDao.setOvertime(distribute);
     }
 
-
+    @Override
+    public int agree(Distribute distribute) {
+        distribute.setStatus(1);
+        distribute.setLastFollowName(null);
+        return networkDao.agree(distribute);
+    }
 }

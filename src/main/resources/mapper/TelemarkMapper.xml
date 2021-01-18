@@ -52,6 +52,7 @@
     <result column="other_phone"  property="otherPhone" />
     <result column="address"  property="address" />
     <result column="status"  property="status" />
+    <result column="activation"  property="activation" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -92,7 +93,7 @@
   <select id="armyListPoolList" resultMap="aMap" parameterType="String">
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address from customer_telemarke
+    source,last_follow_time,city,other_phone,address,status from customer_telemarke
     where  issue =0 and `status`= 0
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -110,7 +111,7 @@
   <select id="armyListPoolList2" resultMap="aMap" parameterType="String">
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address from customer_telemarke
+    source,last_follow_time,city,other_phone,address,status from customer_telemarke
     where issue = 1 and `status`in (0,1,2)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -128,7 +129,7 @@
   <!--主管我的客户-->
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,status from customer_telemarke
+    source,last_follow_time,city,other_phone,address,status,activation from customer_telemarke
     where (last_follow_name = #{lastFollowName} and status in (3,6,10)) or  (leader_name = #{lastFollowName} and status = 5)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -145,7 +146,7 @@
   <!--业务员我的客户-->
   <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,status from customer_telemarke
+    source,last_follow_time,city,other_phone,address,status,activation from customer_telemarke
     where last_follow_name = #{lastFollowName} and status in(10,3,6)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -162,7 +163,7 @@
   <!--我的客户待处理-->
   <select id="pendingNetworkList" resultMap="aMap" parameterType="String">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address from customer_telemarke
+    source,last_follow_time,city,other_phone,address,activation from customer_telemarke
     where  leader_name = #{lastFollowName} and `status` = 9
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -183,7 +184,7 @@
   </select>
   
   <select id="querySign" resultType="Integer">
-    select leader_sign from customer_telemarke where id = #{id}
+    select leader_sign from customer_telemarke where track_id = #{id}
   </select>
 
   <select id="qureyTelemarke" resultType="com.jdsw.distribute.vo.UpdateDistributeVo">
@@ -291,7 +292,9 @@
         first_follow_name = #{distribute.firstFollowName},
         appoint = 1,
         issue = 1,
-          status = #{distribute.status},
+        status = #{distribute.status},
+        leader_sign = #{distribute.leaderSign},
+        leader_name = #{distribute.leaderName},
         overdue_time = #{distribute.overdueTime}
       </set>
       <where>
@@ -305,7 +308,7 @@
   </update>
 
   <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set last_follow_name = #{lastFollowName},first_follow_name = #{lastFollowName} where id = #{id}
+    update customer_telemarke set last_follow_name = #{lastFollowName},first_follow_name = #{lastFollowName},leader_sign=#{leaderSign},status = #{status},leader_name = #{leaderName} where id = #{id}
   </update>
 
   <update id="updateNetworkLastFollowName" parameterType="com.jdsw.distribute.model.Distribute">
@@ -340,12 +343,17 @@
   </update>
 
   <update id="setOvertime" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set overdue_time = null ,last_follow_name = null,leader_name = #{leaderName},leader_sign =#{leaderSign}
-    <if test="status != null and status != ''">
-      ,status = #{status}
+    update customer_telemarke set
+    <if test="status != null">
+      status = #{status}
     </if>
-
-    where id=#{id}
+    <if test="leaderName != null and leaderName != ''">
+      ,leader_name = #{leaderName}
+    </if>
+    <if test="leaderSign != null ">
+      ,leader_sign = #{leaderSign}
+    </if>
+    where track_id = #{trackId}
   </update>
 
   <update id="assign" parameterType="java.util.List">

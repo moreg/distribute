@@ -157,7 +157,7 @@ public interface TelemarkeDao {
      * @param id
      * @return
      */
-    int querySign(Integer id);
+    int querySign(String id);
     /**
      * 状态查询
      * @param
