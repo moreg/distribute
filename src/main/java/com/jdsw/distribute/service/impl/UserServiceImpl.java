@@ -1,9 +1,7 @@
 package com.jdsw.distribute.service.impl;
 
 import com.github.pagehelper.util.StringUtil;
-import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.Enterprise;
-import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.DateUtil;
 import com.github.pagehelper.PageHelper;
@@ -13,8 +11,8 @@ import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.util.MD5Utils;
 import com.jdsw.distribute.vo.UsersVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,6 +20,7 @@ import java.util.*;
 @Service(value = "userService")
 @SuppressWarnings("unchecked")
 public class UserServiceImpl implements UserService {
+    private static Logger logger = Logger.getLogger(UserService.class);
     @Autowired
 
     private UserDao userDao;

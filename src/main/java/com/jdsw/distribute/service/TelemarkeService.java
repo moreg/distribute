@@ -48,13 +48,6 @@ public interface TelemarkeService {
      * @return
      */
     int updateTelemarke(Distribute distribute);
-    /**
-     * 编辑查询客户信息
-     * @param id
-     * @return
-     */
-    List<Map> qureyTelemarke(Integer id);
-
 
     /**
      * 指定接单人
@@ -113,14 +106,6 @@ public interface TelemarkeService {
      * 提交财务
      */
     int SubmitRecordingNetwork(List<Distribute> network);
-
-
-    /**
-     * 未成交
-     * @param
-     * @return
-     */
-    int Unsettled();
 
     /**
      * 转单

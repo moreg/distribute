@@ -7,6 +7,7 @@ import com.github.pagehelper.util.StringUtil;
 import com.jdsw.distribute.dao.TelemarkeDao;
 import com.jdsw.distribute.dao.TelemarkeFollowDao;
 import com.jdsw.distribute.dao.UserDao;
+import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.model.Excel;
@@ -51,42 +52,49 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                 Network = telemarkDao.armyListPoolList2(content,strtime,endtime);
             }
         }
-
         PageInfo result = new PageInfo(Network);
         return result;
     }
     @Override
     public int insertTelemarke(Distribute distribute,String username,String name) {
-        String trackId = Rand.getTrackId("WL");//获得跟踪单号
+        String trackId = Rand.getTrackId("LJ");//获得跟踪单号
+        String str1 = name+"新建线索";
         distribute.setTrackId(trackId);
         Set set = userDao.findRoleByUserName2(username);
         User user = userDao.findByUserName(username);
+        DistributeFollow networkFollow = new DistributeFollow();
+        networkFollow.setFollowName(name);
+        networkFollow.setNetworkId(distribute.getId());
+        networkFollow.setFollowResult(str1);
+        distribute.setActivation(0);//默认未激活
+
         for (Object str : set) {
-            if (str.equals("业务员")) {
+            if (str.equals(Department.SALESMAN.value)) {//业务员
                 distribute.setLastFollowName(user.getName());
                 distribute.setFirstFollowName(user.getName());
                 distribute.setIssue(1);
-                distribute.setAppoint(0);
                 distribute.setStatus(10);
-                distribute.setActivation(0);
-                return telemarkDao.insertTelemarke(distribute);
+                telemarkDao.insertTelemarke(distribute);
+                networkFollow.setNetworkId(distribute.getId());
+                return telemarkeFollowDao.insertNetworkFollow(networkFollow);
             }
-            if (str.equals("部门主管")){
+            if (str.equals(Department.CHARGE.value)){//主管
                 distribute.setLeaderName(name);
                 distribute.setIssue(0);
-                distribute.setAppoint(0);
                 distribute.setStatus(5);
-                distribute.setActivation(0);
-                return telemarkDao.insertTelemarke(distribute);
+                telemarkDao.insertTelemarke(distribute);
+                networkFollow.setNetworkId(distribute.getId());
+                return telemarkeFollowDao.insertNetworkFollow(networkFollow);
             }
         }
-        distribute.setAppoint(0);
         distribute.setIssue(0);
         distribute.setStatus(0);
-        distribute.setActivation(0);
-        return telemarkDao.insertTelemarke(distribute);
+        telemarkDao.insertTelemarke(distribute);
+        networkFollow.setNetworkId(distribute.getId());
+        return telemarkeFollowDao.insertNetworkFollow(networkFollow);
     }
     @Override
+    @Transactional
     public int excelTelemarke(MultipartFile file,String username) throws Exception {
         String filePath = "E:\\upexl\\";
         File dir = new File(filePath);
@@ -102,27 +110,25 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         Set set = userDao.findRoleByUserName2(username);
         User user = userDao.findByUserName(username);
         for (Object str : set) {
-            if (str.equals("业务员")){
+            if (str.equals(Department.SALESMAN.value)){//业务员
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("WL");//获得跟踪单号
+                    String trackId = Rand.getTrackId("LJ");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("lastFollowName",user.getName());
                     map.put("firstFollowName",user.getName());
                     map.put("issue",1);
                     map.put("status",10);
-                    map.put("appoint",0);
+                    map.put("appoint",1);
                     map.put("activation",0);
                     ls.add(map);
                 }
-
-                return telemarkDao.excelTelemarke(ls);
-            }if (str.equals("部门主管")){//主管
+            }else if (str.equals(Department.CHARGE.value)){//主管
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("WL");//获得跟踪单号
+                    String trackId = Rand.getTrackId("LJ");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("leaderName",user.getName());
                     map.put("lastFollowName","");
@@ -134,19 +140,22 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                     map.put("activation",0);
                     ls.add(map);
                 }
-                return telemarkDao.excelTelemarke(ls);
-
+            }else {
+                for (int i = 0;i<result.size();i++){
+                    Object ob = result.get(i);
+                    Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
+                    String trackId = Rand.getTrackId("LJ");//获得跟踪单号
+                    map.put("trackId",trackId);
+                    map.put("lastFollowName","");
+                    map.put("firstFollowName","");
+                    map.put("issue",0);
+                    map.put("appoint",0);
+                    map.put("leaderSign",1);
+                    map.put("status",0);
+                    map.put("activation",0);
+                    ls.add(map);
+                }
             }
-        }
-        for (int i = 0;i<result.size();i++){
-            Object ob = result.get(i);
-            Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-            String trackId = Rand.getTrackId("WL");//获得跟踪单号
-            map.put("trackId",trackId);
-            map.put("issue",0);
-            map.put("status",0);
-            map.put("activation",0);
-            ls.add(map);
         }
         return telemarkDao.excelTelemarke(ls);
     }
@@ -159,11 +168,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public int updateTelemarke(Distribute distribute) {
         return telemarkDao.updateTelemarke(distribute);
     }
-    @Override
-    public List<Map> qureyTelemarke(Integer id) {
-        return telemarkDao.qureyTelemarke(id);
-    }
-
 
     @Override
     @Transactional
@@ -205,25 +209,22 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Override
     @Transactional
     public int orderTaking(Distribute network,String name) {
-        Distribute network2 = telemarkDao.selectNetworkById(network.getId());//查询是否是已经接过的线索
-        Integer status = network2.getStatus();
+        String str = name+"领取了线索";
+        DistributeFollow networkFollow = new DistributeFollow();
+        networkFollow.setFollowName(name);
+        networkFollow.setNetworkId(network.getId());
+        networkFollow.setFollowResult(str);
+        telemarkeFollowDao.insertNetworkFollow(networkFollow);
         network.setLeaderSign(0);
         String leader = userDao.queryDepartment2(name);
         network.setLeaderName(leader);
-        if (status == 1 || status == 2){//如果是跟进无效或者超时的
-           /* int o = telemarkDao.updateNetworkLastFollowName(network);
-            if (o > 0){
-                return 2;
-            }*/
-        }else {
-            network.setOverdueTime(DateUtil.getNextDay());
-            network.setActivation(0);
-            network.setStatus(10);
-            telemarkDao.updateworkOverdueTime(network);//修改激活时间
-            int i = telemarkDao.updateNetworkFirstFollowName(network);
-            if (i > 0){
+        network.setOverdueTime(DateUtil.getNextDay());
+        network.setActivation(0);
+        network.setStatus(10);
+        telemarkDao.updateworkOverdueTime(network);//修改激活时间
+        int i = telemarkDao.updateNetworkFirstFollowName(network);
+        if (i > 0){
                 return 1;
-            }
         }
         return 0;
     }
@@ -232,12 +233,12 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String username) {
         Set set = userDao.findRoleByUserName2(username);
         for (Object str : set) {
-            if (str.equals("部门主管")) {//主管
+            if (str.equals(Department.CHARGE.value)) {//主管
                 PageHelper.startPage(pageNum, limit);
                 List<Distribute> Network = telemarkDao.queryTelemarkeByLastName(content,strtime,endtime,lastFollowName);
                 PageInfo result = new PageInfo(Network);
                 return result;
-            }else if (str.equals("业务员")){//业务员
+            }else if (str.equals(Department.SALESMAN.value)){//业务员
                 PageHelper.startPage(pageNum, limit);
                 List<Distribute> Network = telemarkDao.queryTelemarkeByLastName2(content,strtime,endtime,lastFollowName);
                 PageInfo result = new PageInfo(Network);
@@ -303,15 +304,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
 
         }
         return telemarkDao.SubmitRecordingNetwork(distribute);
-    }
-    @Override
-    public int Unsettled() {
-        List<Distribute> ls = telemarkDao.Unsettled();
-        String date = DateUtil.getDateTime();
-        for (int i=0;i<ls.size();i++){
-
-        }
-        return 0;
     }
 
     @Override

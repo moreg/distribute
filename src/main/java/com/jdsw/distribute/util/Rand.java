@@ -9,12 +9,12 @@ public class Rand {
         String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random=new Random();
         StringBuffer sb=new StringBuffer();
-        for(int i=0;i<2;i++){
+        for(int i=0;i<4;i++){
             int number=random.nextInt(62);
             sb.append(str.charAt(number));
         }
         StringBuffer st=new StringBuffer(string);
-        SimpleDateFormat s = new SimpleDateFormat("yyMdssSS");
+        SimpleDateFormat s = new SimpleDateFormat("yyyyMMddssSSS");
         String strd = s.format(new Date());
         return st.append(sb).append(strd).toString();
     }

@@ -37,7 +37,12 @@ public interface NetworkDao {
      * @return
      */
     int updateNetworkLastFollowName (List<Distribute> distribute);
-
+    /**
+     *修改网络库跟踪人
+     * @param distribute
+     * @return
+     */
+    int updateNetworkLastFollowName2 (List<Distribute> distribute);
     /**
      * 抢单修改第一接单人和当前接单人
      * @param network
@@ -50,6 +55,14 @@ public interface NetworkDao {
      * @return
      */
     Distribute selectNetworkById(Integer id);
+
+    /**
+     * 抢单行锁
+     * @param id
+     * @return
+     */
+    Distribute selectNetworkById2(Integer id);
+
     /**
      * 查询我的客户
      * @param
@@ -73,12 +86,22 @@ public interface NetworkDao {
     List<Distribute> pendingNetworkList(String content, String strtime, String endtime,String lastFollowName);
 
     /*
-     * 空军池列表
+     * 空分发池列表
      */
-    List<Distribute> airForcePoolList(String content, String strtime, String endtime);
+    List<Distribute> airForcePoolList(String content, String strtime, String endtime,Integer issue,Integer status);
 
-    List<Distribute> airForcePoolList2(String content, String strtime, String endtime,String name);
+    /**
+     * 抢单池
+     * @return
+     */
+    List<Distribute> grabbingPool(Map map);
 
+    /**
+     * 跟单池
+     * @param map
+     * @return
+     */
+    List<Distribute> recordPool(Map map);
 
     /**
      * 客服待处理
@@ -89,14 +112,6 @@ public interface NetworkDao {
      */
     List<Distribute> pendingPoolList(String content, String strtime, String endtime);
 
-    /**
-     * 抢单列表
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @return
-     */
-    List<Distribute> grabbingOrdersList(String content, String strtime, String endtime);
     /**
      * 新增
      * @param distribute
@@ -124,12 +139,6 @@ public interface NetworkDao {
      */
     int updateNetwork(Distribute distribute);
 
-    /**
-     * 编辑查询
-     * @param id
-     * @return
-     */
-    List<Map> qureyNetwork(Integer id);
     /**
      * 超时
      * @param network
@@ -160,24 +169,8 @@ public interface NetworkDao {
      * @param
      * @return
      */
-    List<CashierVo> cashierListNetwork2(String content, String strtime, String endtime,String name);
-    /**
-     * 财务查询列表(业务员)
-     * @param
-     * @return
-     */
-    List<CashierVo> cashierListNetwork3(String content, String strtime, String endtime,String name);
-    /**
-     * 财务查询列表
-     * @param
-     * @return
-     */
-    List<CashierVo> cashierListNetwork(String content, String strtime, String endtime);
-    /**
-     * 未完成
-     * @return
-     */
-    List<Distribute> Unsettled();
+    List<CashierVo> cashierListNetwork(Map map);
+
     /**
      * 设置过期时间
      * @param
@@ -187,11 +180,6 @@ public interface NetworkDao {
 
     int insertDealOrder(Distribute distribute);
 
-    /**
-     *
-     * @return
-     */
-    List<Distribute> notice();
 
     /**
      * 查询超时时间
@@ -232,4 +220,11 @@ public interface NetworkDao {
      * @return
      */
     int agree(Distribute distribute);
+
+    /**
+     * 激活
+     * @param distribute
+     * @return
+     */
+    int activation(Distribute distribute);
 }

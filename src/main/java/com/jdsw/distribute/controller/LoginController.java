@@ -5,6 +5,7 @@ import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.JwtUtil;
 import com.jdsw.distribute.util.Message;
 import com.jdsw.distribute.service.MenuService;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -12,17 +13,15 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
 public class LoginController {
+    private static Logger logger = Logger.getLogger(LoginController.class);
     @Autowired
     private MenuService menuService;
     @Autowired
@@ -34,6 +33,7 @@ public class LoginController {
     @RequestMapping("/login")
     @ResponseBody
     public Message login(HttpSession session, HttpServletRequest request , @RequestBody User user, HttpServletResponse response) {
+
         String msg = "";
         String username = user.getUsername();
         String pwd = user.getPassword();
@@ -43,21 +43,13 @@ public class LoginController {
         try {
             User user2 = userService.findByUserName(username);
             subject.login(token);
-            //session.setAttribute("username",username);
-            //session.setAttribute("name",user2.getName());
             String toToken = JwtUtil.sign(username,user2.getId().toString(),user2.getName(),pwd);
-           // session.setAttribute("token",toToken);
-            //response.setHeader("token",toToken);
-            /*List li = new ArrayList();
-            li = menuService.getMenuLsit();*/
             Map map = new HashMap();
             map.put("token",toToken);
-            //map.put("permission",userService.findPermissionByUserName(username));
             map.put("role",userService.findRoleByUserName(username));
             map.put("userId",user2.getId());
             map.put("name",user2.getName());
             map.put("username",username);
-            //map.put("menus",li);
             return Message.success("登录成功",map);
         }  catch (IncorrectCredentialsException e) {
             msg = "登录密码错误. Password for account " + token.getPrincipal() + " was incorrect.";
@@ -74,7 +66,6 @@ public class LoginController {
         } catch (UnauthorizedException e) {
             msg = "您没有得到相应的授权！" + e.getMessage();
         }
-        //request.setAttribute("msg",msg);
         return Message.fail(msg);
 
 

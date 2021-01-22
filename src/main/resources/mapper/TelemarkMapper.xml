@@ -89,6 +89,11 @@
     from customer_telemarke where id =#{id}
   </select>
 
+  <select id="selectNetworkById2" resultMap="DistributeMap">
+    select *
+    from customer_telemarke where id =#{id}
+  </select>
+
 <!--客服陆军池-->
   <select id="armyListPoolList" resultMap="aMap" parameterType="String">
 
@@ -177,11 +182,6 @@
     </if>
     ORDER BY id DESC
   </select>
-
-  
-  <select id="Unsettled" resultType="com.jdsw.distribute.model.Distribute">
-    select id,overdue_time from customer_telemarke where status = 0
-  </select>
   
   <select id="querySign" resultType="Integer">
     select leader_sign from customer_telemarke where track_id = #{id}
@@ -212,7 +212,7 @@
     </foreach>
   </insert>
 
-  <insert id="insertTelemarke" parameterType="com.jdsw.distribute.model.Distribute">
+  <insert id="insertTelemarke" parameterType="com.jdsw.distribute.model.Distribute" useGeneratedKeys="true" keyProperty="id">
     insert into customer_telemarke(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,conduct,city,source,address
     ,create_time,other_phone,track_id
     <if test="lastFollowName !=null and lastFollowName !=''">

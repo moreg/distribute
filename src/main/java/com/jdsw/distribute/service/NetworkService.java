@@ -56,6 +56,19 @@ public interface NetworkService {
     PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username,String name);
 
     /**
+     * 抢单池
+     * @param map
+     * @return
+     */
+    PageInfo<Distribute> grabbingPool(Map map);
+
+    /**
+     * 空军跟单池
+     * @param map
+     * @return
+     */
+    PageInfo<Distribute> recordPool(Map map);
+    /**
      * 待处理
      * @param pageNum
      * @param limit
@@ -71,17 +84,17 @@ public interface NetworkService {
 
     /**
      * 新增
-     * @param distribute
+     * @param
      * @return
      */
-    int insertNetwoork(Distribute distribute,String username);
+    int insertNetwoork(Map map);
 
     /**
      * 导入网销线索
      * @param file
      * @return
      */
-    int excelNetwork(MultipartFile file,String username) throws Exception;
+    int excelNetwork(MultipartFile file,String username,String name) throws Exception;
     /**
      * 删除
      * @param
@@ -97,12 +110,6 @@ public interface NetworkService {
     int updateNetwork(Distribute distribute);
 
     /**
-     * 编辑查询客户信息
-     * @param id
-     * @return
-     */
-    List<Map> qureyNetwork(Integer id);
-    /**
      * 超时
      * @param network
      * @return
@@ -115,46 +122,27 @@ public interface NetworkService {
      * @return
      */
     int followupNetwork(DistributeFollow networkFollow,String username);
-
-
     /**
     * 提交财务
      */
     int SubmitRecordingNetwork(List<Distribute> network);
-
     /**
      * 财务录单
      * @param network
      * @return
      */
     int UpdateRecordingNetwork(Distribute network);
-
     /**
      * 财务完成列表
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @param username
      * @return
      */
-    PageInfo<CashierVo> cashierCompleteLis(int pageNum, int limit, String content, String strtime, String endtime,String username,String name);
-
+    PageInfo<CashierVo> cashierCompleteLis(Map map);
     /**
      * 财务查询列表
      * @param
      * @return
      */
-    PageInfo<CashierVo> cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime,String username);
-
-    /**
-     * 未成交
-     * @param
-     * @return
-     */
-    int Unsettled();
-
+    PageInfo<CashierVo> cashierListNetwork(Map map);
     /**
      * 主管转单
      * @param distribute
@@ -173,27 +161,17 @@ public interface NetworkService {
      * @return
      */
     int setOverdueTime(Distribute distribute);
-
     /**
      * 查询跟进列表
      * @return
      */
     List<DistributeFollow> qureyFollowList(Integer id);
-
-    /**
-     * 通知
-     * @return
-     * @throws Exception
-     */
-    List<Distribute> notice() throws Exception;
-
     /**
      * 退回给业务员
      * @param distribute
      * @return
      */
     int chargeback(Distribute distribute);
-
     /**
      * 跟单状态
      * @param pageNum
@@ -203,18 +181,23 @@ public interface NetworkService {
      * @return
      */
     PageInfo<Distribute> statusList(int pageNum, int limit, Integer status,String name);
-
     /**
      * 主动设置订单超时
      * @param distribute
      * @return
      */
     int setOvertime(Distribute distribute);
-
     /**
      * 客服同意
      * @param distribute
      * @return
      */
     int agree(Distribute distribute);
+
+    /**
+     * 激活
+     * @param distribute
+     * @return
+     */
+    int activation(Distribute distribute);
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jdsw.distribute.dao.CustomerDao">
+    <insert id="insertCustomer">
+    insert into (
+    <if test="corporateName != null and corporateName != ''">
+        corporate_name,
+    </if>
+    <if test="corporatePhone != null and corporatePhone != ''">
+        corporate_phone,
+    </if>
+    <if test="trackId != null and trackId != ''">
+        track_id,
+    </if>
+    <if test="grade !=null and grade != ''">
+        grade,
+    </if>
+    <if test="integral != null">
+        integral,
+    </if>
+    <if test="lastFollowName != null and lastFollowName != ''">
+        activation_name,
+    </if>
+    <if test="weChat != null and weChat !=''">
+        weChat,
+    </if>
+        activation_time
+    )values (
+        <if test="corporateName != null and corporateName != ''">
+            corporate_name = #{corporateName},
+        </if>
+        <if test="corporatePhone != null and corporatePhone != ''">
+            corporate_phone = #{corporatePhone},
+        </if>
+        <if test="trackId != null and trackId != ''">
+            track_id = #{trackId},
+        </if>
+        <if test="grade !=null and grade != ''">
+            grade = #{grade},
+        </if>
+        <if test="integral != null">
+            integral = #{integral},
+        </if>
+        <if test="lastFollowName != null and lastFollowName != ''">
+            activation_name = #{},
+        </if>
+        <if test="weChat != null and weChat !=''">
+            weChat = #{weChat},
+        </if>
+        sysdate()
+        )
+    </insert>
+</mapper>

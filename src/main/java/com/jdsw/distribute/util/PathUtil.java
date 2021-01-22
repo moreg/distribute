@@ -24,13 +24,13 @@ public class PathUtil {
     }
 
     //确定图片存放的绝对路径（未加上文件名）
-    public static String getImgPath(Integer userId,String str){
+    public static String getImgPath(String userId,String str){
         String imagPath="/"+str+"/"+userId+"/upload/images/";
         //imagPath=imagPath.replace("/",seperator)
         return imagPath;
     }
     //确定音频存放的绝对路径（未加上文件名）
-    public static String getVideoPath(Integer userId,String str){
+    public static String getVideoPath(String userId,String str){
         String videoPath="/"+str+"/"+userId+"/upload/video/";
         //videoPath=videoPath.replace("/",seperator)
         return videoPath;

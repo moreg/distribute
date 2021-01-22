@@ -35,24 +35,19 @@
   <resultMap id="aMap" type="com.jdsw.distribute.vo.AirForcePool">
     <result column="id"  property="id" />
     <result column="track_id"  property="trackId" />
-    <result column="name"  property="name" />
     <result column="corporate_name" property="corporateName" />
     <result column="corporate_phone"  property="corporatePhone" />
-    <result column="registered_capital"  property="registeredCapital" />
-    <result column="establish_time"  property="establishTime" />
-    <result column="operation"  property="operation" />
     <result column="issue"  property="issue" />
-    <result column="state"  property="state" />
     <result column="create_time"  property="createTime" />
     <result column="last_follow_name"  property="lastFollowName" />
     <result column="source"  property="source" />
     <result column="last_follow_time"  property="lastFollowTime" />
-    <result column="city"  property="city" />
-    <result column="other_phone"  property="otherPhone" />
-    <result column="address"  property="address" />
     <result column="overdue_time"  property="overdueTime" />
     <result column="status"  property="status" />
     <result column="leader_sign"  property="leaderSign" />
+    <result column="receiving_time"  property="receivingTime" />
+    <result column="last_follow_result"  property="lastFollowResult" />
+
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -75,10 +70,15 @@
     <result column="corporate_name"  property="corporateName" />
     <result column="order_state"  property="orderState" />
   </resultMap>
-  <sql id="Base_Column_List">
-    id,name, corporate_name, corporate_phone, contacts, contacts_phone, source, follow_number,state,last_follow_up,
-    last_follow_content,last_follow_time,last_follow_name,create_time,status,track_id,first_follow_name,appoint,leader_name
+  <sql id="Base_Pool_List">
+    id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
+    source,last_follow_time,city,other_phone,address,overdue_time,status
   </sql>
+
+  <sql id="PoolList">
+    id,track_id,corporate_name,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer
+  </sql>
+
   <select id="selectNetworkTrackId" resultType="String">
     select track_id from customer_network where id = #{id}
   </select>
@@ -87,12 +87,23 @@
     select *
     from customer_network where id =#{id}
   </select>
-  <!--客服空军池-->
+
+  <select id="selectNetworkById2" resultMap="DistributeMap">
+    select *
+    from customer_network where id =#{id} FOR UPDATE
+  </select>
+
+  <!--客服分发池-->
   <select id="airForcePoolList" resultMap="aMap" parameterType="String">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
-    where issue = 0  and `status` = 0
-    <if test="strtime != null and strtime!=''">
+    select <include refid="PoolList"></include> from customer_network
+    where 1 = 1
+        <if test="issue != null ">
+            AND issue = #{issue}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
         <if test="endtime != null and endtime!=''">
@@ -104,11 +115,26 @@
         </if>
     ORDER BY id DESC
   </select>
-  <!--业务员、主管空军池-->
-  <select id="airForcePoolList2" resultMap="aMap" parameterType="String">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
+  <!--抢单池-->
+  <select id="grabbingPool" resultMap="aMap" parameterType="Map">
+    select <include refid="PoolList"></include> from customer_network
     where  issue = 1 and `status` in (1,2,0)
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY id DESC
+  </select>
+  <!--跟单池-->
+  <select id="recordPool" resultMap="aMap" parameterType="Map">
+    select <include refid="PoolList"></include> from customer_network
+    where  issue = 1 and `status` = 10
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -123,8 +149,7 @@
   </select>
   <!--客服待处理-->
   <select id="pendingPoolList" resultMap="aMap" parameterType="String">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,overdue_time,status from customer_network
+    select <include refid="PoolList"></include> from customer_network
     where  `status` = 7
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -141,8 +166,8 @@
 
   <!--主管我的客户-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign from customer_network
+    select id,track_id,corporate_name,corporate_phone,status,last_follow_name,
+    source,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign from customer_network
     where  (last_follow_name = #{lastFollowName} and status in (3,6,10)) or  (leader_name = #{lastFollowName} and status in (5))
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -158,8 +183,8 @@
   </select>
   <!--业务员我的客户-->
   <select id="queryNetworkByLastName2" resultMap="aMap" parameterType="String">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign from customer_network
+    select id,track_id,corporate_name,corporate_phone,status,create_time,last_follow_name,
+    source,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign from customer_network
     where  last_follow_name = #{lastFollowName} and status in(10,3,6,8)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -175,9 +200,7 @@
   </select>
   <!--我的客户待处理-->
   <select id="pendingNetworkList" resultMap="aMap" parameterType="String">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,status,create_time,last_follow_name,
-    source,last_follow_time,city,other_phone,address from customer_network
-    where  leader_name = #{lastFollowName} and `status` = 9
+    SELECT * from (SELECT id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_result,status,leader_name from customer_network WHERE `status` = 9 UNION all SELECT id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_result,status,leader_name FROM customer_telemarke WHERE `status` =9 ) as t  WHERE leader_name = #{lastFollowName}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -188,12 +211,18 @@
       <bind name="content" value="'%' + content + '%'" ></bind>
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
-    ORDER BY id DESC
+    ORDER BY create_time DESC
   </select>
-
-  <select id="cashierListNetwork" resultMap="cashierMap" parameterType="String">
+  <!--跟单管理-->
+  <select id="cashierListNetwork" resultMap="cashierMap" parameterType="Map">
     select id,name,corporate_name,create_time,source,last_follow_name,track_id,order_state from deal_order
-    where order_state = 0
+    where 1 = 1
+    <if test="name != null and name !=''">
+      and last_follow_name = #{name}
+    </if>
+    <if test="orderState != null ">
+    and order_state = #{orderState}
+    </if>
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -205,47 +234,6 @@
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
     ORDER BY id DESC
-  </select>
-
-  <select id="cashierListNetwork2" resultMap="cashierMap" parameterType="String">
-    select id,name,corporate_name,create_time,source,last_follow_name,track_id,order_state from deal_order
-    where order_state = 1
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY id DESC
-  </select>
-
-  <select id="cashierListNetwork3" resultMap="cashierMap" parameterType="String">
-    select id,name,corporate_name,create_time,source,last_follow_name,track_id,order_state from deal_order
-    where order_state = 1 and last_follow_name = #{name}
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY id DESC
-  </select>
-
-  <select id="Unsettled" resultType="com.jdsw.distribute.model.Distribute">
-    select id,overdue_time from customer_network where status = 0
-  </select>
-
-  <select id="qureyNetwork" resultType="com.jdsw.distribute.vo.UpdateDistributeVo">
-    select id,name,corporate_name as corporateName,corporate_phone as corporatePhone,deal_time as dealTime,registered_capital as registeredCapital,operation,conduct,city,source,address
-    ,other_phone as otherPhone from customer_network where id = #{id}
   </select>
 
   <select id="notice" resultMap="DistributeMap">
@@ -291,8 +279,6 @@
                   id = #{distribute.id}
                 </where>
           </foreach>
-
-
   </update>
 
   <update id="updateNetworkTrackId" parameterType="com.jdsw.distribute.model.Distribute">
@@ -333,6 +319,39 @@
         </where>
 
     </foreach>
+    </if>
+  </update>
+
+  <update id="updateNetworkLastFollowName2" parameterType="java.util.List">
+    <if test="list!=null">
+      <foreach collection="list" item="Distribute" index="index" open="" close="" separator=";">
+        update customer_network
+        <set>
+          <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != ''">
+            last_follow_name =#{Distribute.lastFollowName},
+          </if>
+          <if test="Distribute.firstFollowName != null and Distribute.firstFollowName != ''">
+            first_follow_name =#{Distribute.firstFollowName},
+          </if>
+          <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
+            leader_name = #{Distribute.leaderName},
+          </if>
+          <if test="Distribute.overdueTime != null">
+            overdue_time = #{Distribute.overdueTime},
+          </if>
+          <if test="Distribute.status != null">
+            status = #{Distribute.status},
+          </if>
+          <if test="Distribute.leaderSign != null">
+            leader_sign = #{Distribute.leaderSign},
+          </if>
+          issue = 1
+        </set>
+        <where>
+          track_id=#{Distribute.trackId}
+        </where>
+
+      </foreach>
     </if>
   </update>
 
@@ -425,7 +444,17 @@
   </update>
 
   <update id="agree" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set status = #{status},last_follow_name = #{lastFollowName} where id = #{id}
+    update customer_network set
+    <if test="status != null">
+      status = #{status}
+    </if>
+    <if test="lastFollowName ! = null and lastFollowName !=''">
+      ,last_follow_name = #{lastFollowName}
+    </if>
+    <if test="overdueTime != null and overdueTime !=''">
+      ,verdue_time = #{overdueTime}
+    </if>
+     where id = #{id}
   </update>
 
   <!--删除-->
@@ -433,10 +462,10 @@
    delete from customer_network where id = #{id}
  </delete>
 
-<!--新增-->
-  <insert id="insertNetwoork" parameterType="com.jdsw.distribute.model.Distribute">
-    insert into customer_network(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,conduct,city,source,address
-    ,create_time,other_phone,track_id
+  <!--新增-->
+  <insert id="insertNetwoork"  parameterType="com.jdsw.distribute.model.Distribute" useGeneratedKeys="true" keyProperty="id">
+    insert into customer_network(corporate_name,corporate_phone,source
+    ,create_time,track_id
     <if test="lastFollowName !=null and lastFollowName !=''">
       ,last_follow_name
     </if>
@@ -445,9 +474,6 @@
     </if>
     <if test="issue !=null">
       ,issue
-    </if>
-    <if test="appoint !=null">
-      ,appoint
     </if>
     <if test="leaderName !=null">
       ,leader_name
@@ -458,10 +484,34 @@
     <if test="status !=null">
       ,status
     </if>
+    <if test="lastFollowResult != null">
+      ,last_follow_result
+    </if>
+    <if test="activation != null ">
+      ,activation
+    </if>
+    <if test="proposer != null and proposer != ''">
+      ,proposer
+    </if>
+    <if test="appoint != null">
+      ,appoint
+    </if>
+    <if test="sign != null">
+      ,sign
+    </if>
+    <if test="invalid != null">
+      ,invalid
+    </if>
+    <if test="branch != null and branch !=''">
+      ,branch
+    </if>
+    <if test="receivingTime != null">
+      ,receiving_time
+    </if>
+
     )
     values (
-    #{name},#{corporateName},#{corporatePhone},#{establishTime},#{registeredCapital},#{operation},#{conduct},#{city},#{source},#{address},sysdate(),
-    #{otherPhone},#{trackId}
+    #{corporateName},#{corporatePhone},#{source},sysdate(),#{trackId}
     <if test="lastFollowName !=null and lastFollowName !=''">
       ,#{lastFollowName}
     </if>
@@ -470,9 +520,6 @@
     </if>
     <if test="issue !=null">
       ,#{issue}
-    </if>
-    <if test="appoint !=null">
-      ,#{appoint}
     </if>
     <if test="leaderName !=null">
       ,#{leaderName}
@@ -483,9 +530,33 @@
     <if test="status != null">
       ,#{status}
     </if>
+    <if test="lastFollowResult != null">
+      ,#{lastFollowResult}
+    </if>
+    <if test="activation != null ">
+      ,#{activation}
+    </if>
+    <if test="proposer != null and proposer != ''">
+      ,#{proposer}
+    </if>
+    <if test="appoint != null">
+      ,#{appoint}
+    </if>
+    <if test="sign != null">
+      ,#{sign}
+    </if>
+    <if test="invalid != null">
+      ,#{invalid}
+    </if>
+    <if test="branch != null and branch != ''">
+      ,#{branch}
+    </if>
+    <if test="receivingTime != null and receivingTime != ''">
+      ,#{receivingTime}
+    </if>
     )
   </insert>
-
+  <!--Excel导入-->
   <insert id="excelNetwork" parameterType="java.util.List">
     insert into customer_network(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,address
     ,create_time,status,other_phone,track_id,last_follow_name,first_follow_name,issue,appoint,leader_name,leader_sign
@@ -503,5 +574,7 @@
     insert into deal_order(name,corporate_name,create_time,source,last_follow_name,track_id,conduct,order_state)
     values (#{name},#{corporateName},#{createTime},#{source},#{lastFollowName},#{trackId},#{conduct},0)
   </insert>
-
+  <insert id="activation" parameterType="com.jdsw.distribute.model.Distribute">
+    insert
+  </insert>
 </mapper>

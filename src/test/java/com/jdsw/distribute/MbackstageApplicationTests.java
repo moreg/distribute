@@ -18,7 +18,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
@@ -183,33 +187,24 @@ public class MbackstageApplicationTests {
         SimpleHash result = new SimpleHash(hashAlgorithmName, source, byteSalt, hashIterations);
         return result.toString();
     }
-    @Test
-    public void json() throws IntrospectionException, InstantiationException, IllegalAccessException, NoSuchFieldException, InvocationTargetException {
-/** 方法一
- * fileName:Excel文件路径
- * StatrRow：读取的开始行数（默认填0）
- * EndRow：读取的结束行数（填-1为全部）
- * ExistTop:是否存在头部（如存在则读取数据时会把头部拼接到对应数据作为KEY，若无则KEY为当前列数）
- */
-       /* List<Map<String,Object>> result = excelRead.ReadExcelByRC("E:\\高级搜索导出数据.xlsx",2,10,false);
-        System.out.println(result.size());
-        System.out.println(result);*/
 
-        /**
-         * 方法二
-         * ReadExcelByPOJO(String fileName, int StatrRow, int EndRow, Class t)
-         * fileName:Excel文件路径
-         * StatrRow：读取的开始行数（默认填0）
-         * EndRow：读取的结束行数（填-1为全部）
-         * Class<T>：传过来的实体类类型
-         */
-        List<Object> result2 = excelRead.ReadExcelByPOJO("E:\\高级搜索导出数据.xlsx",0,-1, Excel.class);
-        System.out.println(result2.size());
-        System.out.println(result2);
-    }
     @Test
     public void role(){
         System.out.println();
         us.queryDepartment("zc");
+    }
+    DefaultTransactionDefinition defaultTransactionDefinition;
+
+    DataSourceTransactionManager dataSourceTransactionManager;
+
+
+    TransactionStatus status;
+    private void lockUser(){
+/*        dataSourceTransactionManager = new DataSourceTransactionManager(dataSource);
+        defaultTransactionDefinition = new DefaultTransactionDefinition();
+        defaultTransactionDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        status = dataSourceTransactionManager.getTransaction(defaultTransactionDefinition);*/
+/*        log.info("锁住id为1的信息");
+        testMapper.selectById(2);*/
     }
 }

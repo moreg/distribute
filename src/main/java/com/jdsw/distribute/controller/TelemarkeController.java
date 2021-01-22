@@ -101,15 +101,6 @@ public class TelemarkeController {
         return  Message.fail();
     }
     /**
-     * 编辑获取客户资料接口
-     * @param id
-     * @return
-     */
-    @RequestMapping("/qureyTelemarke")
-    public Message qureyTelemarke(Integer id){
-        return Message.success("操作成功",telemarkService.qureyTelemarke(id));
-    }
-    /**
      * 线索分发
      * @param
      * @return
@@ -203,11 +194,11 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/uploadImg")
-    public Message  uploadImg(@RequestParam("img") MultipartFile[] img, HttpServletRequest request, @RequestParam("id")Integer id){
+    public Message  uploadImg(@RequestParam("img") MultipartFile[] img, HttpServletRequest request, @RequestParam("trackId")String trackId){
         String uploadPathDB=null;
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(id,img,"DX");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"DX");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -222,11 +213,11 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping(value = "/uploadFile")
-    public Message  uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("id")Integer id){
+    public Message  uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("trackId")String trackId){
         Map map=new HashMap();
         String uploadPathDB=null;
         try {
-            uploadPathDB= VideoUtil.saveVideo(id,file,"DX");
+            uploadPathDB= VideoUtil.saveVideo(trackId,file,"DX");
         }catch (IOException e) {
             e.printStackTrace();
             return Message.fail("上传失败");

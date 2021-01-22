@@ -22,7 +22,7 @@ public class ImageUtil {
      * 处理图片并对图片进行本地保存
      * 并返回新生成图片的相对值路径
      */
-    public static String saveImage(Integer userId, MultipartFile[] files,String str) throws IOException {
+    public static String saveImage(String userId, MultipartFile[] files,String str) throws IOException {
         //从pathUtil中获取图片基础路径和相对路径
         String basePath = PathUtil.getBasePath();
         String uploadPath = null;

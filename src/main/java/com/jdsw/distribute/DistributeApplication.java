@@ -6,6 +6,7 @@ import org.apache.catalina.filters.CorsFilter;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -19,7 +20,6 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @EnableCaching
 @EnableScheduling
 public class DistributeApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(DistributeApplication.class, args);
     }

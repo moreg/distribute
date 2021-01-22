@@ -20,7 +20,7 @@ public class VideoUtil {
      * 处理视频并保存视频
      * 并返回新生成图片的相对值路径
      */
-    public static String saveVideo(Integer userId, MultipartFile file,String str) throws IOException {
+    public static String saveVideo(String userId, MultipartFile file,String str) throws IOException {
         //从pathUtil中获取图片基础路径和相对路径
         String basePath = PathUtil.getBasePath();
         String uploadPath = PathUtil.getVideoPath(userId,str);
