@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,6 +42,24 @@ public class TelemarkeController {
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
         return Message.success("操作成功",telemarkService.armyListPoolList(pageNum,limit,content,strtime,endtime,username),0);
+    }
+    /**
+     * 抢单池
+     * @return
+     */
+    @RequestMapping("/grabbingPool")
+    public Message grabbingPool(int pageNum, int limit, String content, String strtime, String endtime, Distribute network, HttpServletRequest request, HttpServletResponse response){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map mapl = new HashMap();
+        mapl.put("pageNum",pageNum);
+        mapl.put("limit",limit);
+        mapl.put("content",content);
+        mapl.put("strtime",strtime);
+        mapl.put("endtime",endtime);
+        return Message.success("查询成功",telemarkService.grabbingPool(mapl));
     }
     /**
      * 新增

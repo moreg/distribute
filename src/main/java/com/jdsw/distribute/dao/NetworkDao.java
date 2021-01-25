@@ -88,7 +88,7 @@ public interface NetworkDao {
     /*
      * 空分发池列表
      */
-    List<Distribute> airForcePoolList(String content, String strtime, String endtime,Integer issue,Integer status);
+    List<Distribute> airForcePoolList(Map map);
 
     /**
      * 抢单池
@@ -101,8 +101,7 @@ public interface NetworkDao {
      * @param map
      * @return
      */
-    List<Distribute> recordPool(Map map);
-
+    List<Distribute> withPool(Map map);
     /**
      * 客服待处理
      * @param content
@@ -227,4 +226,8 @@ public interface NetworkDao {
      * @return
      */
     int activation(Distribute distribute);
+    /**
+     * 跟进修改订单
+     */
+    int updateNetwork2(Distribute distribute);
 }

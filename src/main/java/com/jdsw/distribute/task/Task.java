@@ -30,11 +30,6 @@ public class Task {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    //每隔2秒执行一次
-    /*@Scheduled(fixedRate = 2000)
-    public void testTasks() {
-        System.out.println("定时任务执行时间：" + dateFormat.format(new Date()));
-    }*/
 
     //一分钟执行一次
     @Async

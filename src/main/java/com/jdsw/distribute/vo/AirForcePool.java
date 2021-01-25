@@ -21,4 +21,6 @@ public class AirForcePool {
     private Integer activation;
     private  Date receivingTime;
     private String lastFollowResult;
+    private Integer sign;
+    private String proposer;
 }

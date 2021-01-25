@@ -43,23 +43,27 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Override
     public PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,String username) {
         PageHelper.startPage(pageNum, limit);
-        Set set = userDao.findRoleByUserName(username);
-        List<Distribute> Network = null;
-        for (Object str : set) {
-            if (Integer.parseInt((String) str) == 1){
-                Network = telemarkDao.armyListPoolList(content,strtime,endtime);
-            }else if (Integer.parseInt((String) str) == 6 || Integer.parseInt((String) str) == 4){
-                Network = telemarkDao.armyListPoolList2(content,strtime,endtime);
-            }
-        }
+        List<Distribute> Network = telemarkDao.armyListPoolList(content,strtime,endtime);
         PageInfo result = new PageInfo(Network);
         return result;
     }
+
+    @Override
+    public PageInfo<Distribute> grabbingPool(Map map) {
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
+        PageHelper.startPage(pageNum, limit);
+        List<Distribute> Network = telemarkDao.grabbingPool(map);
+        PageInfo result = new PageInfo(Network);
+        return result;
+    }
+
     @Override
     public int insertTelemarke(Distribute distribute,String username,String name) {
         String trackId = Rand.getTrackId("LJ");//获得跟踪单号
         String str1 = name+"新建线索";
         distribute.setTrackId(trackId);
+        String leader = userDao.queryDepartment3(name);
         Set set = userDao.findRoleByUserName2(username);
         User user = userDao.findByUserName(username);
         DistributeFollow networkFollow = new DistributeFollow();
@@ -67,30 +71,40 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         networkFollow.setNetworkId(distribute.getId());
         networkFollow.setFollowResult(str1);
         distribute.setActivation(0);//默认未激活
-
+        distribute.setSign(1);
+        distribute.setProposer(name);
+        distribute.setAppoint(0);
         for (Object str : set) {
             if (str.equals(Department.SALESMAN.value)) {//业务员
                 distribute.setLastFollowName(user.getName());
                 distribute.setFirstFollowName(user.getName());
                 distribute.setIssue(1);
                 distribute.setStatus(10);
-                telemarkDao.insertTelemarke(distribute);
-                networkFollow.setNetworkId(distribute.getId());
-                return telemarkeFollowDao.insertNetworkFollow(networkFollow);
-            }
-            if (str.equals(Department.CHARGE.value)){//主管
+                distribute.setAppoint(1);
+                distribute.setLeaderName(leader);
+            }else if (str.equals(Department.CHARGE.value)){//主管
                 distribute.setLeaderName(name);
                 distribute.setIssue(0);
                 distribute.setStatus(5);
-                telemarkDao.insertTelemarke(distribute);
-                networkFollow.setNetworkId(distribute.getId());
-                return telemarkeFollowDao.insertNetworkFollow(networkFollow);
+            }else if (str.equals(Department.ARMCUSTOMER.value)){//线索管理员
+                distribute.setLastFollowName(distribute.getLastFollowName());
+                distribute.setFirstFollowName(distribute.getLastFollowName());
+                distribute.setIssue(0);
+                distribute.setStatus(0);
+                if (StringUtil.isNotEmpty(distribute.getLastFollowName())){
+                    distribute.setIssue(1);
+                    distribute.setStatus(10);
+                    String leader2 = userDao.queryDepartment3(distribute.getLastFollowName());
+                    distribute.setLeaderName(leader2);
+                }else if (StringUtil.isNotEmpty(distribute.getBranch())){
+                    distribute.setIssue(1);
+                }
             }
         }
-        distribute.setIssue(0);
-        distribute.setStatus(0);
         telemarkDao.insertTelemarke(distribute);
         networkFollow.setNetworkId(distribute.getId());
+        telemarkeFollowDao.insertNetworkFollow(networkFollow);
+        networkFollow.setFollowResult(distribute.getLastFollowResult());
         return telemarkeFollowDao.insertNetworkFollow(networkFollow);
     }
     @Override

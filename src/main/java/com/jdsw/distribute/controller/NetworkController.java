@@ -35,7 +35,7 @@ public class NetworkController {
      * 空军线索
      */
     @RequestMapping("/airForcePoolList")
-    public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute network, HttpServletRequest request, HttpServletResponse response){
+    public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute distribute, HttpServletRequest request, HttpServletResponse response){
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
@@ -47,7 +47,10 @@ public class NetworkController {
         mapl.put("content",content);
         mapl.put("strtime",strtime);
         mapl.put("endtime",endtime);
-        return Message.success("操作成功",distributeService.airForcePoolList(pageNum,limit,network,content,strtime,endtime,username,name),0);
+        mapl.put("distribute",distribute);
+        mapl.put("username",username);
+        mapl.put("name",name);
+        return Message.success("操作成功",distributeService.airForcePoolList(mapl),0);
     }
 
     /**
@@ -70,19 +73,18 @@ public class NetworkController {
     }
 
     /**
-     * 空军跟单池
+     * 跟单池
      * @param pageNum
      * @param limit
      * @param content
      * @param strtime
      * @param endtime
-     * @param network
+     * @param distribute
      * @param request
-     * @param response
      * @return
      */
-    @RequestMapping("/recordPool")
-    public Message recordPool(int pageNum, int limit, String content, String strtime, String endtime, Distribute network, HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping("/withPool")
+    public Message withPool(int pageNum, int limit, String content, String strtime, String endtime, Distribute distribute, HttpServletRequest request){
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
@@ -93,35 +95,9 @@ public class NetworkController {
         mapl.put("content",content);
         mapl.put("strtime",strtime);
         mapl.put("endtime",endtime);
-        mapl.put("endtime",name);
         mapl.put("username",username);
-        return Message.success("查询成功",distributeService.recordPool(mapl));
-    }
-    /**
-     * 客服待处理
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @param network
-     * @param session
-     * @return
-     */
-    @RequestMapping("/pendingPoolList")
-    public Message pendingPoolList(int pageNum, int limit,String content, String strtime, String endtime, Distribute network,HttpSession session,HttpServletRequest request){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
-        //String username = (String) request.getAttribute("username");
-        Map mapl = new HashMap();
-        mapl.put("pageNum",pageNum);
-        mapl.put("limit",limit);
-        mapl.put("content",content);
-        map.put("strtime",strtime);
-        map.put("endtime",endtime);
-        return Message.success("操作成功",distributeService.pendingPoolList(pageNum,limit,network,content,strtime,endtime,username),0);
+        mapl.put("name",name);
+        return Message.success("查询成功",distributeService.withPool(mapl));
     }
     /**
      * 新增

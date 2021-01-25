@@ -142,21 +142,20 @@ public class NetworkServiceImpl implements NetworkService {
 
 
     @Override
-    public PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username,String name) {
-        Set set = userDao.findRoleByUserName2(username);
-        Integer issue = 0;
-        Integer status = 0;
-
+    public PageInfo<Distribute> airForcePoolList(Map map) {
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
+        Distribute distribute = (Distribute) map.get("distribute");
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
         for (Object str : set) {
-            if (str.equals(Department.CUSTOMER.value)){//线索管理员
+            if (str.equals(Department.AirCUSTOMER.value)){//线索管理员
                 PageHelper.startPage(pageNum,limit);
-                List<Distribute> Network = networkDao.airForcePoolList(content,strtime,endtime,issue,status);
+                List<Distribute> Network = networkDao.airForcePoolList(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
             }
         }
         return null;
-
     }
 
     @Override
@@ -167,11 +166,14 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public PageInfo<Distribute> recordPool(Map map) {
-        List<Distribute> Network = networkDao.recordPool(map);
+    public PageInfo<Distribute> withPool(Map map) {
+        map.put("lastFollowName",map.get("name"));
+        List<Distribute> Network = networkDao.withPool(map);
         PageInfo result = new PageInfo(Network);
         return result;
     }
+
+
 
     @Override
     public PageInfo<Distribute> pendingPoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime, String username) {
@@ -226,12 +228,18 @@ public class NetworkServiceImpl implements NetworkService {
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
                     distribute.setReceivingTime(df.format(new Date()));
                     distribute.setStatus(10);
+                    distribute.setIssue(1);
+                    String LeaderName2 = userDao.queryDepartment3(distribute.getLastFollowName());//获取主管
+                    distribute.setLeaderName(LeaderName2);
+                }else if (StringUtils.isNotEmpty(distribute.getBranch())){
+                    distribute.setIssue(1);
+                    distribute.setStatus(0);
+                }else {
+                    distribute.setIssue(0);
+                    distribute.setStatus(0);
                 }
-                distribute.setIssue(0);
-                distribute.setStatus(0);
                 distribute.setLeaderSign(1);
                 distribute.setProposer((String) map.get("name"));
-                distribute.setLeaderName(LeaderName);
             }
         }
         networkDao.insertNetwoork(distribute);
@@ -327,18 +335,21 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     @Transactional
     public int followupNetwork(DistributeFollow networkFollow,String username) {
-        Distribute distribute;
-        String LeaderName = userDao.queryDepartment2(username);
+        Distribute distribute = null;
         if(networkFollow.getReturnPool() == 1){
             distribute = networkDao.selectNetworkById(networkFollow.getNetworkId());
             //退回客服
             distribute.setStatus(7);
+            distribute.setIssue(3);
             distribute.setInvalid(1);
             distribute.setId(networkFollow.getNetworkId());
             networkFollowDao.insertNetworkFollow(networkFollow);
             return networkDao.SubmitRecordingNetwork(distribute);
         }
-        networkFollowDao.updateFolloupNetwork(networkFollow);
+        distribute.setLastFollowResult(networkFollow.getFollowResult());
+        distribute.setTrackId(networkFollow.getTrackId());
+        distribute.setOverdueTime(networkFollow.getFollowTime());
+        networkDao.updateNetwork2(distribute);
         return networkFollowDao.insertNetworkFollow(networkFollow);
     }
     @Override

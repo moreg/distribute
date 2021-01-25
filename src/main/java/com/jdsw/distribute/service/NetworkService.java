@@ -53,7 +53,7 @@ public interface NetworkService {
      * 空军池列表
      * @return
      */
-    PageInfo<Distribute> airForcePoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username,String name);
+    PageInfo<Distribute> airForcePoolList(Map map);
 
     /**
      * 抢单池
@@ -63,11 +63,12 @@ public interface NetworkService {
     PageInfo<Distribute> grabbingPool(Map map);
 
     /**
-     * 空军跟单池
+     * 跟单池
      * @param map
      * @return
      */
-    PageInfo<Distribute> recordPool(Map map);
+    PageInfo<Distribute> withPool(Map map);
+
     /**
      * 待处理
      * @param pageNum

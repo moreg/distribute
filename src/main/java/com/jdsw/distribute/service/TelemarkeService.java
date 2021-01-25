@@ -23,6 +23,13 @@ public interface TelemarkeService {
      * @return
      */
     PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,String username);
+
+    /**
+     * 抢单池
+     * @param map
+     * @return
+     */
+    PageInfo<Distribute> grabbingPool(Map map);
     /**
      * 新增
      * @param distribute
