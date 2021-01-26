@@ -64,15 +64,22 @@ public interface UserDao {
     List<Enterprise> queryEnterprise(String corporatePhone);
 
     /**
-     * 查询当前部门
+     * 查询当前部门主管名称
      * @param username
      * @return
      */
      String queryDepartment2(String username);
     /**
-     * 查询当前部门
-     * @param username
+     * 查询当前部门主管名
+     * @param
      * @return
      */
     String queryDepartment3(String name);
+
+    /**
+     * 查询自己所在的分公司名称
+     * @param username
+     * @return
+     */
+    String queryBranch(String username);
 }

@@ -1,7 +1,9 @@
 package com.jdsw.distribute.controller;
 
+import com.jdsw.distribute.model.Customer;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
+import com.jdsw.distribute.service.CustomerService;
 import com.jdsw.distribute.service.NetworkService;
 
 import com.jdsw.distribute.service.UserService;
@@ -29,7 +31,8 @@ public class NetworkController {
     private NetworkService distributeService;
     @Autowired
     private UserService userService;
-
+    @Resource
+    private CustomerService customerService;
 
     /**
      * 空军线索
@@ -285,6 +288,25 @@ public class NetworkController {
     }
 
     /**
+     * 激活客户
+     * @param request
+     * @param customer
+     * @return
+     */
+    @RequestMapping("/activation")
+    public Message activation(HttpServletRequest request, Customer customer){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map mapl = new HashMap();
+        mapl.put("username",username);
+        mapl.put("customer",customer);
+        mapl.put("name",name);
+        customerService.activation(mapl);
+        return Message.success();
+    }
+    /**
      * 上传图片
      * @param img
      * @param request
@@ -480,6 +502,19 @@ public class NetworkController {
     }
 
     /**
+     * 退单
+     * @param distribute
+     * @return
+     */
+    @RequestMapping("/returnPool")
+    public Message returnPool(@RequestBody Distribute distribute){
+        int i = distributeService.returnPool(distribute);
+        if (i > 0) {
+            return Message.success("操作成功");
+        }
+        return Message.fail();
+    }
+    /**
      * 退回给业务员
      * @param distribute
      * @return
@@ -493,6 +528,22 @@ public class NetworkController {
         return Message.fail();
     }
 
+    /**
+     * 通过
+     * @param
+     * @param
+     * @param
+     * @param
+     * @return
+     */
+    @RequestMapping("/adopt")
+    public Message adopt(@RequestBody Distribute distribute){
+        int i = distributeService.adopt(distribute);
+        if (i > 0 ){
+            return Message.success();
+        }
+        return  Message.fail();
+    }
     /**
      * 状态查询
      * @param pageNum
@@ -516,28 +567,6 @@ public class NetworkController {
     @RequestMapping("/setOvertime")
     public Message setOvertime(@RequestBody Distribute distribute){
         distributeService.setOvertime(distribute);
-        return Message.success();
-    }
-
-    /**
-     * 客服同意申请
-     * @param distribute
-     * @return
-     */
-    @RequestMapping("/agree")
-    public Message agree(@RequestBody Distribute distribute){
-        distributeService.agree(distribute);
-        return Message.success();
-    }
-
-    /**
-     * 激活
-     * @param distribute
-     * @return
-     */
-    @RequestMapping("/activation")
-    public Message activation(@RequestBody Distribute distribute){
-        distributeService.activation(distribute);
         return Message.success();
     }
 }

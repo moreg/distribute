@@ -79,7 +79,7 @@
   </sql>
 
   <sql id="PoolList">
-    id,track_id,corporate_name,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer,sign
+    id,track_id,corporate_name,corporate_phone,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer,sign
   </sql>
 
   <select id="selectNetworkTrackId" resultType="String">
@@ -89,6 +89,11 @@
   <select id="selectNetworkById" resultMap="DistributeMap">
     select *
     from customer_network where id =#{id}
+  </select>
+
+  <select id="selectNetworkById3" resultMap="DistributeMap">
+    select *
+    from customer_network where track_id =#{trackId}
   </select>
 
   <select id="selectNetworkById2" resultMap="DistributeMap">
@@ -130,8 +135,8 @@
   </select>
   <!--跟单池-->
   <select id="withPool" resultMap="aMap" parameterType="Map">
-    SELECT * from (SELECT track_id,last_follow_name,last_follow_result,leader_name,activation,proposer,create_time,sign,source from customer_network WHERE
-    `status` = 10 UNION all SELECT track_id,last_follow_name,last_follow_result,leader_name,activation,proposer,create_time,sign,source FROM customer_telemarke WHERE `status` =10 )
+    SELECT * from (SELECT track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network WHERE
+    `status` = 10 UNION all SELECT track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time FROM customer_telemarke WHERE `status` =10 )
     as t  WHERE last_follow_name = #{lastFollowName} and activation = 0
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -146,7 +151,7 @@
     ORDER BY create_time DESC
   </select>
   <!--客服待处理-->
-  <select id="pendingPoolList" resultMap="aMap" parameterType="String">
+  <select id="pendingPoolList" resultMap="aMap" parameterType="Map">
     select <include refid="PoolList"></include> from customer_network
     where  `status` = 7
     <if test="strtime != null and strtime!=''">
@@ -424,13 +429,13 @@
 
   <update id="updateNetwork2" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set
-    <if test="lastFollowTime != null">
+    <if test="lastFollowTime != null and lastFollowTime != ''">
       last_follow_time = #{lastFollowTime}
     </if>
-    <if test="overdueTime !=null and overdueTime != ''">
+    <if test="overdueTime !=null">
       ,overdue_time = #{overdueTime}
     </if>
-    <if test="last_follow_result != null and last_follow_result !=''">
+    <if test="lastFollowResult != null and lastFollowResult !=''">
       ,last_follow_result = #{lastFollowResult}
     </if>
     where track_id = #{trackId}
@@ -446,26 +451,30 @@
     <if test="status  !=null">
       status = #{status}
     </if>
+    <if test="activation  !=null">
+      ,activation = #{activation}
+    </if>
+    <if test="issue  !=null">
+      ,issue = #{issue}
+    </if>
+    <if test="overdueTime  !=null and overdueTime != ''">
+      ,overdue_time = #{overdueTime}
+    </if>
+    <if test="invalid  !=null">
+      ,invalid = #{invalid}
+    </if>
+    where track_Id = #{trackId}
+  </update>
+  <update id="updateBytrackId2" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_network
+    set
+    last_follow_name = #{lastFollowName},receiving_time = #{receivingTime},sign = #{sign}
     where track_Id = #{trackId}
   </update>
 
   <!--强制超时-->
   <update id="setOvertime" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set status = 5 where track_id = #{trackId}
-  </update>
-
-  <update id="agree" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set
-    <if test="status != null">
-      status = #{status}
-    </if>
-    <if test="lastFollowName ! = null and lastFollowName !=''">
-      ,last_follow_name = #{lastFollowName}
-    </if>
-    <if test="overdueTime != null and overdueTime !=''">
-      ,verdue_time = #{overdueTime}
-    </if>
-     where id = #{id}
   </update>
 
   <!--删除-->
@@ -584,8 +593,5 @@
   <insert id="insertDealOrder" parameterType="com.jdsw.distribute.model.Distribute">
     insert into deal_order(name,corporate_name,create_time,source,last_follow_name,track_id,conduct,order_state)
     values (#{name},#{corporateName},#{createTime},#{source},#{lastFollowName},#{trackId},#{conduct},0)
-  </insert>
-  <insert id="activation" parameterType="com.jdsw.distribute.model.Distribute">
-    insert
   </insert>
 </mapper>

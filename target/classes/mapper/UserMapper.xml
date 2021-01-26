@@ -99,16 +99,22 @@
 
   <select id="queryDepartment2" resultType="String">
     select u.`name` from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and r.id =
-(select leader from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and name = #{username} )
+(select leader from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and username = #{username} )
   </select>
   <select id="queryDepartment3" resultType="String">
     select u.`name` from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and r.id =
      (select leader from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and name = #{name} )
   </select>
+
+  <select id="queryBranch" resultType="String">
+    select branch from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and u.username = #{username}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" parameterType="com.jdsw.distribute.model.User">
     insert into user (id, username, password, 
       name, remarks, state, 

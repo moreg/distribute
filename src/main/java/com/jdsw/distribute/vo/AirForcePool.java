@@ -1,5 +1,6 @@
 package com.jdsw.distribute.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ public class AirForcePool {
     private String corporateName;
     private String corporatePhone;
     private Integer issue;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date createTime;
     private String lastFollowName;
     private Integer source;

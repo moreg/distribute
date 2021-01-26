@@ -57,6 +57,13 @@ public interface NetworkDao {
     Distribute selectNetworkById(Integer id);
 
     /**
+     * 跟进id查询网络库订单信息
+     * @param
+     * @return
+     */
+    Distribute selectNetworkById3(String trackId);
+
+    /**
      * 抢单行锁
      * @param id
      * @return
@@ -104,12 +111,12 @@ public interface NetworkDao {
     List<Distribute> withPool(Map map);
     /**
      * 客服待处理
-     * @param content
-     * @param strtime
-     * @param endtime
+     * @param
+     * @param
+     * @param
      * @return
      */
-    List<Distribute> pendingPoolList(String content, String strtime, String endtime);
+    List<Distribute> pendingPoolList(Map map);
 
     /**
      * 新增
@@ -200,6 +207,12 @@ public interface NetworkDao {
      */
     int updateBytrackId(Distribute distribute);
     /**
+     * 完成录单修改订单状态
+     * @param distribute
+     * @return
+     */
+    int updateBytrackId2(Distribute distribute);
+    /**
      * 强制超时
      * @param
      * @return
@@ -212,13 +225,6 @@ public interface NetworkDao {
      * @return
      */
     String qureydealOrder(Distribute distribute);
-
-    /**
-     * 客服同意
-     * @param distribute
-     * @return
-     */
-    int agree(Distribute distribute);
 
     /**
      * 激活

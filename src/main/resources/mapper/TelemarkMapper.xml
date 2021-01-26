@@ -48,7 +48,7 @@
     <result column="proposer"  property="proposer" />
     <result column="activation"  property="activation" />
     <result column="status"  property="status" />
-
+    <result column="sign"  property="sign" />
 
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
@@ -111,7 +111,7 @@
   </select>
   <!--抢单池-->
   <select id="grabbingPool" resultMap="aMap" parameterType="Map">
-    select id,track_id,source,last_follow_name,last_follow_result,proposer,corporate_name,create_time,issue from customer_telemarke
+    select id,track_id,source,last_follow_result,proposer,create_time,issue,sign,last_follow_name from customer_telemarke
     where  issue = 1 and `status` = 0
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -236,6 +236,9 @@
     <if test="branch !=null and branch != ''">
       ,branch
     </if>
+    <if test="sign !=null and sign != ''">
+      ,sign
+    </if>
     )
     values (
     #{name},#{corporateName},#{corporatePhone},#{source},#{address},sysdate(),#{trackId},#{proposer}
@@ -265,6 +268,9 @@
     </if>
     <if test="branch !=null and branch != ''">
       ,#{branch}
+    </if>
+    <if test="sign !=null and sign != ''">
+      ,#{sign}
     </if>
     )
   </insert>

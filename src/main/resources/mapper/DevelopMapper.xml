@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jdsw.distribute.dao.DevelopDao">
+    <insert id="insertDevelop" parameterType="com.jdsw.distribute.model.Distribute">
+        insert into customer_develop(
+        <if test="corporateName != null and corporateName !=''">
+            corporate_name
+        </if>
+        <if test="corporatePhone != null and corporatePhone !=''">
+            ,corporate_phone
+        </if>
+        <if test="source != null and source !=''">
+            ,source
+        </if>
+        <if test="lastFollowResult != null and lastFollowResult !=''">
+            ,last_follow_result
+        </if>
+        <if test="trackId != null and trackId !=''">
+            ,track_id
+        </if>
+        <if test="leaderName != null and leaderName !=''">
+            ,leader_name
+        </if>
+        <if test="branch != null and branch !=''">
+            ,branch
+        </if>
+        <if test="activation != null and activation !=''">
+            ,activation
+        </if>
+        )VALUES (
+        <if test="corporateName != null and corporateName !=''">
+            #{corporateName}
+        </if>
+        <if test="corporatePhone != null and corporatePhone !=''">
+            ,#{corporatePhone}
+        </if>
+        <if test="source != null and source !=''">
+            ,#{source}
+        </if>
+        <if test="lastFollowResult != null and lastFollowResult !=''">
+            ,#{lastFollowResult}
+        </if>
+        <if test="trackId != null and trackId !=''">
+            ,#{trackId}
+        </if>
+        <if test="leaderName != null and leaderName !=''">
+            ,#{leaderName}
+        </if>
+        <if test="branch != null and branch !=''">
+            ,#{branch}
+        </if>
+        <if test="activation != null and activation !=''">
+            ,#{activation}
+        </if>
+        )
+    </insert>
+
+</mapper>

@@ -59,13 +59,12 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
+    @Transactional
     public int insertTelemarke(Distribute distribute,String username,String name) {
         String trackId = Rand.getTrackId("LJ");//获得跟踪单号
         String str1 = name+"新建线索";
         distribute.setTrackId(trackId);
-        String leader = userDao.queryDepartment3(name);
         Set set = userDao.findRoleByUserName2(username);
-        User user = userDao.findByUserName(username);
         DistributeFollow networkFollow = new DistributeFollow();
         networkFollow.setFollowName(name);
         networkFollow.setNetworkId(distribute.getId());
@@ -73,20 +72,8 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         distribute.setActivation(0);//默认未激活
         distribute.setSign(1);
         distribute.setProposer(name);
-        distribute.setAppoint(0);
         for (Object str : set) {
-            if (str.equals(Department.SALESMAN.value)) {//业务员
-                distribute.setLastFollowName(user.getName());
-                distribute.setFirstFollowName(user.getName());
-                distribute.setIssue(1);
-                distribute.setStatus(10);
-                distribute.setAppoint(1);
-                distribute.setLeaderName(leader);
-            }else if (str.equals(Department.CHARGE.value)){//主管
-                distribute.setLeaderName(name);
-                distribute.setIssue(0);
-                distribute.setStatus(5);
-            }else if (str.equals(Department.ARMCUSTOMER.value)){//线索管理员
+           if (str.equals(Department.ARMCUSTOMER.value)){//线索管理员
                 distribute.setLastFollowName(distribute.getLastFollowName());
                 distribute.setFirstFollowName(distribute.getLastFollowName());
                 distribute.setIssue(0);
@@ -230,7 +217,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         networkFollow.setFollowResult(str);
         telemarkeFollowDao.insertNetworkFollow(networkFollow);
         network.setLeaderSign(0);
-        String leader = userDao.queryDepartment2(name);
+        String leader = userDao.queryDepartment3(name);
         network.setLeaderName(leader);
         network.setOverdueTime(DateUtil.getNextDay());
         network.setActivation(0);

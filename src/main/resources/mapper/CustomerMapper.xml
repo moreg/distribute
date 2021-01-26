@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jdsw.distribute.dao.CustomerDao">
-    <insert id="insertCustomer">
-    insert into (
+    <insert id="insertCustomer" parameterType="com.jdsw.distribute.model.Customer">
+    insert into customer(
     <if test="corporateName != null and corporateName != ''">
         corporate_name,
     </if>
     <if test="corporatePhone != null and corporatePhone != ''">
         corporate_phone,
     </if>
+    <if test="corporatePhone2 != null and corporatePhone2 != ''">
+        corporate_phone2,
+    </if>
+    <if test="corporatePhone3 != null and corporatePhone3 != ''">
+        corporate_phone3,
+    </if>
     <if test="trackId != null and trackId != ''">
         track_id,
     </if>
-    <if test="grade !=null and grade != ''">
-        grade,
-    </if>
-    <if test="integral != null">
-        integral,
-    </if>
-    <if test="lastFollowName != null and lastFollowName != ''">
+    <if test="activationName != null and activationName != ''">
         activation_name,
     </if>
     <if test="weChat != null and weChat !=''">
@@ -27,25 +27,25 @@
         activation_time
     )values (
         <if test="corporateName != null and corporateName != ''">
-            corporate_name = #{corporateName},
+            #{corporateName},
         </if>
         <if test="corporatePhone != null and corporatePhone != ''">
-            corporate_phone = #{corporatePhone},
+            #{corporatePhone},
+        </if>
+        <if test="corporatePhone2 != null and corporatePhone2 != ''">
+            #{corporatePhone2},
+        </if>
+        <if test="corporatePhone3 != null and corporatePhone3 != ''">
+            #{corporatePhone3},
         </if>
         <if test="trackId != null and trackId != ''">
-            track_id = #{trackId},
+            #{trackId},
         </if>
-        <if test="grade !=null and grade != ''">
-            grade = #{grade},
-        </if>
-        <if test="integral != null">
-            integral = #{integral},
-        </if>
-        <if test="lastFollowName != null and lastFollowName != ''">
-            activation_name = #{},
+        <if test="activationName != null and activationName != ''">
+            #{activationName},
         </if>
         <if test="weChat != null and weChat !=''">
-            weChat = #{weChat},
+            #{weChat},
         </if>
         sysdate()
         )

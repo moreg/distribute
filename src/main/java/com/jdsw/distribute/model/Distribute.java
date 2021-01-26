@@ -1,5 +1,6 @@
 package com.jdsw.distribute.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -32,13 +33,13 @@ public class Distribute {
      */
     Integer lastFollowUp;
     /**
-     * 最后个跟进内容
+     * 最后跟进内容
      */
     String lastFollowResult;
     /**
      * 最后跟进时间
      */
-    Date lastFollowTime;
+    String lastFollowTime;
     /**
      * 最后跟进人
      */
@@ -50,7 +51,8 @@ public class Distribute {
     /**
      * 录入时间
      */
-    String createTime;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
+    Date createTime;
     /**
      * 微信号
      */

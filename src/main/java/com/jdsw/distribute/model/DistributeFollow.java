@@ -19,10 +19,6 @@ public class DistributeFollow {
      */
     private String followResult;
     /**
-     * 联系方式
-     */
-    private Integer contactType;
-    /**
      * 网络线索ID
      */
     private Integer networkId;
@@ -30,10 +26,7 @@ public class DistributeFollow {
      * 图片地址
      */
     private String imgUrl;
-    /**
-     * 备注
-     */
-    private String remarks;
+
     /**
      * 录音
      */

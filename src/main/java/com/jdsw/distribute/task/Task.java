@@ -4,6 +4,7 @@ import com.jdsw.distribute.dao.NetworkDao;
 import com.jdsw.distribute.dao.TelemarkeDao;
 import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.model.Distribute;
+import com.jdsw.distribute.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +33,7 @@ public class Task {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     //一分钟执行一次
-    @Async
+   /* @Async
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void setOvertime() throws Exception {
         List<Distribute> distribute = networkDao.queryOverTime();
@@ -40,7 +41,7 @@ public class Task {
         Distribute distribute1 = null;
         for (int i=0;i<distribute.size();i++){
             distribute1 = new Distribute();
-            if (StringUtils.isNotEmpty(distribute.get(i).getOverdueTime())){
+            if (StringUtils.isNotEmpty(DateUtil.parseDate()distribute.get(i).getOverdueTime())){
 
                 Date start = sdf.parse(distribute.get(i).getOverdueTime());
                 if (start.getTime() - now.getTime() > 0 && start.getTime() - now.getTime() <=300000){
@@ -97,5 +98,5 @@ public class Task {
             }
         }
 
-    }
+    }*/
 }

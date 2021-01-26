@@ -80,7 +80,7 @@ public interface NetworkService {
      * @param username
      * @return
      */
-    PageInfo<Distribute> pendingPoolList(int pageNum, int limit, Distribute network, String content, String strtime, String endtime,String username);
+    PageInfo<Distribute> pendingPoolList(Map map);
 
 
     /**
@@ -123,6 +123,7 @@ public interface NetworkService {
      * @return
      */
     int followupNetwork(DistributeFollow networkFollow,String username);
+
     /**
     * 提交财务
      */
@@ -167,12 +168,26 @@ public interface NetworkService {
      * @return
      */
     List<DistributeFollow> qureyFollowList(Integer id);
+
+    /**
+     * 退单
+     * @param distribute
+     * @return
+     */
+    int returnPool(Distribute distribute);
     /**
      * 退回给业务员
      * @param distribute
      * @return
      */
     int chargeback(Distribute distribute);
+
+    /**
+     * 通过
+     * @param distribute
+     * @return
+     */
+    int adopt(Distribute distribute);
     /**
      * 跟单状态
      * @param pageNum
@@ -188,17 +203,5 @@ public interface NetworkService {
      * @return
      */
     int setOvertime(Distribute distribute);
-    /**
-     * 客服同意
-     * @param distribute
-     * @return
-     */
-    int agree(Distribute distribute);
 
-    /**
-     * 激活
-     * @param distribute
-     * @return
-     */
-    int activation(Distribute distribute);
 }
