@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jdsw.distribute.dao.EnterpriseDao">
+
+
+    <select id="enterpriseList" parameterType="Map" resultType="com.jdsw.distribute.model.Enterprise">
+        select name,relation,add_name as addName,add_time as addTime from enterprise where
+            corporate_phone = #{corporatePhone}
+        <if test="corporatePhone2 != null and corporatePhone2 != ''">
+            or corporate_phone2 = {#corporatePhone2}
+        </if>
+        <if test="corporatePhone3 != null and corporatePhone3 !=''">
+            or corporate_phone3 = #{corporatePhone3}
+        </if>
+
+    </select>
+
+    <insert id="insertEnterprise" parameterType="com.jdsw.distribute.model.Enterprise">
+        insert into enterprise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name !=null and name !=''">
+                name,
+            </if>
+            <if test="source != null">
+                source,
+            </if>
+            <if test="corporateName != null and corporateName !=''">
+                corporate_name,
+            </if>
+            <if test="corporatePhone != null and corporatePhone !=''">
+                corporate_phone,
+            </if>
+            <if test="relation != null and relation !=''">
+                relation,
+            </if>
+            <if test="addName != null and addName !=''">
+                add_name,
+            </if>
+            <if test="registeredCapital != null and registeredCapital != ''">
+                registered_capital,
+            </if>
+            <if test="establishTime != null and establishTime != ''">
+                establish_time,
+            </if>
+            <if test="address != null and address != ''">
+                address,
+            </if>
+            <if test="corporatePhone2 != null and corporatePhone2 != ''">
+                corporate_phone2,
+            </if>
+            <if test="corporatePhone3 != null and corporatePhone3 != ''">
+                corporate_phone3,
+            </if>
+            <if test="trackId != null and trackId != ''">
+                track_id,
+            </if>
+            add_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name !=null and name !=''">
+                #{name},
+            </if>
+            <if test="source != null">
+                #{source},
+            </if>
+            <if test="corporateName != null and corporateName !=''">
+                #{corporateName},
+            </if>
+            <if test="corporatePhone != null and corporatePhone !=''">
+                #{corporatePhone},
+            </if>
+            <if test="relation != null and relation !=''">
+                #{relation},
+            </if>
+            <if test="addName != null and addName !=''">
+                #{addName},
+            </if>
+            <if test="registeredCapital != null and registeredCapital != ''">
+                #{registeredCapital},
+            </if>
+            <if test="establishTime != null and establishTime != ''">
+                #{establishTime},
+            </if>
+            <if test="address != null and address != ''">
+                #{address},
+            </if>
+            <if test="corporatePhone2 != null and corporatePhone2 != ''">
+                #{corporatePhone2},
+            </if>
+            <if test="corporatePhone3 != null and corporatePhone3 != ''">
+                #{corporatePhone3},
+            </if>
+            <if test="trackId != null and trackId != ''">
+                #{trackId},
+            </if>
+            sysdate()
+        </trim>
+    </insert>
+
+</mapper>

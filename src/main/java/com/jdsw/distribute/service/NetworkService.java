@@ -71,13 +71,6 @@ public interface NetworkService {
 
     /**
      * 待处理
-     * @param pageNum
-     * @param limit
-     * @param network
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @param username
      * @return
      */
     PageInfo<Distribute> pendingPoolList(Map map);
@@ -127,13 +120,13 @@ public interface NetworkService {
     /**
     * 提交财务
      */
-    int SubmitRecordingNetwork(List<Distribute> network);
+    int submitRecordingNetwork(List<Distribute> network);
     /**
      * 财务录单
      * @param network
      * @return
      */
-    int UpdateRecordingNetwork(Distribute network);
+    int updateRecordingNetwork(Map map);
     /**
      * 财务完成列表
      * @return
@@ -167,27 +160,50 @@ public interface NetworkService {
      * 查询跟进列表
      * @return
      */
-    List<DistributeFollow> qureyFollowList(Integer id);
+    List<DistributeFollow> qureyFollowList(Integer id,String trackId);
 
     /**
-     * 退单
-     * @param distribute
+     * 客户信息
+     * @param id
+     * @param trackId
      * @return
      */
-    int returnPool(Distribute distribute);
+    Distribute qureyCustomer(Integer id,String trackId);
+
+    /**
+     * 关联企业
+     * @param
+     * @param
+     * @return
+     */
+    List enterpriseList(Map map);
+
+    /**
+     * 办理业务列表
+     * @param id
+     * @param trackId
+     * @return
+     */
+    List business(Map map);
+    /**
+     * 退单
+     * @param
+     * @return
+     */
+    int returnPool(Map map);
     /**
      * 退回给业务员
-     * @param distribute
+     * @param
      * @return
      */
-    int chargeback(Distribute distribute);
+    int chargeback(Map map);
 
     /**
      * 通过
-     * @param distribute
+     * @param
      * @return
      */
-    int adopt(Distribute distribute);
+    int adopt(Map map);
     /**
      * 跟单状态
      * @param pageNum

@@ -22,6 +22,7 @@
     <result column="conduct"  property="conduct" />
     <result column="create_time"  property="createTime" />
     <result column="industry"  property="industry" />
+    <result column="integral"  property="integral" />
   </resultMap>
   <resultMap id="pool" type="com.jdsw.distribute.vo.ComePool">
     <result column="contacts"  property="contacts" />
@@ -50,6 +51,9 @@
     <result column="sign"  property="sign" />
     <result column="proposer"  property="proposer" />
     <result column="issue"  property="issue" />
+    <result column="grade"  property="grade" />
+    <result column="total"  property="total" />
+    <result column="activation_time"  property="activationTime" />
 
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
@@ -167,11 +171,10 @@
     ORDER BY id DESC
   </select>
 
-  <!--主管我的客户-->
+  <!--空中客户-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
-    select id,track_id,corporate_name,corporate_phone,status,last_follow_name,
-    source,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign from customer_network
-    where  (last_follow_name = #{lastFollowName} and status in (3,6,10)) or  (leader_name = #{lastFollowName} and status in (5))
+    select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
+    where  (last_follow_name = #{lastFollowName} and status = 10 and activation = 1 or  (leader_name = #{lastFollowName} and status = 5)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -186,9 +189,8 @@
   </select>
   <!--业务员我的客户-->
   <select id="queryNetworkByLastName2" resultMap="aMap" parameterType="String">
-    select id,track_id,corporate_name,corporate_phone,status,create_time,last_follow_name,
-    source,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign from customer_network
-    where  last_follow_name = #{lastFollowName} and status in(10,3,6,8)
+    select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
+    where  last_follow_name = #{lastFollowName} and status = 10 and activation = 1
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -390,40 +392,22 @@
   </update>
 
   <update id="updateNetwork" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set
-    <if test="name != null and name !=''">
-      name = #{name}
-    </if>
-    <if test="corporateName != null and corporateName !=''">
-      ,corporate_name = #{corporateName}
-    </if>
-    <if test="corporatePhone != null and corporatePhone != ''">
-      ,corporate_phone = #{corporatePhone}
-    </if>
-    <if test="dealTime != null and dealTime != ''">
-      ,deal_time = #{dealTime}
-    </if>
-    <if test="registeredCapital != null and registeredCapital != ''">
-      ,registered_capital = #{registeredCapital}
-    </if>
-    <if test="operation != null and operation != ''">
-      ,operation = #{operation}
-    </if>
-    <if test="conduct != null and conduct !=''">
-      ,conduct = #{conduct}
-    </if>
-    <if test="city != null and city != ''">
-      ,city = #{city}
-    </if>
-    <if test="source != null">
-      ,source = #{source}
-    </if>
-    <if test="address !=null and address != ''">
-      ,address = #{address}
-    </if>
-    <if test="otherPhone != null and otherPhone !=''">
-      ,other_phone = #{otherPhone}
-    </if>
+    update customer_network
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="corporateName != null and corporateName !=''">
+        corporate_name = #{corporateName},
+      </if>
+      <if test="corporatePhone != null and corporatePhone != ''">
+        corporate_phone = #{corporatePhone},
+      </if>
+      <if test="source != null">
+        source = #{source},
+      </if>
+      <if test="lastFollowResult != null and lastFollowResult !=''">
+        last_follow_result = #{lastFollowResult},
+      </if>
+    </trim>
+
     where id = #{id}
   </update>
 

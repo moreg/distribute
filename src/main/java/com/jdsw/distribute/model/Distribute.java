@@ -21,6 +21,14 @@ public class Distribute {
      */
     String corporatePhone;
     /**
+     * 法人联系方式
+     */
+    String corporatePhone2;
+    /**
+     * 法人联系方式
+     */
+    String corporatePhone3;
+    /**
      * 客户来源
      */
     Integer source;
@@ -61,38 +69,12 @@ public class Distribute {
      * 生日
      */
     Date birthday;
-    /**
-     * 性别
-     */
-    Integer sex;
+
     /**
      * 行业
      */
     String industry;
-    /**
-     * 法人证件号
-     */
-    String corporateNumber;
-    /**
-     * 信用代码/识别代码
-     */
-    String creditNumber;
-    /**
-     * 注册地联系方式
-     */
-    String domicilePhone;
-    /**
-     * 注册地址
-     */
-    String domicile;
-    /**
-     * 经营规模
-     */
-    String scale;
-    /**
-     * 成立日期
-     */
-    String foundTime;
+
     /**
      * 跟踪单编号
      */
@@ -159,14 +141,6 @@ public class Distribute {
      */
     String establishTime;
     /**
-     * 经营状态
-     */
-    String operation;
-    /**
-     * 更多号码
-     */
-    String otherPhone;
-    /**
      * 公示地址
      */
     String address;
@@ -214,4 +188,25 @@ public class Distribute {
      * 有效无效
      */
     Integer sign;
+    /**
+     * 消费总额
+     */
+    BigDecimal total;
+    /**
+     * 客户等级
+     */
+    String grade;
+    /**
+     * 激活人
+     */
+    String activationName;
+    /*
+    *
+    *激活时间
+     */
+    String activationTime;
+    /**
+     * 积分
+     */
+    BigDecimal integral;
 }

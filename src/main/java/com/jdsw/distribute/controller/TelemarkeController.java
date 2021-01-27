@@ -217,7 +217,7 @@ public class TelemarkeController {
         String uploadPathDB=null;
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"DX");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"LJ");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -236,7 +236,7 @@ public class TelemarkeController {
         Map map=new HashMap();
         String uploadPathDB=null;
         try {
-            uploadPathDB= VideoUtil.saveVideo(trackId,file,"DX");
+            uploadPathDB= VideoUtil.saveVideo(trackId,file,"LJ");
         }catch (IOException e) {
             e.printStackTrace();
             return Message.fail("上传失败");

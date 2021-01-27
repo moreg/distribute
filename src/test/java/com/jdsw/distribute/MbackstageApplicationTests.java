@@ -190,21 +190,18 @@ public class MbackstageApplicationTests {
 
     @Test
     public void role(){
-        System.out.println();
-        us.queryDepartment("zc");
-    }
-    DefaultTransactionDefinition defaultTransactionDefinition;
-
-    DataSourceTransactionManager dataSourceTransactionManager;
+        String Str = new String("KZDhb62021012657137");
 
 
-    TransactionStatus status;
-    private void lockUser(){
-/*        dataSourceTransactionManager = new DataSourceTransactionManager(dataSource);
-        defaultTransactionDefinition = new DefaultTransactionDefinition();
-        defaultTransactionDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        status = dataSourceTransactionManager.getTransaction(defaultTransactionDefinition);*/
-/*        log.info("锁住id为1的信息");
-        testMapper.selectById(2);*/
+
+        System.out.print("返回值 :" );
+
+        System.out.println(Str.substring(4) );
+
+
+
+        System.out.print("返回值 :" );
+
+        System.out.println(Str.substring(0, 2) );
     }
 }

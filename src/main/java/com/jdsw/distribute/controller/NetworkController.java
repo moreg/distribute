@@ -208,7 +208,7 @@ public class NetworkController {
         return Message.fail();
     }
     /**
-     * 查询我的客户
+     * 空中客户
      * @return
      */
     @RequestMapping("/queryNetworkByLastName")
@@ -334,10 +334,10 @@ public class NetworkController {
     @RequestMapping("/uploadImgNew")
     public Message  uploadImgNew(@RequestParam("img") MultipartFile[] img,HttpServletRequest request){
         String uploadPathDB=null;
-        String trackId = Rand.getTrackId("WL");//获得跟踪单号
+        String trackId = Rand.getTrackId("KZ");//获得跟踪单号
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"WL");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"KZ");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -357,7 +357,7 @@ public class NetworkController {
         Map map=new HashMap();
         String uploadPathDB=null;
         try {
-            uploadPathDB= VideoUtil.saveVideo(trackId,file,"WL");
+            uploadPathDB= VideoUtil.saveVideo(trackId,file,"KZ");
         }catch (IOException e) {
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -373,7 +373,7 @@ public class NetworkController {
      */
     @RequestMapping(value = "/submitRecordingNetwork",method = RequestMethod.POST,produces="application/json")
     public Message submitRecordingNetwork(@RequestBody List<Distribute> network){
-        int i = distributeService.SubmitRecordingNetwork(network);
+        int i = distributeService.submitRecordingNetwork(network);
         if (i > 0){
             return Message.success("提交成功");
         }
@@ -384,8 +384,16 @@ public class NetworkController {
      * @return
      */
     @RequestMapping(value = "/recordingNetwork",method = RequestMethod.POST,produces="application/json")
-    public Message recordingNetwork(@RequestBody Distribute network){
-        int i = distributeService.UpdateRecordingNetwork(network);
+    public Message recordingNetwork(@RequestBody Distribute distribute,HttpServletRequest request){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map mapl = new HashMap();
+        mapl.put("username",username);
+        mapl.put("distribute",distribute);
+        mapl.put("name",name);
+        int i = distributeService.updateRecordingNetwork(mapl);
         if (i > 0){
             return Message.success();
         }
@@ -497,18 +505,57 @@ public class NetworkController {
      * @throws IOException
      */
     @RequestMapping("/qureyFollowList")
-    public Message qureyFollowList(Integer id)throws IOException{
-        return Message.success("操作成功",distributeService.qureyFollowList(id));
+    public Message qureyFollowList(Integer id,String trackId)throws IOException{
+        return Message.success("操作成功",distributeService.qureyFollowList(id,trackId));
+    }
+    /**
+     * 查询客户信息
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/qureyCustomer")
+    public Message qureyCustomer(Integer id,String trackId)throws IOException{
+        return Message.success("操作成功",distributeService.qureyCustomer(id,trackId));
     }
 
+    /**
+     * 关联企业
+     * @param
+     * @param
+     * @return
+     */
+    @RequestMapping("/enterpriseList")
+    public Message enterpriseList(String corporatePhone,String corporatePhone2,String corporatePhone3){
+        Map map = new HashMap();
+        map.put("corporatePhone",corporatePhone);
+        map.put("corporatePhone2",corporatePhone2);
+        map.put("corporatePhone3",corporatePhone3);
+        return Message.success("查询成功",distributeService.enterpriseList(map));
+    }
+
+    @RequestMapping("/business")
+    public Message business(String corporatePhone,String corporatePhone2,String corporatePhone3){
+        Map map = new HashMap();
+        map.put("corporatePhone",corporatePhone);
+        map.put("corporatePhone2",corporatePhone2);
+        map.put("corporatePhone3",corporatePhone3);
+        return Message.success("查询成功",distributeService.business(map));
+    }
     /**
      * 退单
      * @param distribute
      * @return
      */
     @RequestMapping("/returnPool")
-    public Message returnPool(@RequestBody Distribute distribute){
-        int i = distributeService.returnPool(distribute);
+    public Message returnPool(@RequestBody Distribute distribute,HttpServletRequest request){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map map1 = new HashMap();
+        map1.put("name",name);
+        map1.put("distribute",distribute);
+        int i = distributeService.returnPool(map1);
         if (i > 0) {
             return Message.success("操作成功");
         }
@@ -520,8 +567,15 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/chargeback")
-    public Message chargeback(@RequestBody Distribute distribute) {
-        int i = distributeService.chargeback(distribute);
+    public Message chargeback(@RequestBody Distribute distribute,HttpServletRequest request) {
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map map1 = new HashMap();
+        map1.put("name",name);
+        map1.put("distribute",distribute);
+        int i = distributeService.chargeback(map1);
         if (i > 0) {
             return Message.success("操作成功");
         }
@@ -537,8 +591,15 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/adopt")
-    public Message adopt(@RequestBody Distribute distribute){
-        int i = distributeService.adopt(distribute);
+    public Message adopt(@RequestBody Distribute distribute,HttpServletRequest request){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map map1 = new HashMap();
+        map1.put("name",name);
+        map1.put("distribute",distribute);
+        int i = distributeService.adopt(map1);
         if (i > 0 ){
             return Message.success();
         }

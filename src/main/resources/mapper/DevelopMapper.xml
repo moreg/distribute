@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jdsw.distribute.dao.DevelopDao">
-    <insert id="insertDevelop" parameterType="com.jdsw.distribute.model.Distribute">
+    <resultMap id="aMap" type="com.jdsw.distribute.vo.DevelopPool">
+        <result column="id"  property="id" />
+        <result column="track_id"  property="trackId" />
+        <result column="corporate_name" property="corporateName" />
+        <result column="corporate_phone"  property="corporatePhone" />
+        <result column="last_follow_name"  property="lastFollowName" />
+        <result column="last_follow_time"  property="lastFollowTime" />
+        <result column="last_follow_result"  property="lastFollowResult" />
+        <result column="grade"  property="grade" />
+        <result column="total"  property="total" />
+        <result column="activation_time"  property="activationTime" />
+    </resultMap>
+    <!--新增-->
+    <insert id="insertDevelop" parameterType="com.jdsw.distribute.model.Distribute" useGeneratedKeys="true" keyProperty="id">
         insert into customer_develop(
         <if test="corporateName != null and corporateName !=''">
             corporate_name
@@ -9,11 +22,11 @@
         <if test="corporatePhone != null and corporatePhone !=''">
             ,corporate_phone
         </if>
-        <if test="source != null and source !=''">
-            ,source
-        </if>
         <if test="lastFollowResult != null and lastFollowResult !=''">
             ,last_follow_result
+        </if>
+        <if test="lastFollowName != null and lastFollowName !=''">
+            ,last_follow_name
         </if>
         <if test="trackId != null and trackId !=''">
             ,track_id
@@ -24,9 +37,15 @@
         <if test="branch != null and branch !=''">
             ,branch
         </if>
-        <if test="activation != null and activation !=''">
+        <if test="activation != null">
             ,activation
         </if>
+        <if test="source != null">
+            ,source
+        </if>
+        ,activation_name
+        ,activation_time
+        ,create_time
         )VALUES (
         <if test="corporateName != null and corporateName !=''">
             #{corporateName}
@@ -34,11 +53,11 @@
         <if test="corporatePhone != null and corporatePhone !=''">
             ,#{corporatePhone}
         </if>
-        <if test="source != null and source !=''">
-            ,#{source}
-        </if>
         <if test="lastFollowResult != null and lastFollowResult !=''">
             ,#{lastFollowResult}
+        </if>
+        <if test="lastFollowName != null and lastFollowName !=''">
+            ,#{lastFollowName}
         </if>
         <if test="trackId != null and trackId !=''">
             ,#{trackId}
@@ -49,10 +68,75 @@
         <if test="branch != null and branch !=''">
             ,#{branch}
         </if>
-        <if test="activation != null and activation !=''">
+        <if test="activation != null">
             ,#{activation}
         </if>
+        <if test="source != null">
+            ,#{source}
+        </if>
+        ,#{lastFollowName}
+        ,SYSDATE()
+        ,SYSDATE()
         )
     </insert>
-
+    <!--列表-->
+    <select id="developList" parameterType="Map" resultMap="aMap">
+        select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,activation_time,activation from customer_develop
+        where  last_follow_name = #{name}
+        <if test="strtime != null and strtime!=''">
+            AND create_time <![CDATA[ >= ]]> #{strtime}
+        </if>
+        <if test="endtime != null and endtime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endtime}
+        </if>
+        <if test="content != null and content!= ''">
+            <bind name="content" value="'%' + content + '%'" ></bind>
+            and (corporate_name like #{content} or corporate_phone like #{content})
+        </if>
+        ORDER BY id DESC
+    </select>
+    <!--修改-->
+    <update id="updateDevelop" parameterType="com.jdsw.distribute.model.Distribute">
+        update customer_develop
+        <trim prefix="SET" suffixOverrides=",">
+        <if test="corporateName != null and corporateName !=''">
+            corporate_name = #{corporateName},
+        </if>
+        <if test="corporatePhone != null and corporatePhone != ''">
+            corporate_phone = #{corporatePhone},
+        </if>
+        <if test="lastFollowName != null and lastFollowName != ''">
+            last_follow_name = #{lastFollowName},
+        </if>
+        <if test="lastFollowResult != null and lastFollowResult != ''">
+            last_follow_result = #{lastFollowResult},
+        </if>
+        <if test="leaderName != null and leaderName != ''">
+            leader_name = #{leaderName},
+        </if>
+        <if test="branch != null and branch != ''">
+            branch = #{branch},
+        </if>
+        <if test="activation != null">
+            activation = #{activation},
+        </if>
+        <if test="total != null">
+            total = #{total},
+        </if>
+        <if test="source != null">
+            source = #{source},
+        </if>
+        <if test="grade != null and grade != ''">
+            grade = #{source},
+        </if>
+        <if test="activationTime != null and activationTime != ''">
+            activation_time = #{activationTime},
+        </if>
+        </trim>
+        where id = #{id}
+    </update>
+    <!--删除-->
+    <delete id="deleteDevelop" parameterType="com.jdsw.distribute.model.Distribute">
+        delete from customer_develop where id = #{id}
+    </delete>
 </mapper>

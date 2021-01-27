@@ -1,58 +1,23 @@
 package com.jdsw.distribute.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+
+@Data
 public class Enterprise {
-    Integer id;
-    String name;
-    Integer source;
-    String conduct;
-    String corporatePhone;
-    String relation;
+    private Integer id;
+    private String name;
+    private Integer source;
+    private String corporateName;
+    private String corporatePhone;
+    private String relation;
+    private String addName;
+    private String addTime;
+    private String registeredCapital;
+    private String establishTime;
+    private String address;
+    private String corporatePhone2;
+    private String corporatePhone3;
+    private String trackId;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getSource() {
-        return source;
-    }
-
-    public void setSource(Integer source) {
-        this.source = source;
-    }
-
-    public String getConduct() {
-        return conduct;
-    }
-
-    public void setConduct(String conduct) {
-        this.conduct = conduct;
-    }
-
-    public String getCorporatePhone() {
-        return corporatePhone;
-    }
-
-    public void setCorporatePhone(String corporatePhone) {
-        this.corporatePhone = corporatePhone;
-    }
-
-    public String getRelation() {
-        return relation;
-    }
-
-    public void setRelation(String relation) {
-        this.relation = relation;
-    }
 }
