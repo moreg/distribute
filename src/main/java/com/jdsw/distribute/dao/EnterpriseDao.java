@@ -19,4 +19,11 @@ public interface EnterpriseDao {
      * @return
      */
     List enterpriseList(Map map);
+
+    /**
+     * 企业池列表
+     * @param map
+     * @return
+     */
+    List<Enterprise> enterprisePoolList(Map map);
 }

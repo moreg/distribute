@@ -7,12 +7,29 @@
         select name,relation,add_name as addName,add_time as addTime from enterprise where
             corporate_phone = #{corporatePhone}
         <if test="corporatePhone2 != null and corporatePhone2 != ''">
-            or corporate_phone2 = {#corporatePhone2}
+            or corporate_phone2 = #{corporatePhone2}
         </if>
         <if test="corporatePhone3 != null and corporatePhone3 !=''">
             or corporate_phone3 = #{corporatePhone3}
         </if>
 
+    </select>
+
+    <select id="enterprisePoolList" parameterType="Map" resultType="com.jdsw.distribute.model.Enterprise">
+        select id,source,corporate_name as corporateName,corporate_phone as corporatePhone,name,relation,add_name as addName,add_time as addTime,
+        registered_capital as registeredCapital,establish_time as establishTime,address,
+        track_id as trackId from enterprise where add_name = #{name}
+        <if test="strtime != null and strtime!=''">
+            AND add_time <![CDATA[ >= ]]> #{strtime}
+        </if>
+        <if test="endtime != null and endtime!=''">
+            AND add_time <![CDATA[ <= ]]> #{endtime}
+        </if>
+        <if test="content != null and content!= ''">
+            <bind name="content" value="'%' + content + '%'" ></bind>
+            and (corporate_name like #{content} or corporate_phone like #{content})
+        </if>
+        ORDER BY add_time DESC
     </select>
 
     <insert id="insertEnterprise" parameterType="com.jdsw.distribute.model.Enterprise">

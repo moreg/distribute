@@ -1,7 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jdsw.distribute.model.Distribute">
-    <select id="qureyOrder">
-        select contract_no,conduct,money,deal_time from deal_order
+<mapper namespace="com.jdsw.distribute.dao.DealOrderDao">
+    <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
+        <result column="id"  property="id" />
+        <result column="track_id"  property="trackId" />
+        <result column="name"  property="name" />
+        <result column="corporate_name" property="corporateName" />
+        <result column="corporate_phone"  property="corporatePhone" />
+        <result column="create_time"  property="createTime" />
+        <result column="last_follow_name"  property="lastFollowName" />
+        <result column="source"  property="source" />
+        <result column="order_state"  property="orderState" />
+        <result column="contract_no"  property="contractNo" />
+        <result column="conduct"  property="conduct" />
+        <result column="money"  property="money" />
+        <result column="deal_time"  property="dealTime" />
+    </resultMap>
+    <select id="qureyOrder" resultMap="cashierMap">
+        select contract_no,conduct,money,deal_time from deal_order where corporate_phone in
+        <foreach collection="list" item="item" index="index" separator="," close=")" open="(">
+        #{item}
+        </foreach>
     </select>
+    <insert id="insertOrder" parameterType="com.jdsw.distribute.model.DealOrder">
+        insert into deal_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name !=null and name !=''">
+                name,
+            </if>
+            <if test="source != null">
+                source,
+            </if>
+            <if test="corporateName != null and corporateName !=''">
+                corporate_name,
+            </if>
+            <if test="corporatePhone != null and corporatePhone !=''">
+                corporate_phone,
+            </if>
+            <if test="lastFollowName != null and lastFollowName != ''">
+                last_follow_name,
+            </if>
+            <if test="contractNo != null and contractNo != ''">
+                contract_no,
+            </if>
+            <if test="conduct != null and conduct != ''">
+                conduct,
+            </if>
+            <if test="pay != null and pay != ''">
+                pay,
+            </if>
+            <if test="trackId != null and trackId != ''">
+                track_id,
+            </if>
+            order_state,
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name !=null and name !=''">
+                #{name},
+            </if>
+            <if test="source != null">
+                #{source},
+            </if>
+            <if test="corporateName != null and corporateName !=''">
+                #{corporateName},
+            </if>
+            <if test="corporatePhone != null and corporatePhone !=''">
+                #{corporatePhone},
+            </if>
+            <if test="lastFollowName != null and lastFollowName != ''">
+                #{lastFollowName},
+            </if>
+            <if test="contractNo != null and contractNo != ''">
+                #{contractNo},
+            </if>
+            <if test="conduct != null and conduct != ''">
+                #{conduct},
+            </if>
+            <if test="pay != null and pay != ''">
+                #{pay},
+            </if>
+            <if test="trackId != null and trackId != ''">
+                #{trackId},
+            </if>
+            1,
+            sysdate()
+        </trim>
+    </insert>
 </mapper>

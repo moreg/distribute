@@ -3,6 +3,7 @@ package com.jdsw.distribute.service;
 import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
+import com.jdsw.distribute.model.Enterprise;
 import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.vo.AirForcePool;
 import com.jdsw.distribute.vo.CashierVo;
@@ -38,17 +39,11 @@ public interface NetworkService {
     PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String usernmae) throws ParseException;
 
     /**
-     * 主管待处理
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @param
+     * 企业池
+     * @param map
      * @return
-     * @throws ParseException
      */
-    PageInfo<Distribute> pendingNetworkList(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName) throws ParseException;
+    PageInfo<Enterprise> enterprisePoolList (Map map);
     /**
      * 空军池列表
      * @return
@@ -179,12 +174,25 @@ public interface NetworkService {
     List enterpriseList(Map map);
 
     /**
+     *
+     * @param map
+     * @return
+     */
+    int addEnterprise(Map map);
+    /**
      * 办理业务列表
-     * @param id
-     * @param trackId
+     * @param
+     * @param
      * @return
      */
     List business(Map map);
+
+    /**
+     * 增加办理业务
+     * @param map
+     * @return
+     */
+    int addBusiness(Map map);
     /**
      * 退单
      * @param

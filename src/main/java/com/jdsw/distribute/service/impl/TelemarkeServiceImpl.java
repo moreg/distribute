@@ -250,15 +250,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
-    public PageInfo<Distribute> pendingNetworkList(int pageNum, int limit, String content, String strtime, String endtime, String lastFollowName) throws ParseException {
-        PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = telemarkDao.pendingNetworkList(content,strtime,endtime,lastFollowName);
-        PageInfo result = new PageInfo(Network);
-        return result;
-    }
-
-
-    @Override
     public int overTime(Distribute network) {
         network.setStatus(3);
         network.setLastFollowName("");

@@ -151,26 +151,6 @@ public class TelemarkeController {
         return Message.success("操作成功",telemarkService.queryTelemarkeByLastName(pageNum,limit,content,strtime,endtime,lastFollowName,username),0);
     }
     /**
-     * 我的客户待处理
-     * @param
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping("/pendingNetworkList")
-    public Message pendingNetworkList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        //String lastFollowName = (String) request.getAttribute("name");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String lastFollowName = (String) map.get("name");
-        return Message.success("操作成功",telemarkService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
-    }
-    /**
      * 抢单接口
      * @return
      */

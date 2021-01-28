@@ -1,16 +1,16 @@
 package com.jdsw.distribute.controller;
 
-import com.jdsw.distribute.model.Customer;
-import com.jdsw.distribute.model.Distribute;
-import com.jdsw.distribute.model.DistributeFollow;
+import com.jdsw.distribute.model.*;
 import com.jdsw.distribute.service.CustomerService;
 import com.jdsw.distribute.service.NetworkService;
 
+import com.jdsw.distribute.service.TelemarkeService;
 import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.*;
 
 import com.jdsw.distribute.vo.AirForcePool;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +29,8 @@ public class NetworkController {
 
     @Resource
     private NetworkService distributeService;
+    @Resource
+    private TelemarkeService telemarkeService;
     @Autowired
     private UserService userService;
     @Resource
@@ -82,12 +84,11 @@ public class NetworkController {
      * @param content
      * @param strtime
      * @param endtime
-     * @param distribute
      * @param request
      * @return
      */
     @RequestMapping("/withPool")
-    public Message withPool(int pageNum, int limit, String content, String strtime, String endtime, Distribute distribute, HttpServletRequest request){
+    public Message withPool(int pageNum, int limit, String content, String strtime, String endtime, Integer issue, HttpServletRequest request){
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
@@ -100,6 +101,7 @@ public class NetworkController {
         mapl.put("endtime",endtime);
         mapl.put("username",username);
         mapl.put("name",name);
+        mapl.put("issue",issue);
         return Message.success("查询成功",distributeService.withPool(mapl));
     }
     /**
@@ -228,31 +230,25 @@ public class NetworkController {
     }
 
     /**
-     * 我的客户待处理
-     * @param
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
+     * 企业池
      * @return
-     * @throws Exception
      */
-    @RequestMapping("/pendingNetworkList")
-    public Message pendingNetworkList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        //String lastFollowName = (String) request.getAttribute("name");
+    @RequestMapping("/enterprisePoolList")
+    public Message enterprisePoolList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime){
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
-        String lastFollowName = (String) map.get("name");
+        String name = (String) map.get("name");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
         mapl.put("content",content);
-        map.put("strtime",strtime);
-        map.put("endtime",endtime);
-        return Message.success("操作成功",distributeService.pendingNetworkList(pageNum,limit,content,strtime,endtime,lastFollowName),0);
+        mapl.put("strtime",strtime);
+        mapl.put("endtime",endtime);
+        mapl.put("name",name);
+        return Message.success("操作成功",distributeService.enterprisePoolList(mapl));
     }
+
     /**
      * 超时接口
      * @param
@@ -273,6 +269,7 @@ public class NetworkController {
      */
     @RequestMapping(value = "/followupNetwork",method = RequestMethod.POST,produces="application/json")
     public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
+        String strid = networkFollow.getTrackId().substring(0,2);
         //String name = (String) request.getAttribute("name");
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
@@ -280,7 +277,12 @@ public class NetworkController {
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
         networkFollow.setFollowName(name);
-        int i = distributeService.followupNetwork(networkFollow,username);
+        int i = 0;
+        if ("KZ".equals(strid)){
+             i = distributeService.followupNetwork(networkFollow,username);
+        }else if ("LJ".equals(strid)){
+            i = telemarkeService.followupNetwork(networkFollow);
+        }
         if (i > 0){
             return Message.success();
         }
@@ -335,6 +337,26 @@ public class NetworkController {
     public Message  uploadImgNew(@RequestParam("img") MultipartFile[] img,HttpServletRequest request){
         String uploadPathDB=null;
         String trackId = Rand.getTrackId("KZ");//获得跟踪单号
+        Map map=new HashMap();
+        try {
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"KZ");
+        }catch (IOException e){
+            e.printStackTrace();
+            return Message.fail("上传失败");
+        }
+        map.put("imgUrl",uploadPathDB);
+        map.put("trackId",trackId);
+        return Message.success("上传成功",map);
+    }
+    /**
+     * 退单图片上传
+     * @param img
+     * @param
+     * @return
+     */
+    @RequestMapping("/uploadImgPool")
+    public Message  uploadImgPool(@RequestParam("img") MultipartFile[] img,@Param("trackId") String trackId){
+        String uploadPathDB=null;
         Map map=new HashMap();
         try {
             uploadPathDB= ImageUtil.saveImage(trackId,img,"KZ");
@@ -506,7 +528,13 @@ public class NetworkController {
      */
     @RequestMapping("/qureyFollowList")
     public Message qureyFollowList(Integer id,String trackId)throws IOException{
-        return Message.success("操作成功",distributeService.qureyFollowList(id,trackId));
+        String strid = trackId.substring(0,2);
+        if ("KZ".equals(strid)){
+            return Message.success("操作成功",distributeService.qureyFollowList(id,trackId));
+        }else if ("LJ".equals(strid)){
+            return Message.success("操作成功",telemarkeService.qureyFollowList(id));
+        }
+        return Message.fail();
     }
     /**
      * 查询客户信息
@@ -515,6 +543,7 @@ public class NetworkController {
      */
     @RequestMapping("/qureyCustomer")
     public Message qureyCustomer(Integer id,String trackId)throws IOException{
+        String strid = trackId.substring(0,2);
         return Message.success("操作成功",distributeService.qureyCustomer(id,trackId));
     }
 
@@ -525,21 +554,70 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/enterpriseList")
-    public Message enterpriseList(String corporatePhone,String corporatePhone2,String corporatePhone3){
+    public Message enterpriseList(@Param("corporatePhone") String corporatePhone, String corporatePhone2, String corporatePhone3){
         Map map = new HashMap();
         map.put("corporatePhone",corporatePhone);
         map.put("corporatePhone2",corporatePhone2);
         map.put("corporatePhone3",corporatePhone3);
         return Message.success("查询成功",distributeService.enterpriseList(map));
     }
-
-    @RequestMapping("/business")
+    /**
+     * 增加关联企业
+     * @param
+     * @param
+     * @return
+     */
+    @RequestMapping("/addEnterprise")
+    public Message addEnterprise(@RequestBody Enterprise enterprise, HttpServletRequest request){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map mapl = new HashMap();
+        mapl.put("name",name);
+        mapl.put("enterprise",enterprise);
+        int i = distributeService.addEnterprise(mapl);
+        if (i > 0){
+            return Message.success();
+        }
+        return Message.fail();
+    }
+    /**
+     * 办理业务
+     * @param corporatePhone
+     * @param corporatePhone2
+     * @param corporatePhone3
+     * @return
+     */
+    @RequestMapping("/businessList")
     public Message business(String corporatePhone,String corporatePhone2,String corporatePhone3){
         Map map = new HashMap();
         map.put("corporatePhone",corporatePhone);
         map.put("corporatePhone2",corporatePhone2);
         map.put("corporatePhone3",corporatePhone3);
         return Message.success("查询成功",distributeService.business(map));
+    }
+    /**
+     * 增加办理业务
+     * @param
+     * @param
+     * @param
+     * @return
+     */
+    @RequestMapping("/addBusiness")
+    public Message addBusiness(@RequestBody DealOrder dealOrder,HttpServletRequest request){
+        Map mapl = new HashMap();
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        mapl.put("name",name);
+        mapl.put("dealOrder",dealOrder);
+        int i = distributeService.addBusiness(mapl);
+        if (i > 0){
+            return Message.success();
+        }
+        return Message.fail();
     }
     /**
      * 退单
@@ -630,4 +708,5 @@ public class NetworkController {
         distributeService.setOvertime(distribute);
         return Message.success();
     }
+
 }

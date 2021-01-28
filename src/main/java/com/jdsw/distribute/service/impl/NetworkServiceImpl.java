@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.dao.*;
+import com.jdsw.distribute.dao.DealOrderDao;
 import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.*;
 import com.jdsw.distribute.service.NetworkService;
@@ -20,12 +21,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,6 +49,8 @@ public class NetworkServiceImpl implements NetworkService {
     private TelemarkeFollowDao telemarkeFollowDao;
     @Autowired
     private EnterpriseDao enterpriseDao;
+    @Autowired
+    private DealOrderDao dealOrderDao;
     @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
@@ -134,13 +134,14 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public PageInfo<Distribute> pendingNetworkList(int pageNum, int limit, String content, String strtime, String endtime, String lastFollowName) throws ParseException  {
+    public PageInfo<Enterprise> enterprisePoolList(Map map) {
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
         PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = networkDao.pendingNetworkList(content,strtime,endtime,lastFollowName);
-        PageInfo result = new PageInfo(Network);
+        List<Enterprise> enterprises = enterpriseDao.enterprisePoolList(map);
+        PageInfo result = new PageInfo(enterprises);
         return result;
     }
-
 
     @Override
     public PageInfo<Distribute> airForcePoolList(Map map) {
@@ -505,8 +506,26 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
+    public int addEnterprise(Map map) {
+        Enterprise enterprise = (Enterprise) map.get("enterprise");
+        enterprise.setAddName((String) map.get("name"));
+        return enterpriseDao.insertEnterprise(enterprise);
+    }
+
+    @Override
     public List business(Map map) {
-        return null;
+        List list = new ArrayList();
+        list.add(map.get("corporatePhone"));
+        list.add(map.get("corporatePhone2"));
+        list.add(map.get("corporatePhone3"));
+        return dealOrderDao.qureyOrder(list);
+    }
+
+    @Override
+    public int addBusiness(Map map) {
+        DealOrder order = (DealOrder) map.get("dealOrder");
+        order.setLastFollowName((String) map.get("name"));
+        return dealOrderDao.insertOrder(order);
     }
 
     @Override
@@ -525,6 +544,11 @@ public class NetworkServiceImpl implements NetworkService {
             networkFollow.setImgUrl(distribute.getImgUrl());
             networkFollow.setFollowResult(distribute.getLastFollowResult());
             networkFollowDao.insertNetworkFollow(networkFollow);
+        }else if ("LJ".equals(trid)){
+            telemarkeFollowDao.insertNetworkFollow(networkFollow);
+            distribute.setIssue(0);
+            distribute.setStatus(1);
+            return telemarkeDao.updateworkOverdueTime(distribute);
         }
         distribute.setIssue(3);
         distribute.setStatus(7);

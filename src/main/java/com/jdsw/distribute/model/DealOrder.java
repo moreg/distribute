@@ -1,28 +1,23 @@
-package com.jdsw.distribute.vo;
+package com.jdsw.distribute.model;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
-
-/**
- * 成交订单
- */
 @Data
-public class CashierVo {
-
+public class DealOrder {
     private Integer id;
-    private String name;
+    private  String name;
     private String corporateName;
     private String corporatePhone;
-    private Date createTime;
+    private String createTime;
     private Integer source;
     private String lastFollowName;
     private String trackId;
     private Integer orderState;
-    private String contractNo;
+    private String recordingName;
     private String dealTime;
+    private String contractNo;
     private String conduct;
-    private BigDecimal money;
-
+    private BigDecimal pay;
+    private BigDecimal cost;
 }

@@ -139,9 +139,9 @@
   </select>
   <!--跟单池-->
   <select id="withPool" resultMap="aMap" parameterType="Map">
-    SELECT * from (SELECT track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network WHERE
-    `status` = 10 UNION all SELECT track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time FROM customer_telemarke WHERE `status` =10 )
-    as t  WHERE last_follow_name = #{lastFollowName} and activation = 0
+    SELECT * from (SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue from customer_network WHERE
+    `status` = 10 UNION all SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue FROM customer_telemarke WHERE `status` =10 )
+    as t  WHERE last_follow_name = #{lastFollowName} and activation = 0 and issue = #{issue}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -171,7 +171,7 @@
     ORDER BY id DESC
   </select>
 
-  <!--空中客户-->
+  <!--空中客户 主管-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
     where  (last_follow_name = #{lastFollowName} and status = 10 and activation = 1 or  (leader_name = #{lastFollowName} and status = 5)
@@ -187,7 +187,7 @@
     </if>
     ORDER BY id DESC
   </select>
-  <!--业务员我的客户-->
+  <!--空中客户 业务员-->
   <select id="queryNetworkByLastName2" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
     where  last_follow_name = #{lastFollowName} and status = 10 and activation = 1
@@ -203,23 +203,7 @@
     </if>
     ORDER BY id DESC
   </select>
-  <!--我的客户待处理-->
-  <select id="pendingNetworkList" resultMap="aMap" parameterType="String">
-    SELECT * from (SELECT id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_result,status,leader_name from customer_network WHERE
-    `status` = 9 UNION all SELECT id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_result,status,leader_name FROM customer_telemarke WHERE `status` =9 )
-    as t  WHERE leader_name = #{lastFollowName}
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY create_time DESC
-  </select>
+
   <!--跟单管理-->
   <select id="cashierListNetwork" resultMap="cashierMap" parameterType="Map">
     select id,name,corporate_name,create_time,source,last_follow_name,track_id,order_state from deal_order
