@@ -1,6 +1,7 @@
 package com.jdsw.distribute.controller;
 
 import com.jdsw.distribute.model.Distribute;
+import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.DevelopService;
 import com.jdsw.distribute.util.ImageUtil;
 import com.jdsw.distribute.util.JwtUtil;
@@ -15,6 +16,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 自开发
+ *
+ */
 @RestController
 @RequestMapping("/develop")
 public class DevelopController {
@@ -111,6 +116,34 @@ public class DevelopController {
     @RequestMapping(value = "/deleteDevelop",method = RequestMethod.POST,produces="application/json")
     public Message deleteNetwork(@RequestBody Distribute distribute){
         int i = developService.deleteDevelop(distribute);
+        if (i > 0){
+            return Message.success();
+        }
+        return Message.fail();
+    }
+    /**
+     * 查询跟进列表
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/qureyFollowList")
+    public Message qureyFollowList(Integer id,String trackId)throws IOException{
+        return Message.success("查询成功",developService.qureyFollowList(id));
+    }
+    /**
+     * 写跟进
+     * @return
+     */
+    @RequestMapping(value = "/followupDevelop",method = RequestMethod.POST,produces="application/json")
+    public Message followupDevelop(@RequestBody DistributeFollow networkFollow, HttpServletRequest request){
+        //String name = (String) request.getAttribute("name");
+        //String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        networkFollow.setFollowName(name);
+        int i = developService.followupDevelop(networkFollow);
         if (i > 0){
             return Message.success();
         }

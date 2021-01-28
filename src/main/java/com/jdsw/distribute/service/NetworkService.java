@@ -118,7 +118,7 @@ public interface NetworkService {
     int submitRecordingNetwork(List<Distribute> network);
     /**
      * 财务录单
-     * @param network
+     * @param
      * @return
      */
     int updateRecordingNetwork(Map map);
@@ -227,5 +227,7 @@ public interface NetworkService {
      * @return
      */
     int setOvertime(Distribute distribute);
+
+    int activation(Map map);
 
 }

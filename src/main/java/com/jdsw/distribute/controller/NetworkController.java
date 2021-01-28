@@ -31,8 +31,6 @@ public class NetworkController {
     private NetworkService distributeService;
     @Resource
     private TelemarkeService telemarkeService;
-    @Autowired
-    private UserService userService;
     @Resource
     private CustomerService customerService;
 
@@ -292,20 +290,19 @@ public class NetworkController {
     /**
      * 激活客户
      * @param request
-     * @param customer
      * @return
      */
     @RequestMapping("/activation")
-    public Message activation(HttpServletRequest request, Customer customer){
+    public Message activation(HttpServletRequest request, @RequestBody Distribute distribute){
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
         Map mapl = new HashMap();
         mapl.put("username",username);
-        mapl.put("customer",customer);
+        mapl.put("distribute",distribute);
         mapl.put("name",name);
-        customerService.activation(mapl);
+        distributeService.activation(mapl);
         return Message.success();
     }
     /**

@@ -80,4 +80,14 @@ public class DevelopServiceImpl implements DevelopService {
     public int deleteDevelop(Distribute distribute) {
         return developDao.deleteDevelop(distribute);
     }
+
+    @Override
+    public List<DistributeFollow> qureyFollowList(Integer id) {
+        return developFollowDao.qureyFollowList(id);
+    }
+
+    @Override
+    public int followupDevelop(DistributeFollow distributeFollow) {
+        return developFollowDao.insertDevelopFollow(distributeFollow);
+    }
 }

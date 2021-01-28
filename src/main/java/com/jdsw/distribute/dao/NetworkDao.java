@@ -236,4 +236,11 @@ public interface NetworkDao {
      * 跟进修改订单
      */
     int updateNetwork2(Distribute distribute);
+
+    /**
+     * 激活
+     * @param
+     * @return
+     */
+    int insertCustomer(Distribute distribute);
 }

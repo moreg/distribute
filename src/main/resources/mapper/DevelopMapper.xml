@@ -105,6 +105,12 @@
         <if test="corporatePhone != null and corporatePhone != ''">
             corporate_phone = #{corporatePhone},
         </if>
+        <if test="corporatePhone2 != null and corporatePhone2 != ''">
+            corporate_phone2 = #{corporatePhone2},
+        </if>
+        <if test="corporatePhone3 != null and corporatePhone3 != ''">
+            corporate_phone3 = #{corporatePhone3},
+        </if>
         <if test="lastFollowName != null and lastFollowName != ''">
             last_follow_name = #{lastFollowName},
         </if>
@@ -132,6 +138,13 @@
         <if test="activationTime != null and activationTime != ''">
             activation_time = #{activationTime},
         </if>
+        <if test="weChat != null and weChat != ''">
+            weChat = #{weChat},
+        </if>
+        <if test="activationName != null and activationName != ''">
+            activation_name = #{activationName},
+        </if>
+
         </trim>
         where id = #{id}
     </update>

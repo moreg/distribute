@@ -618,4 +618,13 @@ public class NetworkServiceImpl implements NetworkService {
         return networkDao.setOvertime(distribute);
     }
 
+    @Override
+    public int activation(Map map) {
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
+        Distribute  distribute = (Distribute) map.get("distribute");
+        distribute.setActivationName((String) map.get("name"));
+        distribute.setTrackId(distribute.getTrackId());
+        distribute.setActivation(1);
+        return networkDao.updateNetwork(distribute);
+    }
 }

@@ -32,4 +32,8 @@
         </trim>
 
     </insert>
+    <select id="qureyFollowList" parameterType="java.lang.Integer" resultType="com.jdsw.distribute.model.DistributeFollow">
+        select id,follow_name as followName,follow_time as followTime,follow_result as followResult,
+               network_id as networkId,img_url as imgUrl,record,create_time as createTime from customer_develop_follow where network_id = #{id} ORDER BY id DESC
+    </select>
 </mapper>

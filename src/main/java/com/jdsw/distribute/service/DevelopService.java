@@ -2,6 +2,7 @@ package com.jdsw.distribute.service;
 
 import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.model.Distribute;
+import com.jdsw.distribute.model.DistributeFollow;
 
 import java.text.ParseException;
 import java.util.List;
@@ -37,4 +38,16 @@ public interface DevelopService {
      * @return
      */
     int deleteDevelop(Distribute distribute);
+
+    /**
+     * 跟进列表
+     * @return
+     */
+    List<DistributeFollow> qureyFollowList(Integer id);
+    /**
+     * 写跟进
+     * @param distributeFollow
+     * @return
+     */
+    int followupDevelop(DistributeFollow distributeFollow);
 }
