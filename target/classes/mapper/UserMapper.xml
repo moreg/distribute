@@ -110,6 +110,11 @@
     select branch from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and u.username = #{username}
   </select>
 
+  <!--查询下属名字-->
+  <select id="qureyGroup">
+    select u.name from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = (SELECT rolename from role WHERE leader = #{leader})
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where id = #{id,jdbcType=INTEGER}
