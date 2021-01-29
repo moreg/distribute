@@ -128,11 +128,18 @@ public interface NetworkService {
      */
     PageInfo<CashierVo> cashierCompleteLis(Map map);
     /**
-     * 财务查询列表
+     * 完成订单
      * @param
      * @return
      */
-    PageInfo<CashierVo> cashierListNetwork(Map map);
+    PageInfo<Distribute> dealListNetwork(Map map);
+
+    /**
+     * 下属客户列表
+     * @param map
+     * @return
+     */
+    PageInfo<Distribute> subordinateList(Map map);
     /**
      * 主管转单
      * @param distribute
@@ -228,6 +235,11 @@ public interface NetworkService {
      */
     int setOvertime(Distribute distribute);
 
+    /**
+     * 激活客户
+     * @param map
+     * @return
+     */
     int activation(Map map);
 
 }

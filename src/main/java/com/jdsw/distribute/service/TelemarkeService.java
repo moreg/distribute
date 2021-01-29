@@ -75,7 +75,7 @@ public interface TelemarkeService {
      * @param
      * @return
      */
-    PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String username);
+    PageInfo<Distribute> queryTelemarkeByLastName(Map map);
 
     /**
      * 超时

@@ -203,14 +203,42 @@
     </if>
     ORDER BY id DESC
   </select>
-
+  <!--成交订单-->
+  <select id="dealListNetwork" resultMap="aMap" parameterType="String">
+    select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
+    where  last_follow_name = #{name} and status = #{status}
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY id DESC
+  </select>
+  <!--下属客户-->
+  <select id="subordinateList" resultMap="aMap" parameterType="String">
+    select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
+    where  last_follow_name = #{lastFollowName} and status = #{status}
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY id DESC
+  </select>
   <!--跟单管理-->
   <select id="cashierListNetwork" resultMap="cashierMap" parameterType="Map">
-    select id,name,corporate_name,create_time,source,last_follow_name,track_id,order_state from deal_order
+    select id,name,corporate_name,source,last_follow_name,track_id,order_state,deal_time from deal_order
     where 1 = 1
-    <if test="name != null and name !=''">
-      and last_follow_name = #{name}
-    </if>
     <if test="orderState != null ">
     and order_state = #{orderState}
     </if>
@@ -401,6 +429,15 @@
       </if>
       <if test="activationName != null and activationName != ''">
         activation_name = #{activationName},
+      </if>
+      <if test="overdueTime !=null">
+        overdue_time = #{overdueTime},
+      </if>
+      <if test="activationTime != null and activationTime != ''">
+        activation_time = #{activationTime},
+      </if>
+      <if test="activation != null">
+        activation = #{activation},
       </if>
     </trim>
 

@@ -36,7 +36,7 @@ public class DevelopServiceImpl implements DevelopService {
         Distribute distribute = (Distribute) map.get("distribute");
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
         String branch = userDao.queryBranch((String) map.get("username"));
-        distribute.setActivation(0);
+        distribute.setActivation(1);
         distribute.setLastFollowName((String) map.get("name"));
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("ZJ");//获得跟踪单号
@@ -89,5 +89,9 @@ public class DevelopServiceImpl implements DevelopService {
     @Override
     public int followupDevelop(DistributeFollow distributeFollow) {
         return developFollowDao.insertDevelopFollow(distributeFollow);
+    }
+    @Override
+    public Distribute selectDeveolpById(Integer id) {
+        return developDao.selectDeveolpById(id);
     }
 }

@@ -58,24 +58,35 @@ public class UserController {
      * @return
      */
     @RequestMapping("/queryDepartment")
-    public Message queryDepartment(String department){
+    public Message queryDepartment(String department,String branch){
 /*        if (StringUtils.isEmpty(department) && StringUtils.isEmpty(branch)){
             return Message.fail("参数不能为空");
         }*/
-        return Message.success("操作成功",userService.queryDepartment(department));
+        return Message.success("操作成功",userService.queryDepartment(department,branch));
     }
-
+    /**
+     * 查询部门下的人员
+     * @param
+     * @return
+     */
+    @RequestMapping("/queryGroup")
+    public Message queryGroup(String group,String branch){
+/*        if (StringUtils.isEmpty(department) && StringUtils.isEmpty(branch)){
+            return Message.fail("参数不能为空");
+        }*/
+        return Message.success("操作成功",userService.queryGroup(group,branch));
+    }
     /**
      * 获取部门主管
      * @param department
      * @return
      */
     @RequestMapping("/queryCharge")
-    public Message queryCharge(String department){
+    public Message queryCharge(String department,String branch,String group){
 /*        if (StringUtils.isEmpty(department) && StringUtils.isEmpty(branch)){
             return Message.fail("参数不能为空");
         }*/
-        return Message.success("操作成功",userService.queryCharge(department));
+        return Message.success("操作成功",userService.queryCharge(department,branch,group));
     }
 
     /**
@@ -100,4 +111,6 @@ public class UserController {
         map.put("role",userService.findRoleByUserName(username));
         return Message.success("操作成功",map);
     }
+
+
 }

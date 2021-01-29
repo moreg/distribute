@@ -36,26 +36,28 @@ public interface UserDao {
 
     Set<String> findRoleByUserName2(String username);
 
+    UsersVo findRoleByUserName3(String username);
     /**
      * 查询部门下的人员
-     * @param department
+     * @param
      * @return
      */
-    List<User> queryDepartment(List<String> department);
+    List<User> queryDepartment(Map map);
+
+    /**
+     * 查询组下的人员
+     * @param
+     * @return
+     */
+    List<User> queryGroup(Map map);
 
     /**
      * 查询部门主管
      * @param
      * @return
      */
-    List<UsersVo> queryCharge(List<String> department);
+    List<UsersVo> queryCharge(Map map);
 
-    /**
-     * 查询部门主管
-     * @param department
-     * @return
-     */
-    String queryCharge2(String department);
     /**
      * 查询企业信息
      * @param
@@ -82,4 +84,6 @@ public interface UserDao {
      * @return
      */
     String queryBranch(String username);
+
+    List<String> qureyGroup(Integer leader);
 }

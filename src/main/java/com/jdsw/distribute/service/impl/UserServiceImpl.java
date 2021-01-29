@@ -72,8 +72,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> queryDepartment(String department) {
+    public List<User> queryDepartment(String department,String branch) {
         String temp[]=department.split(",");
+        List<String> list = new ArrayList();
+        for (int i=0;i<temp.length;i++){
+            String string1 = temp[i];
+            list.add(temp[i]);
+        }
+        Map map2 = new HashMap();
+        map2.put("list",list);
+        map2.put("branch",branch);
+        List<User> ls = userDao.queryDepartment(map2);
+        List li = new ArrayList<>();
+        for(int i=0;i<ls.size();i++){
+            Map<String,Object> map = new HashMap<String, Object>();
+            if (StringUtils.isNotEmpty(ls.get(i).getName())){
+                map.put("name",ls.get(i).getName());
+                map.put("department",ls.get(i).getDepartment());
+                map.put("group",ls.get(i).getGroup());
+                li.add( map);
+            }
+        }
+        return li;
+    }
+
+    @Override
+    public List<User> queryGroup(String group,String branch) {
+        String temp[]=group.split(",");
         List<String> list = new ArrayList();
         for (int i=0;i<temp.length;i++){
             String string1 = temp[i];
@@ -82,13 +107,16 @@ public class UserServiceImpl implements UserService {
       /*  Map map2 = new HashMap();
         map2.put("list",list);
         map2.put("branch",branch);*/
-        List<User> ls = userDao.queryDepartment(list);
+        Map mapl = new HashMap();
+        mapl.put("list",list);
+        mapl.put("branch",branch);
+        List<User> ls = userDao.queryGroup(mapl);
         List li = new ArrayList<>();
         for(int i=0;i<ls.size();i++){
             Map<String,Object> map = new HashMap<String, Object>();
             if (StringUtils.isNotEmpty(ls.get(i).getName())){
                 map.put("name",ls.get(i).getName());
-                map.put("department",ls.get(i).getDepartment());
+                map.put("group",ls.get(i).getGroup());
                 li.add( map);
             }
         }
@@ -96,23 +124,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UsersVo> queryCharge(String department) {
-        String temp[]=department.split(",");
+    public List<UsersVo> queryCharge(String department,String branch,String group) {
+        String temp[]=group.split(",");
         List<String> list = new ArrayList();
         for (int i=0;i<temp.length;i++){
             String string1 = temp[i];
             list.add(temp[i]);
         }
-/*        Map map2 = new HashMap();
+        Map map2 = new HashMap();
         map2.put("list",list);
-        map2.put("branch",branch);*/
-        List<UsersVo> ls = userDao.queryCharge(list);
+        map2.put("branch",branch);
+        map2.put("department",department);
+        List<UsersVo> ls = userDao.queryCharge(map2);
         List li = new ArrayList();
         for(int i=0;i<ls.size();i++){
             Map map = new HashMap<>();
             if (StringUtil.isNotEmpty(ls.get(i).getName())){
                 map.put("name",ls.get(i).getName());
                 map.put("department",ls.get(i).getDepartment());
+                map.put("group",ls.get(i).getGroup());
                 li.add(map);
             }
         }

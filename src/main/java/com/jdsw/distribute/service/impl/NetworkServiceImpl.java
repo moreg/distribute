@@ -51,6 +51,10 @@ public class NetworkServiceImpl implements NetworkService {
     private EnterpriseDao enterpriseDao;
     @Autowired
     private DealOrderDao dealOrderDao;
+    @Autowired
+    private DevelopDao developDao;
+    @Autowired
+    private DevelopFollowDao developFollowDao;
     @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
@@ -386,40 +390,51 @@ public class NetworkServiceImpl implements NetworkService {
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
-        map.put("orderState",1);
+        if ((Integer) map.get("orderState") == 0){
+            map.put("orderState",0);
+        }else {
+            map.put("orderState",null);
+        }
         for (Object str : set) {
             if (str.equals(Department.FINANCE.value) ) {//财务
-                map.put("name",null);
                 PageHelper.startPage(pageNum, limit);
                 List<CashierVo> CashierVo = networkDao.cashierListNetwork(map);
                 PageInfo result = new PageInfo(CashierVo);
                 return result;
             }
+        }
+        return null;
+    }
+
+    @Override
+    public PageInfo<Distribute> dealListNetwork(Map map) {
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
+        PageHelper.startPage(pageNum, limit);
+        List<Distribute> CashierVo = networkDao.dealListNetwork(map);
+        PageInfo result = new PageInfo(CashierVo);
+        return result;
+    }
+
+    @Override
+    public PageInfo<Distribute> subordinateList(Map map) {
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
+        if ("KZ".equals(map.get("pool").toString())){
             PageHelper.startPage(pageNum, limit);
-            List<CashierVo> CashierVo = networkDao.cashierListNetwork(map);
+            List<Distribute> CashierVo = networkDao.subordinateList(map);
+            PageInfo result = new PageInfo(CashierVo);
+            return result;
+        }else if ("LJ".equals(map.get("pool").toString())){
+            PageHelper.startPage(pageNum, limit);
+            List<Distribute> CashierVo = telemarkeDao.queryTelemarkeByLastName2(map);
             PageInfo result = new PageInfo(CashierVo);
             return result;
         }
         return null;
     }
 
-    @Override
-    public PageInfo<CashierVo> cashierListNetwork(Map map) {
-        Set set = userDao.findRoleByUserName2((String) map.get("username"));
-        Integer pageNum = (Integer) map.get("pageNum");
-        Integer limit = (Integer) map.get("limit");
-        map.put("name",null);
-        map.put("orderState",0);
-        for (Object str : set) {
-            if (str.equals(Department.FINANCE.value)) {
-                PageHelper.startPage(pageNum, limit);
-                List<CashierVo> CashierVo = networkDao.cashierListNetwork(map);
-                PageInfo result = new PageInfo(CashierVo);
-                return result;
-            }
-        }
-       return null;
-    }
     @Override
     @Transactional
     public int transferNetwork(List<Distribute> distribute,String name) {
@@ -485,6 +500,8 @@ public class NetworkServiceImpl implements NetworkService {
             return networkFollowDao.qureyFollowList(id);
         }else if ("LJ".equals(str)){
             return telemarkeFollowDao.qureyFollowList(id);
+        }else if ("ZJ".equals(str)){
+            return developFollowDao.qureyFollowList(id);
         }
         return null;
     }
@@ -496,6 +513,8 @@ public class NetworkServiceImpl implements NetworkService {
             return networkDao.selectNetworkById(id);
         }else if ("LJ".equals(str)){
             return telemarkeDao.selectNetworkById(id);
+        }else if ("ZJ".equals(str)){
+            return developDao.selectDeveolpById(id);
         }
         return null;
     }
@@ -619,12 +638,34 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
+    @Transactional
     public int activation(Map map) {
-        Set set = userDao.findRoleByUserName2((String) map.get("username"));
+        String str = map.get("name")+"激活客户";
         Distribute  distribute = (Distribute) map.get("distribute");
+        String strid =  distribute.getTrackId().substring(0,2);
+        distribute.setOverdueTime(DateUtil.getOverTime(259200000));
         distribute.setActivationName((String) map.get("name"));
-        distribute.setTrackId(distribute.getTrackId());
         distribute.setActivation(1);
-        return networkDao.updateNetwork(distribute);
+        distribute.setActivationTime(DateUtil.getDate());
+        DistributeFollow networkFollow = new DistributeFollow();
+        networkFollow.setFollowName((String) map.get("name"));
+        networkFollow.setNetworkId(distribute.getId());
+        networkFollow.setFollowResult(str);
+        if ("KZ".equals(strid)){
+            Distribute distribute1 = networkDao.selectNetworkById(distribute.getId());
+            if (distribute1.getActivation() == 0){
+                networkFollowDao.insertNetworkFollow(networkFollow);
+            }
+            return networkDao.updateNetwork(distribute);
+        }else if ("LJ".equals(strid)){
+            Distribute distribute1 = telemarkeDao.selectNetworkById(distribute.getId());
+            if (distribute1.getActivation() == 0){
+                telemarkeFollowDao.insertNetworkFollow(networkFollow);
+            }
+            return telemarkeDao.updateworkOverdueTime(distribute);
+        }else if ("ZJ".equals(strid)){
+            return developDao.updateDevelop(distribute);
+        }
+        return 0;
     }
 }

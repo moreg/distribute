@@ -149,4 +149,13 @@ public class DevelopController {
         }
         return Message.fail();
     }
+    /**
+     * 查询客户信息
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/qureyCustomer")
+    public Message qureyCustomer(Integer id,String trackId)throws IOException{
+        return Message.success("操作成功",developService.selectDeveolpById(id));
+    }
 }

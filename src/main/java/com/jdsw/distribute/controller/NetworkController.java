@@ -1,11 +1,8 @@
 package com.jdsw.distribute.controller;
 
 import com.jdsw.distribute.model.*;
-import com.jdsw.distribute.service.CustomerService;
-import com.jdsw.distribute.service.NetworkService;
+import com.jdsw.distribute.service.*;
 
-import com.jdsw.distribute.service.TelemarkeService;
-import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.*;
 
 import com.jdsw.distribute.vo.AirForcePool;
@@ -33,7 +30,8 @@ public class NetworkController {
     private TelemarkeService telemarkeService;
     @Resource
     private CustomerService customerService;
-
+    @Resource
+    private DevelopService developService;
     /**
      * 空军线索
      */
@@ -280,6 +278,8 @@ public class NetworkController {
              i = distributeService.followupNetwork(networkFollow,username);
         }else if ("LJ".equals(strid)){
             i = telemarkeService.followupNetwork(networkFollow);
+        }else if ("ZJ".equals(strid)){
+            i = developService.followupDevelop(networkFollow);
         }
         if (i > 0){
             return Message.success();
@@ -419,11 +419,11 @@ public class NetworkController {
         return Message.fail();
     }
     /**
-     * 财务录单完成列表
+     * 财务我的客户
      * @return
      */
     @RequestMapping("/cashierCompleteLis")
-    public Message cashierCompleteLis(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request){
+    public Message cashierCompleteLis(int pageNum, int limit, String content, String strtime, String endtime,Integer orderState,HttpServletRequest request){
         //String username = (String) request.getAttribute("username");
         //String name = (String) request.getAttribute("name");
         String token = request.getHeader("token"); // 获取头中token
@@ -438,10 +438,11 @@ public class NetworkController {
         mapl.put("endtime",endtime);
         mapl.put("username",username);
         mapl.put("name",name);
+        mapl.put("orderState",orderState);
         return Message.success("操作成功",distributeService.cashierCompleteLis(mapl),0);
     }
     /**
-     * 财务列表
+     * 成交订单
      * @param pageNum
      * @param limit
      * @param content
@@ -450,8 +451,8 @@ public class NetworkController {
      *
      * @return
      */
-    @RequestMapping("/cashierListNetwork")
-    public Message cashierListNetwork(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request){
+    @RequestMapping("/dealListNetwork")
+    public Message dealListNetwork(int pageNum, int limit, String content, String strtime, String endtime,Integer status,HttpServletRequest request){
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
@@ -465,9 +466,41 @@ public class NetworkController {
         mapl.put("endtime",endtime);
         mapl.put("username",username);
         mapl.put("name",name);
-        return Message.success("操作成功",distributeService.cashierListNetwork(mapl),0);
+        mapl.put("status",status);
+        return Message.success("操作成功",distributeService.dealListNetwork(mapl),0);
     }
 
+    /**
+     * 下属客户
+     * @param pageNum
+     * @param limit
+     * @param content
+     * @param strtime
+     * @param endtime
+     * @param status
+     * @param pool
+     * @param request
+     * @return
+     */
+    @RequestMapping("/subordinateList")
+    public Message subordinateList(int pageNum, int limit, String content, String strtime, String endtime,Integer status,String pool,String lastFollowName,HttpServletRequest request){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map mapl = new HashMap();
+        mapl.put("pageNum",pageNum);
+        mapl.put("limit",limit);
+        mapl.put("content",content);
+        mapl.put("strtime",strtime);
+        mapl.put("endtime",endtime);
+        mapl.put("username",username);
+        mapl.put("name",name);
+        mapl.put("status",status);
+        mapl.put("lastFollowName",lastFollowName);
+        mapl.put("pool",pool);
+        return Message.success("操作成功",distributeService.subordinateList(mapl),0);
+    }
     /**
      * 主管转交
      * @param distribute
@@ -530,6 +563,8 @@ public class NetworkController {
             return Message.success("操作成功",distributeService.qureyFollowList(id,trackId));
         }else if ("LJ".equals(strid)){
             return Message.success("操作成功",telemarkeService.qureyFollowList(id));
+        }else if ("ZJ".equals(strid)){
+            return Message.success("操作成功",developService.qureyFollowList(id));
         }
         return Message.fail();
     }

@@ -148,7 +148,15 @@ public class TelemarkeController {
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String lastFollowName = (String) map.get("name");
-        return Message.success("操作成功",telemarkService.queryTelemarkeByLastName(pageNum,limit,content,strtime,endtime,lastFollowName,username),0);
+        Map map1 = new HashMap();
+        map1.put("username",username);
+        map1.put("lastFollowName",lastFollowName);
+        map1.put("pageNum",pageNum);
+        map1.put("limit",limit);
+        map1.put("content",content);
+        map1.put("strtime",strtime);
+        map1.put("endtime",endtime);
+        return Message.success("操作成功",telemarkService.queryTelemarkeByLastName(map1),0);
     }
     /**
      * 抢单接口

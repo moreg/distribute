@@ -1,9 +1,12 @@
 package com.jdsw.distribute.service.impl;
 
 import com.jdsw.distribute.dao.MenuDao;
+import com.jdsw.distribute.dao.UserDao;
+import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Branch;
 import com.jdsw.distribute.model.Menu;
 import com.jdsw.distribute.service.MenuService;
+import com.jdsw.distribute.vo.UsersVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,8 @@ public class MenuServiceImpl  implements MenuService {
 
     @Autowired
     private MenuDao menuMapper;
+    @Autowired
+    private UserDao userDao;
     @Override
     public Comparator<Menu> order() {
         Comparator<Menu> comparator = new Comparator<Menu>() {
@@ -163,5 +168,17 @@ public class MenuServiceImpl  implements MenuService {
     public List<Menu> getMenuLsit() {
         List<Menu> list = menuMapper.getMenuList();
         return list;
+    }
+
+    @Override
+    public List<String> getSubordinate(Map map) {
+        UsersVo user = userDao.findRoleByUserName3((String) map.get("username"));
+        System.out.println(user);
+        if (user.getRolename().equals(Department.CHARGE.value)){
+            return userDao.qureyGroup(user.getId());
+        }else if (user.getRolename().equals(Department.GENERAL.value)){
+
+        }
+        return null;
     }
 }

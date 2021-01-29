@@ -34,4 +34,6 @@ public interface DevelopDao {
      * @return
      */
     int deleteDevelop(Distribute distribute);
+
+    Distribute selectDeveolpById(Integer id);
 }

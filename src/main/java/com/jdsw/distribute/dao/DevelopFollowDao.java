@@ -9,5 +9,7 @@ public interface DevelopFollowDao {
 
     int insertDevelopFollow(DistributeFollow distributeFollow);
 
-    List<DistributeFollow> qureyFollowList(Integer integer);
+    List<DistributeFollow> qureyFollowList(Integer id);
+
+
 }

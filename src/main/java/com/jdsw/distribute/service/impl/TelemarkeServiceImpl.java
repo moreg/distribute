@@ -231,17 +231,20 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
-    public PageInfo<Distribute> queryTelemarkeByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String username) {
-        Set set = userDao.findRoleByUserName2(username);
+    public PageInfo<Distribute> queryTelemarkeByLastName(Map map) {
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
         for (Object str : set) {
             if (str.equals(Department.CHARGE.value)) {//主管
                 PageHelper.startPage(pageNum, limit);
-                List<Distribute> Network = telemarkDao.queryTelemarkeByLastName(content,strtime,endtime,lastFollowName);
+                List<Distribute> Network = telemarkDao.queryTelemarkeByLastName(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
-            }else if (str.equals(Department.SALESMAN.value)){//业务员
+            }else if (str.equals(Department.SALESMAN.value)){//普通员工
+                map.put("status",10);
                 PageHelper.startPage(pageNum, limit);
-                List<Distribute> Network = telemarkDao.queryTelemarkeByLastName2(content,strtime,endtime,lastFollowName);
+                List<Distribute> Network = telemarkDao.queryTelemarkeByLastName2(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
             }

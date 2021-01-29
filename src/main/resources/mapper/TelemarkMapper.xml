@@ -130,7 +130,7 @@
     ORDER BY id DESC
   </select>
   <!--陆军客户 主管-->
-  <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="String">
+  <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
     source,last_follow_time,activation,address,receiving_time from customer_telemarke
     where (last_follow_name = #{lastFollowName} and status = 10 or  (leader_name = #{lastFollowName} and status = 5)
@@ -147,10 +147,10 @@
     ORDER BY id DESC
   </select>
   <!--陆军客户 业务员-->
-  <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="String">
+  <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
     source,last_follow_time,activation,address,receiving_time from customer_telemarke
-    where last_follow_name = #{lastFollowName} and status = 10
+    where last_follow_name = #{lastFollowName} and status = #{status}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -330,16 +330,40 @@
     update customer_telemarke
     <trim prefix="SET" suffixOverrides=",">
     <if test="status != null">
-      status = #{status},
+        status = #{status},
     </if>
     <if test="overdueTime != null">
-      overdue_time = #{overdueTime},
+        overdue_time = #{overdueTime},
     </if>
     <if test="activation != null">
-      activation = #{activation},
+        activation = #{activation},
     </if>
     <if test="issue != null">
-      issue # = #{issue},
+        issue # = #{issue},
+    </if>
+    <if test="activationName != null and activationName != ''">
+        activation_name = #{activationName},
+    </if>
+    <if test="corporatePhone2 != null and corporatePhone2 != ''">
+        corporate_phone2 = #{corporatePhone2},
+    </if>
+    <if test="corporatePhone3 != null and corporatePhone3 != ''">
+        corporate_phone3 = #{corporatePhone3},
+    </if>
+    <if test="weChat != null and weChat != ''">
+        weChat = #{weChat},
+    </if>
+    <if test="activationTime != null and activationTime != ''">
+        activation_time = #{activationTime},
+    </if>
+    <if test="corporateName != null and corporateName !=''">
+        corporate_name = #{corporateName},
+    </if>
+    <if test="corporatePhone != null">
+        corporate_phone = #{corporatePhone},
+    </if>
+    <if test="source != null and source != ''">
+        source = #{source},
     </if>
     </trim>
      where id = #{id}

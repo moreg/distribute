@@ -5,6 +5,7 @@ import com.jdsw.distribute.model.Menu;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public interface MenuService {
     /*
@@ -16,4 +17,5 @@ public interface MenuService {
     List<Menu> getSection(String label);
     public List<Menu> getChild(String id, List<Menu> allMenu);
     public List<Menu> getMenuLsit();
+    List getSubordinate(Map map);
 }

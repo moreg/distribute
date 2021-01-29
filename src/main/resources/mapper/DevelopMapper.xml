@@ -13,6 +13,32 @@
         <result column="total"  property="total" />
         <result column="activation_time"  property="activationTime" />
     </resultMap>
+    <resultMap id="DistributeMap" type="com.jdsw.distribute.model.Distribute">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name"  property="name" />
+        <result column="corporate_name"  property="corporateName" />
+        <result column="corporate_phone"  property="corporatePhone" />
+        <result column="contacts"  property="contacts" />
+        <result column="contacts_phone"  property="contactsPhone" />
+        <result column="source"  property="source" />
+        <result column="follow_number"  property="followNumber" />
+        <result column="state"  property="state" />
+        <result column="last_follow_up"  property="lastFollowUp" />
+        <result column="last_follow_content"  property="lastFollowContent" />
+        <result column="last_follow_time"  property="lastFollowTime" />
+        <result column="last_follow_name"  property="lastFollowName" />
+        <result column="track_id"  property="trackId" />
+        <result column="overdue_time"  property="overdueTime" />
+        <result column="status"  property="status" />
+        <result column="track_id"  property="trackId" />
+        <result column="conduct"  property="conduct" />
+        <result column="create_time"  property="createTime" />
+        <result column="industry"  property="industry" />
+        <result column="integral"  property="integral" />
+    </resultMap>
+    <select id="selectDeveolpById" resultMap="DistributeMap">
+        select * from customer_develop where id = #{id}
+    </select>
     <!--新增-->
     <insert id="insertDevelop" parameterType="com.jdsw.distribute.model.Distribute" useGeneratedKeys="true" keyProperty="id">
         insert into customer_develop(

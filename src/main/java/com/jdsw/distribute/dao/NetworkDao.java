@@ -119,6 +119,20 @@ public interface NetworkDao {
     List<Distribute> pendingPoolList(Map map);
 
     /**
+     * 成交订单
+     * @param map
+     * @return
+     */
+    List<Distribute> dealListNetwork(Map map);
+
+    /**
+     * 下属客户
+     * @param map
+     * @return
+     */
+    List<Distribute> subordinateList(Map map);
+
+    /**
      * 新增
      * @param distribute
      * @return
@@ -156,12 +170,6 @@ public interface NetworkDao {
      * @param network
      * @return
      */
-    int SubmitRecordingNetwork(Distribute network);
-    /**
-     * 提交财务
-     * @param network
-     * @return
-     */
     int SubmitRecordingNetwork2(List<Distribute> network);
 
     /**
@@ -176,6 +184,7 @@ public interface NetworkDao {
      * @return
      */
     List<CashierVo> cashierListNetwork(Map map);
+
 
     /**
      * 设置过期时间

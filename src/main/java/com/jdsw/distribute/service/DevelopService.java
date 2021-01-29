@@ -50,4 +50,10 @@ public interface DevelopService {
      * @return
      */
     int followupDevelop(DistributeFollow distributeFollow);
+    /**
+     * 客户信息
+     * @param id
+     * @return
+     */
+    Distribute selectDeveolpById(Integer id);
 }

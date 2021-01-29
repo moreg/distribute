@@ -13,6 +13,7 @@
     <result column="salt" jdbcType="VARCHAR" property="salt" />
     <result column="permission" jdbcType="VARCHAR" property="permission" />
     <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="group" jdbcType="VARCHAR" property="group" />
     <collection property="roles" ofType="com.jdsw.distribute.model.Role">
       <id property="id" column="id"/>
       <result property="rolename" column="rolename"/>
@@ -64,37 +65,38 @@
     select r.rolename from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
   </select>
 
+  <select id="findRoleByUserName3" parameterType="string" resultType="com.jdsw.distribute.vo.UsersVo">
+    select r.rolename,r.leader,r.group,r.id from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
+  </select>
+
 
   <select id="countUser" resultType="java.lang.Integer">
   select count(*) from user
   </select>
-  <select id="queryDepartment"  resultMap="BaseResultMap" parameterType="java.util.List">
-    select u.name,r.department,r.branch from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid  and r.department in
+  <select id="queryDepartment"  resultMap="BaseResultMap" parameterType="Map">
+    select u.name,r.department,r.branch,r.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid  and r.branch = #{branch} and r.department in
     <foreach collection="list" item="department" index="index" open="(" close=")" separator=",">
       #{department}
     </foreach>
   </select>
-  <!--<select id="queryDepartment"  resultMap="BaseResultMap" parameterType="java.util.List">
-    select u.name,r.department,r.branch from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and  branch = #{branch} and r.department in
-    <foreach collection="list" item="department" index="index" open="(" close=")" separator=",">
-      #{department}
+
+  <select id="queryGroup"  resultMap="BaseResultMap" parameterType="Map">
+    select u.name,r.department,r.branch,r.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.branch = #{branch} and r.group in
+    <foreach collection="list" item="group" index="index" open="(" close=")" separator=",">
+      #{group}
     </foreach>
-  </select>-->
+  </select>
 
   <select id="queryCharge"  resultType="com.jdsw.distribute.vo.UsersVo" parameterType="java.util.List">
-    select u.name,r.department,r.branch from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = '部门主管' and r.department in
-    <foreach collection="list"  index="index" item="department" open="(" close=")" separator=",">
-      #{department}
+    select u.name,r.department,r.branch,r.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = '主管' and r.branch = #{branch} and
+    department = #{department} and r.group in
+    <foreach collection="list"  index="index" item="group" open="(" close=")" separator=",">
+      #{group}
     </foreach>
   </select>
-  <select id="queryCharge2"  resultType="com.jdsw.distribute.vo.UsersVo" parameterType="Map">
-    select u.name from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = '部门主管' and branch = #{branch} and r.department in
 
-      #{department}
-
-  </select>
   <select id="queryEnterprise" resultType="com.jdsw.distribute.model.Enterprise">
-    select id,name,source,conduct,corporate_phone as corporatePhone,relation from enterprise WHERE corporate_phone = #{corporatePhone}
+    select id,name,source,corporate_phone as corporatePhone,relation from enterprise WHERE corporate_phone = #{corporatePhone}
     </select>
 
   <select id="queryDepartment2" resultType="String">
@@ -111,7 +113,7 @@
   </select>
 
   <!--查询下属名字-->
-  <select id="qureyGroup">
+  <select id="qureyGroup" resultType="String">
     select u.name from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = (SELECT rolename from role WHERE leader = #{leader})
   </select>
 

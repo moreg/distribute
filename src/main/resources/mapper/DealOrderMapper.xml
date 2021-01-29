@@ -17,7 +17,7 @@
         <result column="deal_time"  property="dealTime" />
     </resultMap>
     <select id="qureyOrder" resultMap="cashierMap">
-        select contract_no,conduct,money,deal_time from deal_order where corporate_phone in
+        select contract_no,conduct,pay,deal_time from deal_order where corporate_phone in
         <foreach collection="list" item="item" index="index" separator="," close=")" open="(">
         #{item}
         </foreach>
@@ -52,6 +52,7 @@
             <if test="trackId != null and trackId != ''">
                 track_id,
             </if>
+            deal_time,
             order_state,
             create_time
         </trim>
@@ -83,6 +84,7 @@
             <if test="trackId != null and trackId != ''">
                 #{trackId},
             </if>
+            sysdate(),
             1,
             sysdate()
         </trim>

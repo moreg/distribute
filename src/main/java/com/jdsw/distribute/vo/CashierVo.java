@@ -23,6 +23,5 @@ public class CashierVo {
     private String contractNo;
     private String dealTime;
     private String conduct;
-    private BigDecimal money;
-
+    private BigDecimal pay;
 }

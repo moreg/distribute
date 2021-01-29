@@ -8,6 +8,7 @@ import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.service.MenuService;
 
 import com.jdsw.distribute.service.UserService;
+import com.jdsw.distribute.util.JwtUtil;
 import com.jdsw.distribute.util.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -76,6 +77,18 @@ public class MenuController {
     @RequestMapping("getSection")
     public Message getSection(String id){
         return Message.success("操作成功",menuService.getSection(id));
+    }
+
+    @RequestMapping("/getSubordinate")
+    public Message getSubordinate(HttpServletRequest request){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map mapl = new HashMap();
+        mapl.put("username",username);
+        mapl.put("name",name);
+        return Message.success("查询成功",menuService.getSubordinate(mapl));
     }
 
 }

@@ -23,13 +23,19 @@ public interface UserService {
      * @param
      * @return
      */
-    List<User> queryDepartment(String department);
+    List<User> queryDepartment(String department,String branch);
 
+    /**
+     * 查询组下的人员
+     * @param
+     * @return
+     */
+    List<User> queryGroup(String group,String branch);
     /**
      * 查询部门主管
      * @return
      */
-    List<UsersVo> queryCharge(String department);
+    List<UsersVo> queryCharge(String department,String branch,String group);
 
     List<Enterprise> queryEnterprise(String corporatePhone);
 

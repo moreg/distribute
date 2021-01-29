@@ -64,7 +64,7 @@ public class Distribute {
     /**
      * 微信号
      */
-    Integer weChat;
+    String weChat;
     /**
      * 生日
      */
