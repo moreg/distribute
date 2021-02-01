@@ -10,6 +10,7 @@ import com.jdsw.distribute.service.MenuService;
 import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.JwtUtil;
 import com.jdsw.distribute.util.Message;
+import com.jdsw.distribute.vo.UsersVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,7 +50,9 @@ public class MenuController {
     }
     @RequestMapping(value = "/menuList")
     public Message menuLsit(HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map1 = JwtUtil.parseJWT(token);
+        String username = (String) map1.get("userName");
         User user2 = userService.findByUserName(username);
         List<Menu> menu = menuService.findTree("user");
         List<Menu> menuslist = menuService.getMenuLsit();
@@ -91,4 +94,21 @@ public class MenuController {
         return Message.success("查询成功",menuService.getSubordinate(mapl));
     }
 
+    /**
+     *
+     * @param branch
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getsubordinateMenuList")
+    public Message getsubordinateMenuList(String branch,HttpServletRequest request){
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        Map map2 = new HashMap();
+        map2.put("username",username);
+        map2.put("branch",branch);
+
+        return Message.success("查询成功",menuService.getsubordinateMenuList(map2));
+    }
 }

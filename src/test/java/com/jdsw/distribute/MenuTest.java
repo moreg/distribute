@@ -22,7 +22,8 @@ public class MenuTest {
     public void test(){
         Map map = new HashMap();
         map.put("username","zl");
-        System.out.println(menuService.getSubordinate(map));
+        map.put("branch","梧州分公司");
+        System.out.println(menuService.getsubordinateMenuList(map));
 
     }
     @Test

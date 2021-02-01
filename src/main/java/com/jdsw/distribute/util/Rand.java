@@ -6,20 +6,20 @@ import java.util.Random;
 
 public class Rand {
     public static String getTrackId(String string){
-        String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        String str="0123456789";
         Random random=new Random();
         StringBuffer sb=new StringBuffer();
         for(int i=0;i<4;i++){
-            int number=random.nextInt(62);
+            int number=random.nextInt(9);
             sb.append(str.charAt(number));
         }
         StringBuffer st=new StringBuffer(string);
-        SimpleDateFormat s = new SimpleDateFormat("yyyyMMddssSSS");
+        SimpleDateFormat s = new SimpleDateFormat("yyyyMMddssSSSS");
         String strd = s.format(new Date());
-        return st.append(sb).append(strd).toString();
+        return st.append(strd).append(sb).toString();
     }
 
     public static void main(String[] args) {
-        System.out.println(getTrackId("WL"));
+        System.out.println(getTrackId("K"));
     }
 }

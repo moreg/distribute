@@ -96,7 +96,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
     @Override
     @Transactional
-    public int excelTelemarke(MultipartFile file,String username) throws Exception {
+    public int excelTelemarke(MultipartFile file,String username,String name) throws Exception {
         String filePath = "E:\\upexl\\";
         File dir = new File(filePath);
         if (!dir.exists()) {
@@ -125,7 +125,8 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                     map.put("activation",0);
                     ls.add(map);
                 }
-            }else if (str.equals(Department.CHARGE.value)){//主管
+            }
+            if (str.equals(Department.CHARGE.value)){//主管
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
@@ -141,19 +142,18 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                     map.put("activation",0);
                     ls.add(map);
                 }
-            }else {
+            }
+            if (str.equals(Department.ARMCUSTOMER.value)){
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
                     String trackId = Rand.getTrackId("LJ");//获得跟踪单号
                     map.put("trackId",trackId);
-                    map.put("lastFollowName","");
-                    map.put("firstFollowName","");
                     map.put("issue",0);
                     map.put("appoint",0);
-                    map.put("leaderSign",1);
                     map.put("status",0);
                     map.put("activation",0);
+                    map.put("proposer",name);
                     ls.add(map);
                 }
             }

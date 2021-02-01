@@ -58,11 +58,11 @@ public class UserController {
      * @return
      */
     @RequestMapping("/queryDepartment")
-    public Message queryDepartment(String department,String branch){
+    public Message queryDepartment(String department,String branch,String group){
 /*        if (StringUtils.isEmpty(department) && StringUtils.isEmpty(branch)){
             return Message.fail("参数不能为空");
         }*/
-        return Message.success("操作成功",userService.queryDepartment(department,branch));
+        return Message.success("操作成功",userService.queryDepartment(department,branch,group));
     }
     /**
      * 查询部门下的人员

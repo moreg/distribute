@@ -212,7 +212,7 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setSign(1);
         distribute.setInvalid(0);
         if (StringUtils.isEmpty(distribute.getTrackId())){
-            String trackId = Rand.getTrackId("KZ");//获得跟踪单号
+            String trackId = Rand.getTrackId("K");//获得跟踪单号
             distribute.setTrackId(trackId);
         }
         for (Object str : set) {//遍历角色
@@ -272,49 +272,58 @@ public class NetworkServiceImpl implements NetworkService {
         List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,9, Excel.class);
         List ls = new ArrayList();
         Set set = userDao.findRoleByUserName2(username);
-        String LeaderName = userDao.queryDepartment2(username);//获取主管
         for (Object str : set) {
             if (str.equals(Department.SALESMAN.value)){//业务员
+                UsersVo usersVo = userDao.queryBranch(username);
+                String LeaderName = userDao.queryDepartment2(username);//获取主管
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("KZ");//获得跟踪单号
+                    String trackId = Rand.getTrackId("K");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("lastFollowName",name);
-                    map.put("firstFollowName",name);
-                    map.put("issue",1);
-                    map.put("leaderSign",0);
-                    map.put("appoint",1);
-                    map.put("status",10);
+                    map.put("activation",1);
+                    map.put("branch",usersVo.getBranch());
                     map.put("leaderName",LeaderName);
+                    map.put("group",usersVo.getGroup());
+                    map.put("activationName",name);
+                    map.put("department",usersVo.getDepartment());
                     ls.add(map);
+
                 }
-            }if (str.equals(Department.CHARGE.value)){//主管
+                return developDao.excelNetwork(ls);
+            }
+            if (str.equals(Department.CHARGE.value)){//主管
+                UsersVo usersVo = userDao.queryBranch(username);
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("KZ");//获得跟踪单号
+                    String trackId = Rand.getTrackId("K");//获得跟踪单号
                     map.put("trackId",trackId);
-                    map.put("leaderName",name);
-                    map.put("lastFollowName","");
-                    map.put("firstFollowName","");
-                    map.put("issue",0);
-                    map.put("appoint",0);
-                    map.put("leaderSign",1);
-                    map.put("status",5);
+                    map.put("lastFollowName",name);
+                    map.put("leaderName",null);
+                    map.put("activation",1);
+                    map.put("group",usersVo.getGroup());
+                    map.put("branch",usersVo.getBranch());
+                    map.put("lastFollowName",name);
+                    map.put("activationName",name);
                     ls.add(map);
                 }
-            }else {
+                return networkDao.excelNetwork(ls);
+            }
+            if (str.equals(Department.AirCUSTOMER.value)){
                 for (int i = 0;i<result.size();i++){//客服导入
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("KZ");//获得跟踪单号
+                    String trackId = Rand.getTrackId("K");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("issue",0);
                     map.put("status",0);
-                    map.put("lastFollowName","");
-                    map.put("firstFollowName","");
                     map.put("leaderSign",1);
+                    map.put("proposer",name);
+                    map.put("sign",1);
+                    map.put("activation",0);
+                    map.put("appoint",0);
                     ls.add(map);
                 }
             }
@@ -421,12 +430,12 @@ public class NetworkServiceImpl implements NetworkService {
     public PageInfo<Distribute> subordinateList(Map map) {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
-        if ("KZ".equals(map.get("pool").toString())){
+        if ("K".equals(map.get("pool").toString())){
             PageHelper.startPage(pageNum, limit);
             List<Distribute> CashierVo = networkDao.subordinateList(map);
             PageInfo result = new PageInfo(CashierVo);
             return result;
-        }else if ("LJ".equals(map.get("pool").toString())){
+        }else if ("L".equals(map.get("pool").toString())){
             PageHelper.startPage(pageNum, limit);
             List<Distribute> CashierVo = telemarkeDao.queryTelemarkeByLastName2(map);
             PageInfo result = new PageInfo(CashierVo);
@@ -495,12 +504,12 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public List<DistributeFollow> qureyFollowList(Integer id,String trackId) {
-        String str = trackId.substring(0,2);
-        if ("KZ".equals(str)){
+        String str = trackId.substring(0,1);
+        if ("K".equals(str)){
             return networkFollowDao.qureyFollowList(id);
-        }else if ("LJ".equals(str)){
+        }else if ("L".equals(str)){
             return telemarkeFollowDao.qureyFollowList(id);
-        }else if ("ZJ".equals(str)){
+        }else if ("Z".equals(str)){
             return developFollowDao.qureyFollowList(id);
         }
         return null;
@@ -508,12 +517,12 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public Distribute qureyCustomer(Integer id, String trackId) {
-        String str = trackId.substring(0,2);
-        if ("KZ".equals(str)){
+        String str = trackId.substring(0,1);
+        if ("K".equals(str)){
             return networkDao.selectNetworkById(id);
-        }else if ("LJ".equals(str)){
+        }else if ("L".equals(str)){
             return telemarkeDao.selectNetworkById(id);
-        }else if ("ZJ".equals(str)){
+        }else if ("Z".equals(str)){
             return developDao.selectDeveolpById(id);
         }
         return null;
@@ -553,17 +562,17 @@ public class NetworkServiceImpl implements NetworkService {
         Distribute distribute = (Distribute) map.get("distribute");
         DistributeFollow networkFollow;
         String str = map.get("name")+"提交退单";
-        String trid = distribute.getTrackId().substring(0, 2);;
+        String trid = distribute.getTrackId().substring(0, 1);;
         networkFollow = new DistributeFollow();
         networkFollow.setFollowName((String) map.get("name"));
         networkFollow.setNetworkId(distribute.getId());
         networkFollow.setFollowResult(str);
-        if ("KZ".equals(trid)){
+        if ("K".equals(trid)){
             networkFollowDao.insertNetworkFollow(networkFollow);
             networkFollow.setImgUrl(distribute.getImgUrl());
             networkFollow.setFollowResult(distribute.getLastFollowResult());
             networkFollowDao.insertNetworkFollow(networkFollow);
-        }else if ("LJ".equals(trid)){
+        }else if ("L".equals(trid)){
             telemarkeFollowDao.insertNetworkFollow(networkFollow);
             distribute.setIssue(0);
             distribute.setStatus(1);
@@ -642,7 +651,7 @@ public class NetworkServiceImpl implements NetworkService {
     public int activation(Map map) {
         String str = map.get("name")+"激活客户";
         Distribute  distribute = (Distribute) map.get("distribute");
-        String strid =  distribute.getTrackId().substring(0,2);
+        String strid =  distribute.getTrackId().substring(0,1);
         distribute.setOverdueTime(DateUtil.getOverTime(259200000));
         distribute.setActivationName((String) map.get("name"));
         distribute.setActivation(1);
@@ -651,19 +660,19 @@ public class NetworkServiceImpl implements NetworkService {
         networkFollow.setFollowName((String) map.get("name"));
         networkFollow.setNetworkId(distribute.getId());
         networkFollow.setFollowResult(str);
-        if ("KZ".equals(strid)){
+        if ("K".equals(strid)){
             Distribute distribute1 = networkDao.selectNetworkById(distribute.getId());
             if (distribute1.getActivation() == 0){
                 networkFollowDao.insertNetworkFollow(networkFollow);
             }
             return networkDao.updateNetwork(distribute);
-        }else if ("LJ".equals(strid)){
+        }else if ("L".equals(strid)){
             Distribute distribute1 = telemarkeDao.selectNetworkById(distribute.getId());
             if (distribute1.getActivation() == 0){
                 telemarkeFollowDao.insertNetworkFollow(networkFollow);
             }
             return telemarkeDao.updateworkOverdueTime(distribute);
-        }else if ("ZJ".equals(strid)){
+        }else if ("Z".equals(strid)){
             return developDao.updateDevelop(distribute);
         }
         return 0;

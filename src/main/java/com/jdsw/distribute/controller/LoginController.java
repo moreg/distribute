@@ -5,6 +5,7 @@ import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.JwtUtil;
 import com.jdsw.distribute.util.Message;
 import com.jdsw.distribute.service.MenuService;
+import com.jdsw.distribute.vo.UsersVo;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -44,11 +45,15 @@ public class LoginController {
             User user2 = userService.findByUserName(username);
             subject.login(token);
             String toToken = JwtUtil.sign(username,user2.getId().toString(),user2.getName(),pwd);
+            UsersVo usersVo = userService.queryBranch(username);
             Map map = new HashMap();
             map.put("token",toToken);
             map.put("role",userService.findRoleByUserName(username));
             map.put("userId",user2.getId());
             map.put("name",user2.getName());
+            map.put("group",usersVo.getGroup());
+            map.put("branch",usersVo.getBranch());
+            map.put("department",usersVo.getDepartment());
             map.put("username",username);
             return Message.success("登录成功",map);
         }  catch (IncorrectCredentialsException e) {

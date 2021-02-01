@@ -23,7 +23,7 @@ public interface UserService {
      * @param
      * @return
      */
-    List<User> queryDepartment(String department,String branch);
+    List<User> queryDepartment(String department,String branch,String group);
 
     /**
      * 查询组下的人员
@@ -36,6 +36,8 @@ public interface UserService {
      * @return
      */
     List<UsersVo> queryCharge(String department,String branch,String group);
+
+    UsersVo queryBranch(String username);
 
     List<Enterprise> queryEnterprise(String corporatePhone);
 

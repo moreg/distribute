@@ -1,11 +1,13 @@
 package com.jdsw.distribute.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.jdsw.distribute.dao.MenuDao;
 import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Branch;
 import com.jdsw.distribute.model.Menu;
 import com.jdsw.distribute.service.MenuService;
+import com.jdsw.distribute.util.Rand;
 import com.jdsw.distribute.vo.UsersVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -172,13 +174,43 @@ public class MenuServiceImpl  implements MenuService {
 
     @Override
     public List<String> getSubordinate(Map map) {
-        UsersVo user = userDao.findRoleByUserName3((String) map.get("username"));
+      /*  UsersVo user = userDao.findRoleByUserName3((String) map.get("username"));
         System.out.println(user);
         if (user.getRolename().equals(Department.CHARGE.value)){
             return userDao.qureyGroup(user.getId());
         }else if (user.getRolename().equals(Department.GENERAL.value)){
 
+        }*/
+        return null;
+    }
+
+    @Override
+    public List getsubordinateMenuList(Map map) {
+        String username = (String) map.get("username");
+        String branch = (String) map.get("branch");
+        UsersVo usersVo = userDao.queryBranch(username);
+        Set set = userDao.findRoleByUserName2(username);
+        List list = new ArrayList();
+        for (Object str : set) {
+            if (str.equals(Department.CHARGE.value)) {//主管
+                if (branch.equals(usersVo.getBranch())){
+                    list.add(usersVo.getGroup());
+                    return list;
+                }
+            }
+            if (str.equals(Department.GENERAL.value) || str.equals(Department.DEPUTY.value)){
+                List<Menu> allMenu = menuMapper.findBranch();
+                if (branch.equals("南宁分公司")){
+                    List<Menu> childList = getChild2("14",allMenu);
+                    return childList;
+                }else if (branch.equals("梧州分公司")){
+                    List<Menu> childList = getChild2("15",allMenu);
+                    return childList;
+                }
+
+            }
         }
+
         return null;
     }
 }

@@ -41,7 +41,7 @@ public interface TelemarkeService {
      * @param file
      * @return
      */
-    int excelTelemarke(MultipartFile file,String username) throws Exception;
+    int excelTelemarke(MultipartFile file,String username,String name) throws Exception;
     /**
      * 删除
      * @param

@@ -11,6 +11,7 @@ import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.DevelopService;
 import com.jdsw.distribute.util.Rand;
+import com.jdsw.distribute.vo.UsersVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,19 +36,20 @@ public class DevelopServiceImpl implements DevelopService {
         String str2 =map.get("name")+"新建线索";
         Distribute distribute = (Distribute) map.get("distribute");
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
-        String branch = userDao.queryBranch((String) map.get("username"));
+        UsersVo usersVo = userDao.queryBranch((String) map.get("username"));
         distribute.setActivation(1);
         distribute.setLastFollowName((String) map.get("name"));
+        distribute.setGrade(usersVo.getGroup());
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("ZJ");//获得跟踪单号
             distribute.setTrackId(trackId);
         }
         for (Object str : set) {
             if (str.equals(Department.CHARGE.value)) {//主管
-                distribute.setBranch(branch);
+                distribute.setBranch(usersVo.getBranch());
             }else if (str.equals(Department.SALESMAN.value)){//业务员
                 String LeaderName = userDao.queryDepartment3((String) map.get("name"));//获取主管
-                distribute.setBranch(branch);
+                distribute.setBranch(usersVo.getBranch());
                 distribute.setLeaderName(LeaderName);
             }
         }

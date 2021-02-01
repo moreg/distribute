@@ -74,10 +74,19 @@
   select count(*) from user
   </select>
   <select id="queryDepartment"  resultMap="BaseResultMap" parameterType="Map">
-    select u.name,r.department,r.branch,r.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid  and r.branch = #{branch} and r.department in
-    <foreach collection="list" item="department" index="index" open="(" close=")" separator=",">
-      #{department}
-    </foreach>
+    select u.name,r.department,r.branch,r.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid  and r.branch = #{branch}
+    <if test="list.size()>0" >
+      and r.department in
+      <foreach collection="list" item="department" index="index" open="(" close=")" separator=",">
+        #{department}
+      </foreach>
+    </if>
+    <if test="list2.size()>0">
+      and r.group in
+      <foreach collection="list2" item="group" index="index" open="(" close=")" separator=",">
+        #{group}
+      </foreach>
+    </if>
   </select>
 
   <select id="queryGroup"  resultMap="BaseResultMap" parameterType="Map">
@@ -108,12 +117,12 @@
      (select leader from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and name = #{name} )
   </select>
 
-  <select id="queryBranch" resultType="String">
-    select branch from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and u.username = #{username}
+  <select id="queryBranch" resultType="com.jdsw.distribute.vo.UsersVo">
+    select branch,r.`group`,r.department from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and u.username = #{username}
   </select>
 
   <!--查询下属名字-->
-  <select id="qureyGroup" resultType="String">
+  <select id="queryGroup2" resultType="String">
     select u.name from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = (SELECT rolename from role WHERE leader = #{leader})
   </select>
 

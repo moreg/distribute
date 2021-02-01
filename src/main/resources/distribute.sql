@@ -11,7 +11,7 @@
  Target Server Version : 80021
  File Encoding         : 65001
 
- Date: 29/01/2021 18:16:24
+ Date: 01/02/2021 18:38:03
 */
 
 SET NAMES utf8mb4;
@@ -806,7 +806,7 @@ CREATE TABLE `branch_menu`  (
   `parent_id` int NULL DEFAULT NULL COMMENT '父类菜单id',
   `order` int NULL DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of branch_menu
@@ -886,6 +886,7 @@ CREATE TABLE `customer_develop`  (
   `last_follow_result` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后跟进内容',
   `track_id` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '跟踪单号',
   `leader_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '接单人上级主管',
+  `group` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '组',
   `branch` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '分公司',
   `activation` bigint NULL DEFAULT NULL COMMENT '是否激活,0：未激活，1：已激活',
   `total` decimal(20, 2) NULL DEFAULT NULL COMMENT '消费总额',
@@ -896,15 +897,21 @@ CREATE TABLE `customer_develop`  (
   `corporate_phone2` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '号码2',
   `corporate_phone3` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '号码3',
   `weChat` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '微信',
+  `department` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6958 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6955 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of customer_develop
 -- ----------------------------
-INSERT INTO `customer_develop` VALUES (6952, '赵敏', '13055669987', NULL, '陈真', NULL, '客户有意向', 'ZJhk6K2021012649287', '朱良', '南宁分公司', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_develop` VALUES (6953, '爱丽', '10086', NULL, '陈真', '2021-01-27 15:12:18', '客户有意向', 'ZJhk6K2021012649287', '朱良', '南宁分公司', 0, 200.00, '4', NULL, 4, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_develop` VALUES (6954, '赵敏', '13055669987', NULL, '陈真', '2021-01-27 15:59:26', '客户有意向', 'ZJhk6K2021012649287', '朱良', '南宁分公司', 0, NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_develop` VALUES (6978, '胡海峰', '0771-5586345', NULL, '陈真', '2021-02-01 15:27:19', NULL, 'KZDzFN2021020119593', '朱良', '工商记账组', '南宁分公司', 1, NULL, NULL, NULL, NULL, '陈真', NULL, NULL, NULL, '营销部');
+INSERT INTO `customer_develop` VALUES (6979, '霍锡渊', '15854295280', NULL, '陈真', '2021-02-01 15:27:19', NULL, 'KZRsYm2021020119593', '朱良', '工商记账组', '南宁分公司', 1, NULL, NULL, NULL, NULL, '陈真', NULL, NULL, NULL, '营销部');
+INSERT INTO `customer_develop` VALUES (6980, '陆仕珍', '15977586523', NULL, '陈真', '2021-02-01 15:27:19', NULL, 'KZOM5w2021020119593', '朱良', '工商记账组', '南宁分公司', 1, NULL, NULL, NULL, NULL, '陈真', NULL, NULL, NULL, '营销部');
+INSERT INTO `customer_develop` VALUES (6981, '陆海东', '13878114166', NULL, '陈真', '2021-02-01 15:27:19', NULL, 'KZ3EF82021020119594', '朱良', '工商记账组', '南宁分公司', 1, NULL, NULL, NULL, NULL, '陈真', NULL, NULL, NULL, '营销部');
+INSERT INTO `customer_develop` VALUES (6982, '卢煊宝', '13877197800', NULL, '陈真', '2021-02-01 15:27:19', NULL, 'KZrn9T2021020119594', '朱良', '工商记账组', '南宁分公司', 1, NULL, NULL, NULL, NULL, '陈真', NULL, NULL, NULL, '营销部');
+INSERT INTO `customer_develop` VALUES (6983, '黄享任', '13597008329', NULL, '陈真', '2021-02-01 15:27:19', NULL, 'KZXfpp2021020119594', '朱良', '工商记账组', '南宁分公司', 1, NULL, NULL, NULL, NULL, '陈真', NULL, NULL, NULL, '营销部');
+INSERT INTO `customer_develop` VALUES (6984, '卢玉香', '18697923488', NULL, '陈真', '2021-02-01 15:27:19', NULL, 'KZ3KCG2021020119594', '朱良', '工商记账组', '南宁分公司', 1, NULL, NULL, NULL, NULL, '陈真', NULL, NULL, NULL, '营销部');
+INSERT INTO `customer_develop` VALUES (6985, '覃元源', '18178113216', NULL, '陈真', '2021-02-01 15:27:19', NULL, 'KZRtpc2021020119594', '朱良', '工商记账组', '南宁分公司', 1, NULL, NULL, NULL, NULL, '陈真', NULL, NULL, NULL, '营销部');
 
 -- ----------------------------
 -- Table structure for customer_develop_follow
@@ -920,29 +927,11 @@ CREATE TABLE `customer_develop_follow`  (
   `record` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '录音',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 367 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 366 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of customer_develop_follow
 -- ----------------------------
-INSERT INTO `customer_develop_follow` VALUES (349, NULL, NULL, '陈真新建线索', 6949, NULL, NULL, '2021-01-26 18:49:06');
-INSERT INTO `customer_develop_follow` VALUES (350, NULL, NULL, '客户有意向', 6949, '/ZJ/ZJhk6K2021012649299/upload/images/2021012615584978880.jpg', NULL, '2021-01-26 18:49:06');
-INSERT INTO `customer_develop_follow` VALUES (351, NULL, NULL, '陈真新建线索', 6950, NULL, NULL, '2021-01-27 15:04:55');
-INSERT INTO `customer_develop_follow` VALUES (352, NULL, NULL, '客户有意向', 6950, '/ZJ/ZJhk6K2021012649299/upload/images/2021012615584978880.jpg', NULL, '2021-01-27 15:04:55');
-INSERT INTO `customer_develop_follow` VALUES (353, NULL, NULL, '陈真新建线索', 6951, NULL, NULL, '2021-01-27 15:07:13');
-INSERT INTO `customer_develop_follow` VALUES (354, NULL, NULL, '客户有意向', 6951, '/ZJ/ZJhk6K2021012649299/upload/images/2021012615584978880.jpg', NULL, '2021-01-27 15:07:13');
-INSERT INTO `customer_develop_follow` VALUES (355, NULL, NULL, '陈真新建线索', 6952, NULL, NULL, '2021-01-27 15:09:32');
-INSERT INTO `customer_develop_follow` VALUES (356, NULL, NULL, '客户有意向', 6952, '/ZJ/ZJhk6K2021012649299/upload/images/2021012615584978880.jpg', NULL, '2021-01-27 15:09:32');
-INSERT INTO `customer_develop_follow` VALUES (357, NULL, NULL, '陈真新建线索', 6953, NULL, NULL, '2021-01-27 15:12:18');
-INSERT INTO `customer_develop_follow` VALUES (358, NULL, NULL, '客户有意向', 6953, '/ZJ/ZJhk6K2021012649299/upload/images/2021012615584978880.jpg', NULL, '2021-01-27 15:12:18');
-INSERT INTO `customer_develop_follow` VALUES (359, NULL, NULL, '陈真新建线索', 6954, NULL, NULL, '2021-01-27 15:59:26');
-INSERT INTO `customer_develop_follow` VALUES (360, NULL, NULL, '客户有意向', 6954, '/ZJ/ZJhk6K2021012649299/upload/images/2021012615584978880.jpg', NULL, '2021-01-27 15:59:26');
-INSERT INTO `customer_develop_follow` VALUES (361, NULL, NULL, '陈真新建线索', 6955, NULL, NULL, '2021-01-27 16:02:13');
-INSERT INTO `customer_develop_follow` VALUES (362, NULL, NULL, '4454', 6955, NULL, NULL, '2021-01-27 16:02:13');
-INSERT INTO `customer_develop_follow` VALUES (363, NULL, NULL, '陈真新建线索', 6956, NULL, NULL, '2021-01-27 16:50:39');
-INSERT INTO `customer_develop_follow` VALUES (364, NULL, NULL, '客户有意向', 6956, '/ZJ/ZJhk6K2021012649299/upload/images/2021012615584978880.jpg', NULL, '2021-01-27 16:50:39');
-INSERT INTO `customer_develop_follow` VALUES (365, NULL, NULL, '陈真新建线索', 6957, NULL, NULL, '2021-01-27 16:50:42');
-INSERT INTO `customer_develop_follow` VALUES (366, NULL, NULL, '客户有意向', 6957, '/ZJ/ZJhk6K2021012649299/upload/images/2021012615584978880.jpg', NULL, '2021-01-27 16:50:42');
 
 -- ----------------------------
 -- Table structure for customer_network
@@ -982,26 +971,22 @@ CREATE TABLE `customer_network`  (
   `corporate_phone2` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '号码2',
   `corporate_phone3` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '号码3',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6953 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6952 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of customer_network
 -- ----------------------------
-INSERT INTO `customer_network` VALUES (6928, '爱丽', '10086', 4, NULL, NULL, NULL, '2021-01-27 00:00:00', '客户不需要', 0, 'KZgGwM2021012231058', NULL, 0, NULL, 0, NULL, '2021-01-27 09:28:40', NULL, 1, 1, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6929, '郭静怡', '13055669987', 2, NULL, '2020-12-29 16:03:00', '陈真', '2021-01-30 00:00:00', '客户不接电话', 3, 'KZ5fUd2021012510843', NULL, 0, '朱良', 0, NULL, '2020-12-29 16:03:00', NULL, 1, 0, NULL, 1, 0, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6935, '14777222', '14777545957', NULL, NULL, NULL, '陈真', '2021-01-25 00:00:00', '14777545957', 3, 'KZ5fUd2021012510841', '陈真', 0, '朱良', 3, NULL, '2021-01-27 16:28:52', NULL, 1, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6936, '147111', '14777545957', NULL, NULL, NULL, NULL, '2021-01-25 00:00:00', '14777545957', 4, 'KZsoRY2021012517399', NULL, 0, NULL, 1, NULL, '2021-01-29 11:37:54', NULL, 1, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6937, '14777333', '14777545957', NULL, NULL, NULL, '陈真', '2021-01-25 00:00:00', '14777545957', 4, 'KZ3xTX2021012524645', '陈真', 0, '朱良', 3, NULL, '2021-01-27 16:28:38', NULL, 1, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6938, '14774444', '14777545957', NULL, NULL, NULL, '陈真', '2021-01-25 00:00:00', '14777545957', 7, 'KZJvWV2021012532034', '陈真', 0, '朱良', 3, NULL, '2021-01-27 10:07:50', NULL, 1, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6939, '164', '14777645452', NULL, NULL, NULL, NULL, '2021-01-26 00:00:00', '132', 0, 'KZKKIQ2021012635929', NULL, 0, NULL, 0, NULL, '2021-01-26 10:29:05', NULL, 1, 1, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6940, 'jin ye ', '14777645552', 3, NULL, NULL, NULL, '2021-01-26 15:41:58', '123456', 0, 'WL1KCa2021012648861', NULL, 0, NULL, 0, NULL, NULL, NULL, 1, 1, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6941, '1111', '14777545869', 3, NULL, NULL, NULL, '2021-01-26 15:42:33', '458', 0, 'WL1KCa2021012648861', NULL, 0, NULL, 0, NULL, NULL, NULL, 1, 1, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6944, '煌上煌', '13055669987', 2, NULL, NULL, '陈真', '2021-01-26 15:46:06', '客户有意向', 10, 'KZCSiw2021012617866', '陈真', 1, '朱良', 3, NULL, '2021-01-27 18:08:49', '南宁分公司', 1, 1, NULL, 1, 0, NULL, 100.00, '10', '陈真', '2021-01-27', NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6945, '4654', '14777545453', 4, NULL, NULL, '陈真', '2021-01-26 15:46:53', '扭扭捏捏啦啦啦啦啦', 7, 'WLBDbC2021012649522', NULL, 0, '朱良', 3, NULL, NULL, NULL, 1, 1, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6946, '14', '14777645896', 4, NULL, NULL, '陈真', '2021-01-26 15:48:17', '1234', 7, 'KZCSiw2021012617845', NULL, 0, '朱良', 3, NULL, '2021-01-27 17:36:16', NULL, 1, 1, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6949, '447', '16468744589', NULL, NULL, NULL, NULL, '2021-01-26 16:03:57', '546123', 1, 'KZDhb62021012657137', '李华', 1, '朱良', 0, NULL, '2021-01-28 10:19:16', NULL, 1, 1, NULL, 0, 0, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_network` VALUES (6950, '黄石东', '13055669987', 5, NULL, NULL, '陈真', '2021-01-27 15:57:20', '1564561', 10, 'KZp4XZ2021012716721', '陈真', 1, '朱良', 1, NULL, '2021-02-01 16:24:22', NULL, 0, 0, NULL, 1, 1, NULL, NULL, NULL, '陈真', '2021-01-29', NULL, '13055669987', NULL, NULL);
-INSERT INTO `customer_network` VALUES (6952, '2123', '14777645453', 6, NULL, NULL, NULL, '2021-01-28 17:10:26', '215', 0, 'KZqepA2021012826583', NULL, 0, NULL, 0, NULL, '2021-02-01 16:36:55', NULL, 0, 1, NULL, 1, 1, '王菲', NULL, NULL, '王菲', '2021-01-29', NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (6956, '1561531', '14777645458', 3, NULL, '2021-02-19 00:00:00', '陈真', '2021-02-01 09:53:51', '<p>不得哦</p>', 3, 'KZ7NBd2021020151855', '陈真', 1, '朱良', 1, NULL, '2021-02-04 14:17:18', NULL, 0, 0, NULL, 1, 1, '王菲', NULL, NULL, '陈真', '2021-02-01', NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (6958, '4654654', '14777645458', 4, NULL, NULL, '陈真', '2021-02-01 10:00:17', '6546', 4, 'KZMU5c2021020117941', '陈真', 1, '朱良', 1, NULL, '2021-02-04 14:31:09', NULL, 0, 0, NULL, 1, 1, '王菲', NULL, NULL, '陈真', '2021-02-01', NULL, 'wx123456', NULL, NULL);
+INSERT INTO `customer_network` VALUES (6959, '1564', '14777764589', 4, NULL, '2021-02-02 00:00:00', '陈真', '2021-02-01 11:09:01', '<h1 id=\"z7zld\">陈真</h1>', 3, 'KZAcrv2021020101763', '陈真', 1, '朱良', 1, NULL, '2021-02-02 00:00:00', NULL, 0, 0, NULL, 1, 1, '王菲', NULL, NULL, '陈真', '2021-02-01', NULL, 'wx123456', NULL, NULL);
+INSERT INTO `customer_network` VALUES (7040, '胡海峰', '0771-5586345', NULL, NULL, NULL, NULL, '2021-02-01 11:25:23', NULL, 0, 'KZIGab2021020123649', NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (7041, '霍锡渊', '15854295280', NULL, NULL, NULL, NULL, '2021-02-01 11:25:23', NULL, 0, 'KZiKus2021020123649', NULL, 0, NULL, 0, NULL, NULL, NULL, NULL, 1, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (7042, '陆仕珍', '15977586523', NULL, NULL, NULL, '陈真', '2021-02-01 11:25:23', NULL, 10, 'KZffWI2021020123649', '陈真', 1, '朱良', 1, NULL, '2021-02-01 11:53:55', NULL, NULL, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (7043, '陆海东', '13878114166', NULL, NULL, NULL, '陈真', '2021-02-01 11:25:23', NULL, 10, 'KZItKD2021020123649', '陈真', 1, '朱良', 1, NULL, '2021-02-01 11:53:24', NULL, NULL, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (7044, '卢煊宝', '13877197800', NULL, NULL, NULL, '陈真', '2021-02-01 11:25:23', NULL, 10, 'KZPICi2021020123649', '陈真', 1, '朱良', 1, NULL, '2021-02-01 11:53:02', NULL, NULL, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (7045, '黄享任', '13597008329', NULL, NULL, NULL, '陈真', '2021-02-01 11:25:23', NULL, 10, 'KZXaWS2021020123649', '陈真', 1, '朱良', 1, NULL, '2021-02-01 11:53:01', NULL, NULL, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (7046, '卢玉香', '18697923488', NULL, NULL, NULL, '陈真', '2021-02-01 11:25:23', NULL, 10, 'KZ9udF2021020123649', '陈真', 1, '朱良', 1, NULL, '2021-02-01 11:52:59', NULL, NULL, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_network` VALUES (7047, '覃元源', '18178113216', NULL, NULL, NULL, '陈真', '2021-02-01 11:25:23', NULL, 10, 'KZomgN2021020123649', '陈真', 1, '朱良', 1, NULL, '2021-02-01 11:52:58', NULL, NULL, 0, NULL, 0, 1, '王菲', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for customer_network_follow
@@ -1017,43 +1002,41 @@ CREATE TABLE `customer_network_follow`  (
   `record` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '录音',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 377 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 381 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of customer_network_follow
 -- ----------------------------
-INSERT INTO `customer_network_follow` VALUES (349, '陈真', NULL, '陈真提交退单', 6949, NULL, NULL, '2021-01-27 10:04:00');
-INSERT INTO `customer_network_follow` VALUES (350, '陈真', NULL, '客户不需要', 6949, '/KZ/KZDhb62021012657137/upload/images/2021012710013096813.jpg', NULL, '2021-01-27 10:04:00');
-INSERT INTO `customer_network_follow` VALUES (351, '王菲', NULL, '王菲驳回申请', 6949, NULL, NULL, '2021-01-27 10:17:05');
-INSERT INTO `customer_network_follow` VALUES (352, '王菲', NULL, '客户还有意向', 6949, '/KZ/KZDhb62021012657137/upload/images/2021012710013096813.jpg', NULL, '2021-01-27 10:17:05');
-INSERT INTO `customer_network_follow` VALUES (353, '王菲', NULL, '王菲驳回申请', 6949, NULL, NULL, '2021-01-27 10:18:02');
-INSERT INTO `customer_network_follow` VALUES (354, '王菲', NULL, '客户还有意向', 6949, '/KZ/KZDhb62021012657137/upload/images/2021012710013096813.jpg', NULL, '2021-01-27 10:18:02');
-INSERT INTO `customer_network_follow` VALUES (355, '陈真', NULL, '陈真提交退单', 6949, NULL, NULL, '2021-01-27 10:18:20');
-INSERT INTO `customer_network_follow` VALUES (356, '陈真', NULL, '客户不需要', 6949, '/KZ/KZDhb62021012657137/upload/images/2021012710013096813.jpg', NULL, '2021-01-27 10:18:20');
-INSERT INTO `customer_network_follow` VALUES (357, '陈真', NULL, '陈真驳回申请', 6949, NULL, NULL, '2021-01-27 10:19:16');
-INSERT INTO `customer_network_follow` VALUES (358, '陈真', NULL, '客户还有意向', 6949, '/KZ/KZDhb62021012657137/upload/images/2021012710013096813.jpg', NULL, '2021-01-27 10:19:16');
-INSERT INTO `customer_network_follow` VALUES (359, '陈真', NULL, '陈真提交退单', NULL, NULL, NULL, '2021-01-27 10:23:06');
-INSERT INTO `customer_network_follow` VALUES (360, '陈真', NULL, NULL, NULL, NULL, NULL, '2021-01-27 10:23:06');
-INSERT INTO `customer_network_follow` VALUES (361, '陈真', NULL, '陈真通过申请', 6949, NULL, NULL, '2021-01-27 10:23:33');
-INSERT INTO `customer_network_follow` VALUES (362, '陈真', NULL, NULL, 6949, NULL, NULL, '2021-01-27 10:23:33');
-INSERT INTO `customer_network_follow` VALUES (363, '陈真', NULL, '陈真新建线索', 6950, NULL, NULL, '2021-01-27 15:57:20');
-INSERT INTO `customer_network_follow` VALUES (364, '陈真', NULL, '1564561', 6950, '/KZ/KZp4XZ2021012716721/upload/images/2021012715571696445.jpg', NULL, '2021-01-27 15:57:20');
-INSERT INTO `customer_network_follow` VALUES (365, '陈真', NULL, '陈真新建线索', 6951, NULL, NULL, '2021-01-27 16:00:29');
-INSERT INTO `customer_network_follow` VALUES (366, '陈真', NULL, '54561', 6951, '/ZJ/ZJEHNm2021012727312/upload/images/2021012716002768127.jpg', NULL, '2021-01-27 16:00:29');
-INSERT INTO `customer_network_follow` VALUES (367, '陈真', NULL, '陈真领取了线索', 6937, NULL, NULL, '2021-01-27 16:05:38');
-INSERT INTO `customer_network_follow` VALUES (368, '陈真', NULL, '陈真领取了线索', 6935, NULL, NULL, '2021-01-27 16:05:52');
-INSERT INTO `customer_network_follow` VALUES (369, '陈真', NULL, '陈真提交退单', NULL, NULL, NULL, '2021-01-27 16:48:19');
-INSERT INTO `customer_network_follow` VALUES (370, '陈真', NULL, NULL, NULL, NULL, NULL, '2021-01-27 16:48:19');
-INSERT INTO `customer_network_follow` VALUES (371, '陈真', NULL, '陈真提交退单', NULL, NULL, NULL, '2021-01-28 08:53:04');
-INSERT INTO `customer_network_follow` VALUES (372, '陈真', NULL, NULL, NULL, NULL, NULL, '2021-01-28 08:53:04');
-INSERT INTO `customer_network_follow` VALUES (373, '陈真', NULL, '陈真提交退单', NULL, NULL, NULL, '2021-01-28 11:42:20');
-INSERT INTO `customer_network_follow` VALUES (374, '陈真', NULL, '客户跳楼了', NULL, NULL, NULL, '2021-01-28 11:42:20');
-INSERT INTO `customer_network_follow` VALUES (375, '王菲', NULL, '王菲新建线索', 6952, NULL, NULL, '2021-01-28 17:10:26');
-INSERT INTO `customer_network_follow` VALUES (376, '王菲', NULL, '1', 6952, NULL, NULL, '2021-01-28 17:10:26');
-INSERT INTO `customer_network_follow` VALUES (377, '陈真', NULL, '陈真激活客户', 6950, NULL, NULL, '2021-01-29 09:19:15');
-INSERT INTO `customer_network_follow` VALUES (378, '陈真', NULL, '陈真激活客户', 2377, NULL, NULL, '2021-01-29 09:26:06');
-INSERT INTO `customer_network_follow` VALUES (380, '陈真', NULL, '陈真激活客户', 6950, NULL, NULL, '2021-01-29 16:19:07');
-INSERT INTO `customer_network_follow` VALUES (381, '王菲', NULL, '王菲激活客户', 6952, NULL, NULL, '2021-01-29 16:36:55');
+INSERT INTO `customer_network_follow` VALUES (382, '王菲', NULL, '王菲新建线索', 6953, NULL, NULL, '2021-02-01 09:34:58');
+INSERT INTO `customer_network_follow` VALUES (383, '王菲', NULL, '客户有意向', 6953, '/KZ/KZrrLC2021020155945/upload/images/2021020109345579287.jpg', NULL, '2021-02-01 09:34:58');
+INSERT INTO `customer_network_follow` VALUES (384, '王菲', NULL, '王菲新建线索', 6954, NULL, NULL, '2021-02-01 09:38:19');
+INSERT INTO `customer_network_follow` VALUES (385, '王菲', NULL, '客户资源', 6954, '/KZ/KZzOwL2021020118493/upload/images/2021020109381872621.jpg', NULL, '2021-02-01 09:38:19');
+INSERT INTO `customer_network_follow` VALUES (386, '王菲', NULL, '王菲新建线索', 6955, NULL, NULL, '2021-02-01 09:42:59');
+INSERT INTO `customer_network_follow` VALUES (387, '王菲', NULL, '5644', 6955, NULL, NULL, '2021-02-01 09:42:59');
+INSERT INTO `customer_network_follow` VALUES (388, '王菲', NULL, '王菲新建线索', 6956, NULL, NULL, '2021-02-01 09:53:51');
+INSERT INTO `customer_network_follow` VALUES (389, '王菲', NULL, '132432', 6956, NULL, NULL, '2021-02-01 09:53:51');
+INSERT INTO `customer_network_follow` VALUES (390, '王菲', NULL, '王菲新建线索', 6957, NULL, NULL, '2021-02-01 09:56:17');
+INSERT INTO `customer_network_follow` VALUES (391, '王菲', NULL, '123213', 6957, NULL, NULL, '2021-02-01 09:56:17');
+INSERT INTO `customer_network_follow` VALUES (392, '王菲', NULL, '王菲新建线索', 6958, NULL, NULL, '2021-02-01 10:00:17');
+INSERT INTO `customer_network_follow` VALUES (393, '王菲', NULL, '6546', 6958, NULL, NULL, '2021-02-01 10:00:17');
+INSERT INTO `customer_network_follow` VALUES (394, '陈真', NULL, '陈真领取了线索', 6956, NULL, NULL, '2021-02-01 10:45:01');
+INSERT INTO `customer_network_follow` VALUES (395, '王菲', NULL, '王菲新建线索', 6959, NULL, NULL, '2021-02-01 11:09:01');
+INSERT INTO `customer_network_follow` VALUES (396, '王菲', NULL, '1', 6959, NULL, NULL, '2021-02-01 11:09:01');
+INSERT INTO `customer_network_follow` VALUES (397, '陈真', '2021-02-23 00:00:00', '<p>15646</p>', 6956, NULL, NULL, '2021-02-01 11:15:27');
+INSERT INTO `customer_network_follow` VALUES (398, '陈真', '2021-02-19 00:00:00', '<p>不得哦</p>', 6956, NULL, NULL, '2021-02-01 11:16:37');
+INSERT INTO `customer_network_follow` VALUES (399, '陈真', NULL, '陈真领取了线索', 7047, NULL, NULL, '2021-02-01 11:32:58');
+INSERT INTO `customer_network_follow` VALUES (400, '陈真', NULL, '陈真领取了线索', 7046, NULL, NULL, '2021-02-01 11:32:59');
+INSERT INTO `customer_network_follow` VALUES (401, '陈真', NULL, '陈真领取了线索', 7045, NULL, NULL, '2021-02-01 11:33:01');
+INSERT INTO `customer_network_follow` VALUES (402, '陈真', NULL, '陈真领取了线索', 7044, NULL, NULL, '2021-02-01 11:33:02');
+INSERT INTO `customer_network_follow` VALUES (403, '陈真', NULL, '陈真领取了线索', 7043, NULL, NULL, '2021-02-01 11:33:24');
+INSERT INTO `customer_network_follow` VALUES (404, '陈真', NULL, '陈真领取了线索', 7042, NULL, NULL, '2021-02-01 11:33:55');
+INSERT INTO `customer_network_follow` VALUES (405, '陈真', NULL, '陈真领取了线索', 6959, NULL, NULL, '2021-02-01 11:36:07');
+INSERT INTO `customer_network_follow` VALUES (406, '陈真', NULL, '陈真激活客户', 6956, NULL, NULL, '2021-02-01 14:17:19');
+INSERT INTO `customer_network_follow` VALUES (407, '陈真', '2021-02-17 00:00:00', '', 6959, '/KZ/KZAcrv2021020101763/upload/images/2021020114284128208.jpg', NULL, '2021-02-01 14:28:43');
+INSERT INTO `customer_network_follow` VALUES (408, '陈真', NULL, '陈真领取了线索', 6958, NULL, NULL, '2021-02-01 14:30:50');
+INSERT INTO `customer_network_follow` VALUES (409, '陈真', NULL, '陈真激活客户', 6958, NULL, NULL, '2021-02-01 14:31:09');
+INSERT INTO `customer_network_follow` VALUES (410, '陈真', NULL, '陈真激活客户', 6959, NULL, NULL, '2021-02-01 15:21:04');
+INSERT INTO `customer_network_follow` VALUES (411, '陈真', '2021-02-02 00:00:00', '<h1 id=\"z7zld\">陈真</h1>', 6959, NULL, NULL, '2021-02-01 15:33:05');
 
 -- ----------------------------
 -- Table structure for customer_telemarke
@@ -1096,17 +1079,20 @@ CREATE TABLE `customer_telemarke`  (
   `weChat` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '微信',
   `activation_name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '激活人员',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2379 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of customer_telemarke
 -- ----------------------------
-INSERT INTO `customer_telemarke` VALUES (2353, '胡海峰', '0771-5586345', 1, NULL, NULL, NULL, '2021-01-20', 0, 'WLeK2112003350', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西骐达', '2020-12-01', '10W', '广西西乡塘', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_telemarke` VALUES (2354, '霍锡渊', '15854295280', 2, NULL, NULL, NULL, '2021-01-20', 0, 'WLBl2112003350', NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西西西妹', '2020-01-21', '100W', '广西江南万达', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_telemarke` VALUES (2355, '陆仕珍', '15977586523', 3, NULL, NULL, '陈真', '2021-01-20', 10, 'WLgR2112003350', '陈真', NULL, '朱良', 1, NULL, NULL, '2021-01-29 09:54:59', 0, 0, NULL, NULL, NULL, '王菲', '广西南丹', '2021-01-20', '12W', '广西青秀区', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_telemarke` VALUES (2365, '企查查', '13055669987', 2, NULL, NULL, NULL, '2021-01-25', 0, 'LJ08Wu2021012547970', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, '客户有意向', '黄石', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_telemarke` VALUES (2367, '飞利浦', '13055669987', 2, NULL, NULL, '陈真', '2021-01-25', 10, 'LJ26Oj2021012538591', '陈真', 0, NULL, 1, NULL, NULL, '2021-01-26 10:34:27', 0, NULL, NULL, '2021-01-26 10:33:57', '客户有意向', '黄石', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `customer_telemarke` VALUES (2377, '郭静怡', '13055669987', 5, NULL, NULL, '陈真', '2021-01-26', 10, 'LJaTZm2021012635158', '陈真', NULL, '朱良', 1, NULL, NULL, '2021-02-01 09:34:48', 1, 0, '南宁分公司', NULL, '客户有意向', '王菲', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2021-01-29 00:00:00', NULL, NULL, '13055669987', '陈真');
+INSERT INTO `customer_telemarke` VALUES (2380, '4444', '14777648953', 5, NULL, NULL, '徐薇', '2021-02-01', 10, 'LJiJSf2021020124543', '徐薇', 1, NULL, 1, NULL, NULL, '2021-02-02 15:20:04', 0, 0, NULL, NULL, '1', '王菲', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_telemarke` VALUES (2397, '胡海峰', '0771-5586345', 6, NULL, NULL, NULL, '2021-02-01', 0, 'LJUlWN2021020116439', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西烨君投资有限公司', '2016-06-16', '1000万人民币', '南宁市青秀区民族大道159号凤岭·新新家园B区新新大厦七层702号', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_telemarke` VALUES (2398, '霍锡渊', '15854295280', 6, NULL, NULL, NULL, '2021-02-01', 0, 'LJkDIH2021020116439', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西鲁德投资有限公司', '2016-09-06', '1000万人民币', '南宁市青秀区滨湖路55号南湖国际广场8号楼2004号', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_telemarke` VALUES (2399, '陆仕珍', '15977586523', 6, NULL, NULL, NULL, '2021-02-01', 0, 'LJp5tJ2021020116439', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西长隆旅游文化传播有限公司', '2017-02-20', '1000万人民币', '南宁市青秀区民族大道131号航洋国际城3号楼2138号', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_telemarke` VALUES (2400, '陆海东', '13878114166', 6, NULL, NULL, NULL, '2021-02-01', 0, 'LJ6v8q2021020116439', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西灯火文化有限公司', '2016-05-20', '500万人民币', '广西南宁市西乡塘区秀厢大道东段81号爱琴海13号商业区第一层第108号商铺', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_telemarke` VALUES (2401, '卢煊宝', '13877197800', 6, NULL, NULL, NULL, '2021-02-01', 0, 'LJGbeG2021020116439', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西中冶军创蓝莓产业发展有限公司', '2017-03-24', '500万人民币', '南宁市青秀区桃源路43号广西富满地大酒店十层', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_telemarke` VALUES (2402, '黄享任', '13597008329', 6, NULL, NULL, NULL, '2021-02-01', 0, 'LJOoPU2021020116439', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西任达教育投资有限公司', '2016-03-14', '1000万人民币', '南宁市金凯路16号综合楼二层2-27号房', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_telemarke` VALUES (2403, '卢玉香', '18697923488', 6, NULL, NULL, NULL, '2021-02-01', 0, 'LJIjHB2021020116440', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西拉珈乐文化发展有限公司', '2016-07-29', '500万人民币', '南宁市高新区高新大道62号中诺工业楼第14层1408、1410号房', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `customer_telemarke` VALUES (2404, '覃元源', '18178113216', 6, NULL, NULL, NULL, '2021-02-01', 0, 'LJQfrU2021020116440', NULL, 0, NULL, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, '王菲', '广西昌巨元投资有限公司', '2016-11-02', '600万人民币', '南宁市西乡塘区154号内车库北栋3-06、07、08、09号', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for customer_telemarke_follow
@@ -1124,44 +1110,16 @@ CREATE TABLE `customer_telemarke_follow`  (
   `record` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '录音',
   `create_time` date NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 117 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 118 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of customer_telemarke_follow
 -- ----------------------------
-INSERT INTO `customer_telemarke_follow` VALUES (85, '朱良', '2021-01-19 00:00:00', '<p>QQliaot&nbsp;</p>', 3, 2342, NULL, NULL, '/DX/2342/upload/video/2021011817094528154.mp3', '2021-01-18');
-INSERT INTO `customer_telemarke_follow` VALUES (86, '朱良', NULL, '给张磊转交了一条线索', NULL, 2341, NULL, NULL, NULL, '2021-01-18');
-INSERT INTO `customer_telemarke_follow` VALUES (87, '张磊', '2021-01-19 00:00:00', '<p>客户说忙，明天联系，已经加了微信。<br></p>', 2, 2341, '/DX/2341/upload/images/2021011817115657312.jpg', NULL, NULL, '2021-01-18');
-INSERT INTO `customer_telemarke_follow` VALUES (88, '张磊', '2021-01-18 17:13:29', '<p>客户说忙，明天联系，已经加了微信。<br></p>', 2, 2341, NULL, NULL, NULL, '2021-01-18');
-INSERT INTO `customer_telemarke_follow` VALUES (89, '朱良', NULL, '给朱良转交了一条线索', NULL, 2341, NULL, NULL, NULL, '2021-01-19');
-INSERT INTO `customer_telemarke_follow` VALUES (90, '朱良', '2021-01-19 18:02:00', '', NULL, 2341, '/DX/2341/upload/images/2021011918015647433.jpg', NULL, NULL, '2021-01-19');
-INSERT INTO `customer_telemarke_follow` VALUES (91, '朱良', '2021-01-19 00:00:00', '<p>12312</p>', 2, 2340, '/DX/2340/upload/images/2021011918030140096.jpg', NULL, NULL, '2021-01-19');
-INSERT INTO `customer_telemarke_follow` VALUES (92, '陈真', NULL, '陈真新建线索', NULL, NULL, NULL, NULL, NULL, '2021-01-20');
-INSERT INTO `customer_telemarke_follow` VALUES (93, '陈真', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-01-20');
-INSERT INTO `customer_telemarke_follow` VALUES (94, '陈真', NULL, '陈真新建线索', NULL, NULL, NULL, NULL, NULL, '2021-01-20');
-INSERT INTO `customer_telemarke_follow` VALUES (95, '陈真', NULL, '陈真新建线索', NULL, 2363, NULL, NULL, NULL, '2021-01-20');
-INSERT INTO `customer_telemarke_follow` VALUES (96, '朱良', NULL, '朱良新建线索', NULL, 2364, NULL, NULL, NULL, '2021-01-20');
-INSERT INTO `customer_telemarke_follow` VALUES (97, '朱良', '2021-01-26 00:00:00', '', 4, 2364, '/DX/WLtw2s2021012046975/upload/images/2021012017173742175.jpg', NULL, '/DX/WLtw2s2021012046975/upload/video/2021012017173262877.mp3', '2021-01-20');
-INSERT INTO `customer_telemarke_follow` VALUES (98, '陈真', NULL, '陈真领取了线索', NULL, 2359, NULL, NULL, NULL, '2021-01-22');
-INSERT INTO `customer_telemarke_follow` VALUES (99, '黄石', NULL, '黄石新建线索', NULL, 2365, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (100, '黄石', NULL, '客户有意向', NULL, 2365, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (101, '黄石', NULL, '黄石新建线索', NULL, 2366, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (102, '黄石', NULL, '客户有意向', NULL, 2366, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (103, '黄石', NULL, '黄石新建线索', NULL, 2367, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (104, '黄石', NULL, '客户有意向', NULL, 2367, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (105, '黄石', NULL, '黄石新建线索', NULL, 2368, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (106, '黄石', NULL, '客户有意向', NULL, 2368, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (107, '黄石', NULL, '黄石新建线索', NULL, 2369, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (108, '黄石', NULL, '客户有意向', NULL, 2369, NULL, NULL, NULL, '2021-01-25');
-INSERT INTO `customer_telemarke_follow` VALUES (109, '王菲', NULL, '王菲新建线索', NULL, 2377, NULL, NULL, NULL, '2021-01-26');
-INSERT INTO `customer_telemarke_follow` VALUES (110, '王菲', NULL, '客户有意向', NULL, 2377, NULL, NULL, NULL, '2021-01-26');
-INSERT INTO `customer_telemarke_follow` VALUES (111, '王菲', NULL, '王菲新建线索', NULL, 2378, NULL, NULL, NULL, '2021-01-26');
-INSERT INTO `customer_telemarke_follow` VALUES (112, '王菲', NULL, 'sadasda', NULL, 2378, NULL, NULL, NULL, '2021-01-26');
-INSERT INTO `customer_telemarke_follow` VALUES (113, '陈真', NULL, '陈真领取了线索', NULL, NULL, NULL, NULL, NULL, '2021-01-28');
-INSERT INTO `customer_telemarke_follow` VALUES (114, '陈真', NULL, '陈真领取了线索', NULL, NULL, NULL, NULL, NULL, '2021-01-28');
-INSERT INTO `customer_telemarke_follow` VALUES (115, '陈真', NULL, '陈真领取了线索', NULL, 2377, NULL, NULL, NULL, '2021-01-28');
-INSERT INTO `customer_telemarke_follow` VALUES (116, '陈真', NULL, '陈真领取了线索', NULL, 2355, NULL, NULL, NULL, '2021-01-28');
-INSERT INTO `customer_telemarke_follow` VALUES (117, '陈真', NULL, '陈真激活客户', NULL, 2377, NULL, NULL, NULL, '2021-01-29');
+INSERT INTO `customer_telemarke_follow` VALUES (119, '王菲', NULL, '王菲新建线索', NULL, 2379, NULL, NULL, NULL, '2021-02-01');
+INSERT INTO `customer_telemarke_follow` VALUES (120, '王菲', NULL, '客户有意向', NULL, 2379, NULL, NULL, NULL, '2021-02-01');
+INSERT INTO `customer_telemarke_follow` VALUES (121, '王菲', NULL, '王菲新建线索', NULL, 2380, NULL, NULL, NULL, '2021-02-01');
+INSERT INTO `customer_telemarke_follow` VALUES (122, '王菲', NULL, '1', NULL, 2380, NULL, NULL, NULL, '2021-02-01');
+INSERT INTO `customer_telemarke_follow` VALUES (123, '徐薇', NULL, '徐薇领取了线索', NULL, 2380, NULL, NULL, NULL, '2021-02-01');
 
 -- ----------------------------
 -- Table structure for deal_order
@@ -1184,7 +1142,7 @@ CREATE TABLE `deal_order`  (
   `pay` decimal(20, 2) NULL DEFAULT NULL COMMENT '金额',
   `cost` decimal(20, 2) NULL DEFAULT NULL COMMENT '业务成本',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 50 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of deal_order
@@ -1199,6 +1157,9 @@ INSERT INTO `deal_order` VALUES (51, NULL, '2123', '14777645453', '2021-01-29', 
 INSERT INTO `deal_order` VALUES (52, NULL, '2123', '14777645453', '2021-01-29', NULL, '王菲', NULL, 1, NULL, '2021-01-19', '1', '1', 1000.00, NULL);
 INSERT INTO `deal_order` VALUES (53, NULL, '2123', '14777645453', '2021-01-29', NULL, '王菲', NULL, 1, NULL, '2021-01-19', '1', '1', 1000000.00, NULL);
 INSERT INTO `deal_order` VALUES (54, NULL, '郭静怡', '13055669987', '2021-01-29', 5, '陈真', 'KZp4XZ2021012716721', 1, NULL, '2021-01-19', '1846', '46545', 20.00, NULL);
+INSERT INTO `deal_order` VALUES (55, NULL, '4654654', NULL, '2021-02-01', 4, '陈真', 'KZMU5c2021020117941', 0, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `deal_order` VALUES (56, NULL, '1564', NULL, '2021-02-01', 4, '陈真', 'KZAcrv2021020101763', 0, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `deal_order` VALUES (57, NULL, '1561531', NULL, '2021-02-01', 3, '陈真', 'KZ7NBd2021020151855', 0, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for enterprise
@@ -1220,7 +1181,7 @@ CREATE TABLE `enterprise`  (
   `track_id` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '单号',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司名称',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of enterprise
@@ -1236,6 +1197,15 @@ INSERT INTO `enterprise` VALUES (14, 5, '郭静怡', '13055669987', '124', '陈�
 INSERT INTO `enterprise` VALUES (15, 5, '郭静怡', '13055669987', NULL, '陈真', '2021-01-29', NULL, NULL, NULL, NULL, NULL, 'KZp4XZ2021012716721', NULL);
 INSERT INTO `enterprise` VALUES (16, NULL, '2123', '14777645453', '1', '王菲', '2021-01-29', NULL, NULL, NULL, NULL, NULL, NULL, '1');
 INSERT INTO `enterprise` VALUES (17, NULL, '2123', '14777645453', '1', '王菲', '2021-01-29', NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `enterprise` VALUES (18, 3, '1561531', '14777645458', '1', '陈真', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZ7NBd2021020151855', '1');
+INSERT INTO `enterprise` VALUES (19, 4, NULL, '14777645458', NULL, '徐薇', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZMU5c2021020117941', NULL);
+INSERT INTO `enterprise` VALUES (20, 4, NULL, '14777645458', NULL, '徐薇', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZMU5c2021020117941', NULL);
+INSERT INTO `enterprise` VALUES (21, 4, NULL, '14777645458', NULL, '徐薇', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZMU5c2021020117941', NULL);
+INSERT INTO `enterprise` VALUES (22, 4, NULL, '14777645458', NULL, '徐薇', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZMU5c2021020117941', NULL);
+INSERT INTO `enterprise` VALUES (23, 4, NULL, '14777645458', NULL, '徐薇', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZMU5c2021020117941', NULL);
+INSERT INTO `enterprise` VALUES (24, 4, NULL, '14777645458', NULL, '徐薇', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZMU5c2021020117941', NULL);
+INSERT INTO `enterprise` VALUES (25, 4, NULL, '14777645458', NULL, '徐薇', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZMU5c2021020117941', NULL);
+INSERT INTO `enterprise` VALUES (26, 4, NULL, '14777645458', NULL, '徐薇', '2021-02-01', NULL, NULL, NULL, NULL, NULL, 'KZMU5c2021020117941', NULL);
 
 -- ----------------------------
 -- Table structure for menu
@@ -1250,7 +1220,7 @@ CREATE TABLE `menu`  (
   `icon` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `branch` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of menu
@@ -1273,7 +1243,7 @@ CREATE TABLE `permission`  (
   `permissionname` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '权限名',
   `remarks` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of permission
@@ -1303,10 +1273,10 @@ CREATE TABLE `role`  (
 -- ----------------------------
 -- Records of role
 -- ----------------------------
-INSERT INTO `role` VALUES (1, '管理员', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `role` VALUES (2, '空军线索管理员', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `role` VALUES (3, '陆军线索管理员', NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `role` VALUES (4, '总经理', NULL, 0, NULL, '总经办', NULL);
+INSERT INTO `role` VALUES (1, '管理员', NULL, NULL, '线索管理员', '线索管理员', '线索管理员');
+INSERT INTO `role` VALUES (2, '空军线索管理员', NULL, NULL, '线索管理员', '线索管理员', '线索管理员');
+INSERT INTO `role` VALUES (3, '陆军线索管理员', NULL, NULL, '线索管理员', '线索管理员', '线索管理员');
+INSERT INTO `role` VALUES (4, '总经理', NULL, 0, '总经办', '总经办', '总经办');
 INSERT INTO `role` VALUES (5, '副总经理', NULL, NULL, NULL, '总经办', NULL);
 INSERT INTO `role` VALUES (6, '总经理助理', NULL, 4, NULL, '总经办', NULL);
 INSERT INTO `role` VALUES (7, '副总经理助理', NULL, 5, NULL, '总经办', NULL);
@@ -1314,7 +1284,7 @@ INSERT INTO `role` VALUES (8, '总监', NULL, 4, '营销部', '南宁分公司',
 INSERT INTO `role` VALUES (9, '经理', NULL, 8, '营销部', '南宁分公司', '工商记账组');
 INSERT INTO `role` VALUES (10, '主管', NULL, 4, '营销部', '南宁分公司', '工商记账组');
 INSERT INTO `role` VALUES (11, '普通员工', NULL, 10, '营销部', '南宁分公司', '工商记账组');
-INSERT INTO `role` VALUES (12, '财务', NULL, NULL, '财务部', '南宁分公司', NULL);
+INSERT INTO `role` VALUES (12, '财务', NULL, NULL, '财务部', '南宁分公司', '财务');
 INSERT INTO `role` VALUES (13, '主管', NULL, NULL, '营销部', '南宁分公司', '高端财税组');
 INSERT INTO `role` VALUES (14, '普通员工', NULL, 13, '营销部', '南宁分公司', '高端财税组');
 
@@ -1328,20 +1298,91 @@ CREATE TABLE `role_menu`  (
   `menu_id` int NULL DEFAULT NULL,
   `status` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of role_menu
 -- ----------------------------
-INSERT INTO `role_menu` VALUES (1, 3, 1, 1);
-INSERT INTO `role_menu` VALUES (2, 3, 2, 1);
-INSERT INTO `role_menu` VALUES (3, 3, 3, 1);
-INSERT INTO `role_menu` VALUES (4, 3, 4, 1);
-INSERT INTO `role_menu` VALUES (5, 3, 5, 1);
-INSERT INTO `role_menu` VALUES (6, 3, 6, 1);
-INSERT INTO `role_menu` VALUES (7, 3, 7, 1);
-INSERT INTO `role_menu` VALUES (8, 3, 8, 1);
-INSERT INTO `role_menu` VALUES (9, 3, 9, 1);
+INSERT INTO `role_menu` VALUES (1, 2, 300, 1);
+INSERT INTO `role_menu` VALUES (2, 2, 301, 1);
+INSERT INTO `role_menu` VALUES (3, 2, 302, 1);
+INSERT INTO `role_menu` VALUES (4, 2, 303, 1);
+INSERT INTO `role_menu` VALUES (5, 3, 300, NULL);
+INSERT INTO `role_menu` VALUES (10, 3, 301, NULL);
+INSERT INTO `role_menu` VALUES (11, 3, 302, NULL);
+INSERT INTO `role_menu` VALUES (12, 3, 304, NULL);
+INSERT INTO `role_menu` VALUES (13, 2, 323, NULL);
+INSERT INTO `role_menu` VALUES (14, 3, 323, NULL);
+INSERT INTO `role_menu` VALUES (15, 2, 322, NULL);
+INSERT INTO `role_menu` VALUES (16, 3, 322, NULL);
+INSERT INTO `role_menu` VALUES (17, 11, 300, NULL);
+INSERT INTO `role_menu` VALUES (18, 11, 301, NULL);
+INSERT INTO `role_menu` VALUES (19, 11, 305, NULL);
+INSERT INTO `role_menu` VALUES (20, 11, 306, NULL);
+INSERT INTO `role_menu` VALUES (21, 11, 307, NULL);
+INSERT INTO `role_menu` VALUES (22, 11, 310, NULL);
+INSERT INTO `role_menu` VALUES (23, 11, 322, NULL);
+INSERT INTO `role_menu` VALUES (24, 11, 323, NULL);
+INSERT INTO `role_menu` VALUES (25, 11, 327, NULL);
+INSERT INTO `role_menu` VALUES (26, 11, 238, NULL);
+INSERT INTO `role_menu` VALUES (27, 11, 329, NULL);
+INSERT INTO `role_menu` VALUES (28, 11, 330, NULL);
+INSERT INTO `role_menu` VALUES (29, 11, 331, NULL);
+INSERT INTO `role_menu` VALUES (30, 11, 332, NULL);
+INSERT INTO `role_menu` VALUES (31, 11, 333, NULL);
+INSERT INTO `role_menu` VALUES (32, 12, 300, NULL);
+INSERT INTO `role_menu` VALUES (33, 12, 301, NULL);
+INSERT INTO `role_menu` VALUES (34, 12, 310, NULL);
+INSERT INTO `role_menu` VALUES (35, 12, 316, NULL);
+INSERT INTO `role_menu` VALUES (36, 12, 317, NULL);
+INSERT INTO `role_menu` VALUES (37, 12, 318, NULL);
+INSERT INTO `role_menu` VALUES (38, 12, 319, NULL);
+INSERT INTO `role_menu` VALUES (39, 12, 320, NULL);
+INSERT INTO `role_menu` VALUES (40, 12, 321, NULL);
+INSERT INTO `role_menu` VALUES (41, 12, 323, NULL);
+INSERT INTO `role_menu` VALUES (42, 10, 300, NULL);
+INSERT INTO `role_menu` VALUES (43, 10, 301, NULL);
+INSERT INTO `role_menu` VALUES (44, 10, 305, NULL);
+INSERT INTO `role_menu` VALUES (45, 10, 306, NULL);
+INSERT INTO `role_menu` VALUES (46, 10, 307, NULL);
+INSERT INTO `role_menu` VALUES (47, 10, 313, NULL);
+INSERT INTO `role_menu` VALUES (48, 10, 314, NULL);
+INSERT INTO `role_menu` VALUES (49, 10, 315, NULL);
+INSERT INTO `role_menu` VALUES (50, 10, 316, NULL);
+INSERT INTO `role_menu` VALUES (51, 10, 317, NULL);
+INSERT INTO `role_menu` VALUES (52, 10, 318, NULL);
+INSERT INTO `role_menu` VALUES (53, 10, 319, NULL);
+INSERT INTO `role_menu` VALUES (54, 10, 320, NULL);
+INSERT INTO `role_menu` VALUES (55, 10, 321, NULL);
+INSERT INTO `role_menu` VALUES (56, 10, 322, NULL);
+INSERT INTO `role_menu` VALUES (57, 10, 323, NULL);
+INSERT INTO `role_menu` VALUES (58, 10, 327, NULL);
+INSERT INTO `role_menu` VALUES (59, 10, 328, NULL);
+INSERT INTO `role_menu` VALUES (60, 10, 329, NULL);
+INSERT INTO `role_menu` VALUES (61, 10, 330, NULL);
+INSERT INTO `role_menu` VALUES (62, 10, 331, NULL);
+INSERT INTO `role_menu` VALUES (63, 10, 332, NULL);
+INSERT INTO `role_menu` VALUES (64, 10, 333, NULL);
+INSERT INTO `role_menu` VALUES (65, 4, 300, NULL);
+INSERT INTO `role_menu` VALUES (66, 4, 301, NULL);
+INSERT INTO `role_menu` VALUES (67, 4, 305, NULL);
+INSERT INTO `role_menu` VALUES (68, 4, 306, NULL);
+INSERT INTO `role_menu` VALUES (69, 4, 307, NULL);
+INSERT INTO `role_menu` VALUES (70, 4, 310, NULL);
+INSERT INTO `role_menu` VALUES (71, 4, 312, NULL);
+INSERT INTO `role_menu` VALUES (72, 4, 313, NULL);
+INSERT INTO `role_menu` VALUES (73, 4, 314, NULL);
+INSERT INTO `role_menu` VALUES (74, 4, 315, NULL);
+INSERT INTO `role_menu` VALUES (75, 4, 316, NULL);
+INSERT INTO `role_menu` VALUES (76, 4, 317, NULL);
+INSERT INTO `role_menu` VALUES (77, 4, 318, NULL);
+INSERT INTO `role_menu` VALUES (78, 4, 319, NULL);
+INSERT INTO `role_menu` VALUES (79, 4, 320, NULL);
+INSERT INTO `role_menu` VALUES (80, 4, 321, NULL);
+INSERT INTO `role_menu` VALUES (81, 4, 322, NULL);
+INSERT INTO `role_menu` VALUES (82, 4, 323, NULL);
+INSERT INTO `role_menu` VALUES (83, 4, 332, NULL);
+INSERT INTO `role_menu` VALUES (84, 4, 333, NULL);
 
 -- ----------------------------
 -- Table structure for role_permission
@@ -1352,7 +1393,7 @@ CREATE TABLE `role_permission`  (
   `roleid` int NOT NULL COMMENT '角色id',
   `permissionid` int NOT NULL COMMENT '权限id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of role_permission
@@ -1405,13 +1446,36 @@ CREATE TABLE `sys_menu`  (
 -- ----------------------------
 INSERT INTO `sys_menu` VALUES (300, -1, '金岛集团', NULL, NULL, 'route', NULL);
 INSERT INTO `sys_menu` VALUES (301, 300, '首页', '/home', '/home', 'route', NULL);
-INSERT INTO `sys_menu` VALUES (302, 300, '客户池', '/airForce', '/airForce', 'route', NULL);
-INSERT INTO `sys_menu` VALUES (303, 302, '空军池', '/airForce/already', '/airForce/already', 'route', NULL);
-INSERT INTO `sys_menu` VALUES (304, 302, '陆军池', '/airForce/landForce', '/airForce/landForce', 'route', NULL);
-INSERT INTO `sys_menu` VALUES (305, 302, '成交录单', '/airForce/cashier', '/airForce/cashier', 'route', NULL);
-INSERT INTO `sys_menu` VALUES (306, 300, '我的客户', '/MyCustomer', '/MyCustomer', 'route', NULL);
-INSERT INTO `sys_menu` VALUES (307, 306, '空军客户', '/MyCustomer/MyAirForce', '/MyCustomer/MyAirForce', 'route', NULL);
-INSERT INTO `sys_menu` VALUES (308, 306, '陆军客户', '/MyCustomer/MyLandForce', '/MyCustomer/MyLandForce', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (302, 300, '分发池', '/airForce', '/airForce', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (303, 302, '空军线索', '/airForce/already', '/airForce/already', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (304, 302, '陆军线索', '/airForce/landForce', '/airForce/landForce', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (305, 300, '客户池', '/MyCustomer', '/MyCustomer', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (306, 305, '空中客户', '/MyCustomer/MyAirForce', '/MyCustomer/MyAirForce', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (307, 305, '陆军客户', '/MyCustomer/MyLandForce', '/MyCustomer/MyLandForce', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (308, 302, '待处理', '/airForce/Customer', '/airForce/Customer', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (309, 305, '(我的客户)待处理', '/MyCustomer/Pending', '/MyCustomer/Pending', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (310, 300, '客户池', '/documentary', '/documentary', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (313, 300, '客户关怀', '/CustomerCare', '/CustomerCare', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (314, 313, '普通客户', '/CustomerCare/customer', '/CustomerCare/customer', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (315, 313, '大客户', '/CustomerCare/KeyAccount', '/CustomerCare/KeyAccount', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (316, 300, '数据统计', '/statisticsData', '/statisticsData', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (317, 316, '产品销量', '/statisticsData/proSales', '/statisticsData/proSales', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (318, 316, '业绩排行', '/statisticsData/ranking', '/statisticsData/ranking', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (319, 316, '增长率统计', '/statisticsData/increase', '/statisticsData/increase', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (320, 316, '转化率统计', '/statisticsData/conversion', '/statisticsData/conversion', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (321, 316, '按时间统计', '/statisticsData/intTime', '/statisticsData/intTime', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (322, 300, '日志管理', '/journal', '/journal', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (323, 300, '系统设置', '/system', '/system', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (324, 300, '部门与员工', '/system/DepAndEmp', '/system/DepAndEmp', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (325, 324, '权限分配', '/system/jurisdiction', '/system/jurisdiction', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (326, 324, '修改密码', '/system/changePassword', '/system/changePassword', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (327, 300, '抢单池', '/rob', '/rob', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (328, 327, '空军线索', '/rob/alr', '/rob/alr', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (329, 327, '陆军线索', '/rob/lan', '/rob/lan', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (330, 300, '跟单池', '/docManagement', '/docManagement', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (331, 305, '自开发客户', '/MyCustomer/selfDevelopment', '/MyCustomer/selfDevelopment', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (332, 305, '下属客户', '/MyCustomer/subordinate', '/MyCustomer/subordinate', 'route', NULL);
+INSERT INTO `sys_menu` VALUES (333, 300, '企业池', '/enterprise', '/enterprise', 'route', NULL);
 
 -- ----------------------------
 -- Table structure for syslog
@@ -1448,7 +1512,7 @@ CREATE TABLE `user`  (
   `addtime` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建时间',
   `salt` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '盐',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of user
@@ -1474,13 +1538,12 @@ CREATE TABLE `user_role`  (
   `userid` int NOT NULL COMMENT '用户id',
   `roleid` int NOT NULL COMMENT '角色id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of user_role
 -- ----------------------------
-INSERT INTO `user_role` VALUES (1, 14, 3);
-INSERT INTO `user_role` VALUES (2, 15, 2);
+INSERT INTO `user_role` VALUES (2, 15, 4);
 INSERT INTO `user_role` VALUES (3, 16, 3);
 INSERT INTO `user_role` VALUES (4, 17, 10);
 INSERT INTO `user_role` VALUES (5, 18, 12);

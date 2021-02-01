@@ -18,4 +18,5 @@ public interface MenuService {
     public List<Menu> getChild(String id, List<Menu> allMenu);
     public List<Menu> getMenuLsit();
     List getSubordinate(Map map);
+    List getsubordinateMenuList(Map map);
 }

@@ -15,6 +15,12 @@ public interface DevelopDao {
     int insertDevelop(Distribute distribute);
 
     /**
+     * 导入
+     * @param
+     * @return
+     */
+    int excelNetwork(List<Object> list);
+    /**
      * 列表
      * @param map
      * @return

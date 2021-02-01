@@ -265,7 +265,7 @@ public class NetworkController {
      */
     @RequestMapping(value = "/followupNetwork",method = RequestMethod.POST,produces="application/json")
     public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
-        String strid = networkFollow.getTrackId().substring(0,2);
+        String strid = networkFollow.getTrackId().substring(0,1);
         //String name = (String) request.getAttribute("name");
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
@@ -274,11 +274,11 @@ public class NetworkController {
         String name = (String) map.get("name");
         networkFollow.setFollowName(name);
         int i = 0;
-        if ("KZ".equals(strid)){
+        if ("K".equals(strid)){
              i = distributeService.followupNetwork(networkFollow,username);
-        }else if ("LJ".equals(strid)){
+        }else if ("L".equals(strid)){
             i = telemarkeService.followupNetwork(networkFollow);
-        }else if ("ZJ".equals(strid)){
+        }else if ("Z".equals(strid)){
             i = developService.followupDevelop(networkFollow);
         }
         if (i > 0){
@@ -316,7 +316,7 @@ public class NetworkController {
         String uploadPathDB=null;
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"KZ");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"K");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -333,10 +333,10 @@ public class NetworkController {
     @RequestMapping("/uploadImgNew")
     public Message  uploadImgNew(@RequestParam("img") MultipartFile[] img,HttpServletRequest request){
         String uploadPathDB=null;
-        String trackId = Rand.getTrackId("KZ");//获得跟踪单号
+        String trackId = Rand.getTrackId("K");//获得跟踪单号
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"KZ");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"K");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -356,7 +356,7 @@ public class NetworkController {
         String uploadPathDB=null;
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"KZ");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"K");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -376,7 +376,7 @@ public class NetworkController {
         Map map=new HashMap();
         String uploadPathDB=null;
         try {
-            uploadPathDB= VideoUtil.saveVideo(trackId,file,"KZ");
+            uploadPathDB= VideoUtil.saveVideo(trackId,file,"K");
         }catch (IOException e) {
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -558,12 +558,12 @@ public class NetworkController {
      */
     @RequestMapping("/qureyFollowList")
     public Message qureyFollowList(Integer id,String trackId)throws IOException{
-        String strid = trackId.substring(0,2);
-        if ("KZ".equals(strid)){
+        String strid = trackId.substring(0,1);
+        if ("K".equals(strid)){
             return Message.success("操作成功",distributeService.qureyFollowList(id,trackId));
-        }else if ("LJ".equals(strid)){
+        }else if ("L".equals(strid)){
             return Message.success("操作成功",telemarkeService.qureyFollowList(id));
-        }else if ("ZJ".equals(strid)){
+        }else if ("Z".equals(strid)){
             return Message.success("操作成功",developService.qureyFollowList(id));
         }
         return Message.fail();
@@ -575,7 +575,7 @@ public class NetworkController {
      */
     @RequestMapping("/qureyCustomer")
     public Message qureyCustomer(Integer id,String trackId)throws IOException{
-        String strid = trackId.substring(0,2);
+        String strid = trackId.substring(0,1);
         return Message.success("操作成功",distributeService.qureyCustomer(id,trackId));
     }
 

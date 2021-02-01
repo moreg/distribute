@@ -263,12 +263,12 @@
   </insert>
 
   <insert id="excelTelemarke" parameterType="java.util.List">
-    insert into customer_telemarke(name,corporate_name,corporate_phone,establish_time,registered_capital,operation,address
-    ,create_time,status,other_phone,track_id,last_follow_name,first_follow_name,issue,appoint,leader_name,activation)
+    insert into customer_telemarke(name,corporate_name,corporate_phone,establish_time,registered_capital,address
+    ,create_time,status,track_id,issue,appoint,activation,source,sign,proposer)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.establishTime},#{item.registeredCapital},#{item.operation},#{item.address},sysdate(),#{item.status},#{item.otherPhone}
-      ,#{item.trackId},#{item.lastFollowName},#{item.firstFollowName},#{item.issue},#{item.appoint},#{item.leaderName},#{item.activation}
+      (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.establishTime},#{item.registeredCapital},#{item.address},sysdate(),#{item.status},
+      #{item.trackId},#{item.issue},#{item.appoint},#{item.activation},6,1,#{item.proposer}
       )
     </foreach>
   </insert>

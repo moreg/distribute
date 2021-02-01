@@ -83,7 +83,7 @@ public interface UserDao {
      * @param username
      * @return
      */
-    String queryBranch(String username);
+    UsersVo queryBranch(String username);
 
-    List<String> qureyGroup(Integer leader);
+    List<String> queryGroup2(Integer leader);
 }

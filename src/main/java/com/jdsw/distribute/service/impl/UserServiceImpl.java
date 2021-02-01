@@ -72,16 +72,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> queryDepartment(String department,String branch) {
-        String temp[]=department.split(",");
+    public List<User> queryDepartment(String department,String branch,String group) {
         List<String> list = new ArrayList();
-        for (int i=0;i<temp.length;i++){
-            String string1 = temp[i];
-            list.add(temp[i]);
+        List<String> list2 = new ArrayList();
+        System.out.println(group);
+        if (StringUtils.isNotEmpty(department)){
+            String temp[]=department.split(",");
+            for (int i=0;i<temp.length;i++){
+                String string1 = temp[i];
+                list.add(temp[i]);
+            }
         }
+        if (StringUtils.isNotEmpty(group)){
+            String temp[]=group.split(",");
+            for (int i=0;i<temp.length;i++){
+                String string1 = temp[i];
+                list2.add(temp[i]);
+            }
+        }
+
         Map map2 = new HashMap();
         map2.put("list",list);
         map2.put("branch",branch);
+        map2.put("list2",list2);
         List<User> ls = userDao.queryDepartment(map2);
         List li = new ArrayList<>();
         for(int i=0;i<ls.size();i++){
@@ -147,6 +160,11 @@ public class UserServiceImpl implements UserService {
             }
         }
         return li;
+    }
+
+    @Override
+    public UsersVo queryBranch(String username) {
+        return userDao.queryBranch(username);
     }
 
     @Override

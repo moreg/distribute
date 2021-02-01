@@ -85,8 +85,12 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/excelTelemarke")
-    public Message excelTelemarke(@RequestParam("file") MultipartFile file,HttpServletRequest request,@RequestParam("userName")String username) throws Exception {
-        int i = telemarkService.excelTelemarke(file,username);
+    public Message excelTelemarke(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        int i = telemarkService.excelTelemarke(file,username,name);
         if (i > 0){
             return Message.success("导入成功");
         }

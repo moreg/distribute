@@ -1,5 +1,6 @@
 package com.jdsw.distribute;
 
+import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.Excel;
 import com.jdsw.distribute.model.User;
@@ -40,6 +41,8 @@ public class MbackstageApplicationTests {
     MenuService ms;
     /*@Autowired
     ActivityConsumerService acs;*/
+    @Autowired
+    UserDao dao;
 
     @Autowired
     private RepositoryService repositoryService;
@@ -190,18 +193,7 @@ public class MbackstageApplicationTests {
 
     @Test
     public void role(){
-        String Str = new String("KZDhb62021012657137");
+        System.out.println(dao.queryBranch("cz"));
 
-
-
-        System.out.print("返回值 :" );
-
-        System.out.println(Str.substring(4) );
-
-
-
-        System.out.print("返回值 :" );
-
-        System.out.println(Str.substring(0, 2) );
     }
 }

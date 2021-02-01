@@ -105,6 +105,19 @@
         ,SYSDATE()
         )
     </insert>
+    <!--新增-->
+    <insert id="excelNetwork" parameterType="java.util.List">
+        insert into customer_develop(corporate_name,corporate_phone
+        ,create_time,track_id,activation,leader_name,branch,`group`,activation_name,last_follow_name,department,activation_time
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.corporateName},#{item.corporatePhone},sysdate()
+            ,#{item.trackId},#{item.activation},#{item.leaderName},#{item.branch},#{item.group},#{item.activationName},#{item.lastFollowName},#{item.department},sysdate()
+
+            )
+        </foreach>
+    </insert>
     <!--列表-->
     <select id="developList" parameterType="Map" resultMap="aMap">
         select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,activation_time,activation from customer_develop
