@@ -154,6 +154,23 @@
     </if>
     ORDER BY create_time DESC
   </select>
+  <!--跟单池-->
+  <select id="withPool2" resultMap="aMap" parameterType="Map">
+    SELECT * from (SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,`status` from customer_network WHERE
+    `status` in(5,10) UNION all SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,`status` FROM customer_telemarke WHERE `status` in(5,10) )
+    as t  WHERE ((leader_name = #{lastFollowName} and status = 5) or last_follow_name = #{lastFollowName})  and activation = 0 and issue = 1
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY create_time DESC
+  </select>
   <!--客服待处理-->
   <select id="pendingPoolList" resultMap="aMap" parameterType="Map">
     select <include refid="PoolList"></include> from customer_network
@@ -305,7 +322,8 @@
   </update>
 
   <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName},issue = 1,status = #{status},leader_name = #{leaderName} where id = #{id}
+    update customer_network set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName},issue = 1,status = #{status},leader_name = #{leaderName},
+    receiving_time = sysdate(),branch = #{branch} where id = #{id}
   </update>
 
   <update id="updateNetworkLastFollowName" parameterType="java.util.List">
@@ -474,9 +492,9 @@
     <if test="issue  !=null">
       ,issue = #{issue}
     </if>
-    <if test="overdueTime  !=null and overdueTime != ''">
+
       ,overdue_time = #{overdueTime}
-    </if>
+
     <if test="invalid  !=null">
       ,invalid = #{invalid}
     </if>
@@ -596,19 +614,19 @@
   <!--Excel导入-->
   <insert id="excelNetwork" parameterType="java.util.List">
     insert into customer_network(corporate_name,corporate_phone
-    ,create_time,status,track_id,issue,appoint,leader_sign,proposer,sign,activation
+    ,create_time,status,track_id,issue,appoint,leader_sign,proposer,sign,activation,invalid
     )
     values
     <foreach collection="list" item="item" separator=",">
     (#{item.corporateName},#{item.corporatePhone},sysdate(),
-      #{item.status},#{item.trackId},#{item.issue},#{item.appoint},#{item.leaderSign},#{item.proposer},#{item.sign},#{item.activation}
+      #{item.status},#{item.trackId},#{item.issue},#{item.appoint},#{item.leaderSign},#{item.proposer},#{item.sign},#{item.activation},#{item.invalid}
 
       )
     </foreach>
   </insert>
 
   <insert id="insertDealOrder" parameterType="com.jdsw.distribute.model.Distribute">
-    insert into deal_order(name,corporate_name,create_time,source,last_follow_name,track_id,conduct,order_state)
-    values (#{name},#{corporateName},#{createTime},#{source},#{lastFollowName},#{trackId},#{conduct},0)
+    insert into deal_order(name,corporate_name,corporate_phone,create_time,source,last_follow_name,track_id,conduct,order_state)
+    values (#{name},#{corporateName},#{corporatePhone},#{createTime},#{source},#{lastFollowName},#{trackId},#{conduct},0)
   </insert>
 </mapper>

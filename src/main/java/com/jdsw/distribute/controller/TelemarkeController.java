@@ -3,10 +3,7 @@ package com.jdsw.distribute.controller;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.TelemarkeService;
-import com.jdsw.distribute.util.ImageUtil;
-import com.jdsw.distribute.util.JwtUtil;
-import com.jdsw.distribute.util.Message;
-import com.jdsw.distribute.util.VideoUtil;
+import com.jdsw.distribute.util.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,13 +32,21 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/armyListPoolList")
-    public Message armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request){
+    public Message armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,HttpServletRequest request,Integer issue){
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
-        return Message.success("操作成功",telemarkService.armyListPoolList(pageNum,limit,content,strtime,endtime,username),0);
+        Map map1 = new HashMap();
+        map1.put("username",username);
+        map1.put("pageNum",pageNum);
+        map1.put("limit",limit);
+        map1.put("content",content);
+        map1.put("strtime",strtime);
+        map1.put("endtime",endtime);
+        map1.put("issue",issue);
+        return Message.success("操作成功",telemarkService.armyListPoolList(map1),0);
     }
     /**
      * 抢单池
@@ -234,6 +239,27 @@ public class TelemarkeController {
             return Message.fail("上传失败");
         }
         map.put("record",uploadPathDB);
+        return Message.success("上传成功",map);
+    }
+    /**
+     * 新建上传图片
+     * @param img
+     * @param request
+     * @return
+     */
+    @RequestMapping("/uploadImgNew")
+    public Message  uploadImgNew(@RequestParam("img") MultipartFile[] img,HttpServletRequest request){
+        String uploadPathDB=null;
+        String trackId = Rand.getTrackId("L");//获得跟踪单号
+        Map map=new HashMap();
+        try {
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"L");
+        }catch (IOException e){
+            e.printStackTrace();
+            return Message.fail("上传失败");
+        }
+        map.put("imgUrl",uploadPathDB);
+        map.put("trackId",trackId);
         return Message.success("上传成功",map);
     }
     /**

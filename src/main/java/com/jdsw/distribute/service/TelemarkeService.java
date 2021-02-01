@@ -15,14 +15,9 @@ import java.util.Map;
 public interface TelemarkeService {
     /**
      * 陆军池列表
-     * @param pageNum
-     * @param limit
-     * @param content
-     * @param strtime
-     * @param endtime
      * @return
      */
-    PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,String username);
+    PageInfo<Distribute> armyListPoolList(Map map);
 
     /**
      * 抢单池

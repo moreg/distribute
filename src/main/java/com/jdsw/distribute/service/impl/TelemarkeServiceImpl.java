@@ -19,6 +19,7 @@ import com.jdsw.distribute.util.Rand;
 import com.jdsw.distribute.util.excelRead;
 import com.jdsw.distribute.vo.CashierVo;
 import com.jdsw.distribute.vo.RecordingVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class TelemarkeServiceImpl implements TelemarkeService {
@@ -41,9 +40,11 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Autowired
     private UserDao userDao;
     @Override
-    public PageInfo<Distribute> armyListPoolList(int pageNum, int limit, String content, String strtime, String endtime,String username) {
+    public PageInfo<Distribute> armyListPoolList(Map map) {
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
         PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = telemarkDao.armyListPoolList(content,strtime,endtime);
+        List<Distribute> Network = telemarkDao.armyListPoolList(map);
         PageInfo result = new PageInfo(Network);
         return result;
     }
@@ -61,38 +62,46 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Override
     @Transactional
     public int insertTelemarke(Distribute distribute,String username,String name) {
-        String trackId = Rand.getTrackId("LJ");//获得跟踪单号
         String str1 = name+"新建线索";
-        distribute.setTrackId(trackId);
+        DistributeFollow distributeFollow = new DistributeFollow();
         Set set = userDao.findRoleByUserName2(username);
-        DistributeFollow networkFollow = new DistributeFollow();
-        networkFollow.setFollowName(name);
-        networkFollow.setNetworkId(distribute.getId());
-        networkFollow.setFollowResult(str1);
-        distribute.setActivation(0);//默认未激活
+        distributeFollow.setFollowResult(str1);
+        distributeFollow.setFollowName(name);
+        distribute.setActivation(0);
+        distribute.setAppoint(0);
         distribute.setSign(1);
-        distribute.setProposer(name);
+        distribute.setInvalid(0);
+        if (StringUtils.isEmpty(distribute.getTrackId())){
+            String trackId = Rand.getTrackId("L");//获得跟踪单号
+            distribute.setTrackId(trackId);
+        }
         for (Object str : set) {
            if (str.equals(Department.ARMCUSTOMER.value)){//线索管理员
-                distribute.setLastFollowName(distribute.getLastFollowName());
-                distribute.setFirstFollowName(distribute.getLastFollowName());
-                distribute.setIssue(0);
-                distribute.setStatus(0);
-                if (StringUtil.isNotEmpty(distribute.getLastFollowName())){
-                    distribute.setIssue(1);
-                    distribute.setStatus(10);
-                    String leader2 = userDao.queryDepartment3(distribute.getLastFollowName());
-                    distribute.setLeaderName(leader2);
-                }else if (StringUtil.isNotEmpty(distribute.getBranch())){
-                    distribute.setIssue(1);
-                }
+               String LeaderName = userDao.queryDepartment3((distribute.getLastFollowName()));//获取主管
+               if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
+                   SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+                   distribute.setReceivingTime(df.format(new Date()));
+                   distribute.setStatus(10);
+                   distribute.setIssue(1);
+                   String LeaderName2 = userDao.queryDepartment3(distribute.getLastFollowName());//获取主管
+                   distribute.setLeaderName(LeaderName2);
+               }else if (StringUtils.isNotEmpty(distribute.getBranch())){
+                   distribute.setIssue(1);
+                   distribute.setStatus(0);
+               }else {
+                   distribute.setIssue(0);
+                   distribute.setStatus(0);
+               }
+               distribute.setLeaderSign(1);
+               distribute.setProposer(name);
             }
         }
         telemarkDao.insertTelemarke(distribute);
-        networkFollow.setNetworkId(distribute.getId());
-        telemarkeFollowDao.insertNetworkFollow(networkFollow);
-        networkFollow.setFollowResult(distribute.getLastFollowResult());
-        return telemarkeFollowDao.insertNetworkFollow(networkFollow);
+        distributeFollow.setNetworkId(distribute.getId());
+        telemarkeFollowDao.insertNetworkFollow(distributeFollow);
+        distributeFollow.setFollowResult(distribute.getLastFollowResult());
+        distributeFollow.setImgUrl(distribute.getImgUrl());
+        return telemarkeFollowDao.insertNetworkFollow(distributeFollow);
     }
     @Override
     @Transactional

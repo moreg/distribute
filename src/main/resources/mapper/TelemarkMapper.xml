@@ -100,7 +100,7 @@
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,
     source,address,proposer,status,activation from customer_telemarke
-    where  1 = 1
+    where  1 = 1 and issue = #{issue}
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -286,7 +286,7 @@
     <foreach collection="list" item="distribute" index= "index" open="" close="" separator =";">
       update customer_telemarke
       <set>
-        branch = #{distribute.department},
+        branch = #{distribute.branch},
         last_follow_name = #{distribute.firstFollowName},
         first_follow_name = #{distribute.firstFollowName},
         appoint = 1,
@@ -307,7 +307,8 @@
   </update>
 
   <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set last_follow_name = #{lastFollowName},first_follow_name = #{lastFollowName},leader_sign=#{leaderSign},status = #{status},leader_name = #{leaderName} where id = #{id}
+    update customer_telemarke set last_follow_name = #{lastFollowName},first_follow_name = #{lastFollowName},leader_sign=#{leaderSign},
+    status = #{status},leader_name = #{leaderName},receiving_time = sysdate() where id = #{id}
   </update>
 
   <update id="updateNetworkLastFollowName" parameterType="com.jdsw.distribute.model.Distribute">
@@ -365,6 +366,7 @@
     <if test="source != null and source != ''">
         source = #{source},
     </if>
+
     </trim>
      where id = #{id}
   </update>

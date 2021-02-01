@@ -18,7 +18,7 @@
     <select id="findTree"  resultMap="BaseResultMap" parameterType="String">
         SELECT  sy.id,sy.`name`,sy.parentId,sy.`order`,sy.url,sy.icon
         FROM sys_menu sy
-        LEFT JOIN role_menu rm on sy.id = rm.menu_id
+        LEFT JOIN role_menu rm on sy.menuId = rm.menu_id
         LEFT JOIN `user_role` ur on ur.roleid = rm.role_id
         LEFT JOIN `user` us on us.id = ur.userid
         WHERE us.username = #{username}

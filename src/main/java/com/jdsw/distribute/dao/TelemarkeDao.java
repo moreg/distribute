@@ -15,7 +15,7 @@ public interface TelemarkeDao {
      * @param endtime
      * @return
      */
-    List<Distribute> armyListPoolList(String content, String strtime, String endtime);
+    List<Distribute> armyListPoolList(Map map);
 
     /**
      * 抢单池

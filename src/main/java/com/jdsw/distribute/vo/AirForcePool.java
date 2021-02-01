@@ -17,11 +17,13 @@ public class AirForcePool {
     private Date createTime;
     private String lastFollowName;
     private Integer source;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date lastFollowTime;
     private Integer status;
     private String overdueTime;
     private Integer leaderSign;
     private Integer activation;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private  Date receivingTime;
     private String lastFollowResult;
     private Integer sign;
