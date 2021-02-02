@@ -53,7 +53,8 @@
     <result column="total"  property="total" />
     <result column="grade"  property="grade" />
     <result column="receiving_time"  property="receivingTime" />
-
+    <result column="last_follow_result"  property="lastFollowResult" />
+    <result column="activation_time"  property="activationTime" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -94,12 +95,16 @@
     select *
     from customer_telemarke where id =#{id}
   </select>
+  <select id="selectNetworkById3" resultMap="DistributeMap">
+    select *
+    from customer_telemarke where track_id =#{trackId}
+  </select>
 
 <!--陆军分发池-->
   <select id="armyListPoolList" resultMap="aMap" parameterType="String">
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,
-    source,address,proposer,status,activation from customer_telemarke
+    source,address,proposer,status,activation,last_follow_result from customer_telemarke
     where  1 = 1 and issue = #{issue}
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -115,7 +120,7 @@
   </select>
   <!--抢单池-->
   <select id="grabbingPool" resultMap="aMap" parameterType="Map">
-    select id,track_id,source,last_follow_result,proposer,create_time,issue,sign,last_follow_name from customer_telemarke
+    select id,track_id,source,last_follow_result,proposer,create_time,issue,sign,last_follow_name,last_follow_result,corporate_name from customer_telemarke
     where  issue = 1 and `status` = 0
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -149,7 +154,7 @@
   <!--陆军客户 业务员-->
   <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
-    source,last_follow_time,activation,address,receiving_time from customer_telemarke
+    source,last_follow_time,activation,address,receiving_time,proposer from customer_telemarke
     where last_follow_name = #{lastFollowName} and status = #{status}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -330,45 +335,48 @@
   <update id="updateworkOverdueTime" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_telemarke
     <trim prefix="SET" suffixOverrides=",">
-    <if test="status != null">
-        status = #{status},
-    </if>
-    <if test="overdueTime != null">
-        overdue_time = #{overdueTime},
-    </if>
-    <if test="activation != null">
-        activation = #{activation},
-    </if>
-    <if test="issue != null">
-        issue # = #{issue},
-    </if>
-    <if test="activationName != null and activationName != ''">
-        activation_name = #{activationName},
-    </if>
-    <if test="corporatePhone2 != null and corporatePhone2 != ''">
-        corporate_phone2 = #{corporatePhone2},
-    </if>
-    <if test="corporatePhone3 != null and corporatePhone3 != ''">
-        corporate_phone3 = #{corporatePhone3},
-    </if>
-    <if test="weChat != null and weChat != ''">
-        weChat = #{weChat},
-    </if>
-    <if test="activationTime != null and activationTime != ''">
-        activation_time = #{activationTime},
-    </if>
-    <if test="corporateName != null and corporateName !=''">
+      <if test="corporateName != null and corporateName !=''">
         corporate_name = #{corporateName},
-    </if>
-    <if test="corporatePhone != null">
+      </if>
+      <if test="corporatePhone != null and corporatePhone != ''">
         corporate_phone = #{corporatePhone},
-    </if>
-    <if test="source != null and source != ''">
+      </if>
+      <if test="corporatePhone2 != null and corporatePhone2 != ''">
+        corporate_phone2 = #{corporatePhone2},
+      </if>
+      <if test="corporatePhone3 != null and corporatePhone3 != ''">
+        corporate_phone3 = #{corporatePhone3},
+      </if>
+      <if test="weChat != null and weChat != ''">
+        weChat = #{weChat},
+      </if>
+      <if test="source != null">
         source = #{source},
-    </if>
-
+      </if>
+      <if test="lastFollowResult != null and lastFollowResult !=''">
+        last_follow_result = #{lastFollowResult},
+      </if>
+      <if test="activationName != null and activationName != ''">
+        activation_name = #{activationName},
+      </if>
+      <if test="overdueTime !=null">
+        overdue_time = #{overdueTime},
+      </if>
+      <if test="activationTime != null and activationTime != ''">
+        activation_time = #{activationTime},
+      </if>
+      <if test="activation != null">
+        activation = #{activation},
+      </if>
+      <if test="status != null">
+        status = #{status},
+      </if>
+      <if test="issue != null">
+        issue = #{issue},
+      </if>
     </trim>
-     where id = #{id}
+
+    where id = #{id}
   </update>
 
   <update id="setOvertime" parameterType="com.jdsw.distribute.model.Distribute">
@@ -426,9 +434,18 @@
   <update id="updateBytrackId" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_telemarke
     set
-    <if test="status  !=null">
       status = #{status}
-    </if>
+    where track_Id = #{trackId}
+  </update>
+
+  <update id="updateBytrackId2" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_telemarke
+    set
+      status = #{status},
+      issue = #{issue},
+      last_follow_name = #{lastFollowName},
+      last_follow_time = #{lastFollowTime},
+      last_follow_result = #{lastFollowResult}
     where track_Id = #{trackId}
   </update>
 

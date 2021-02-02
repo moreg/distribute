@@ -53,6 +53,12 @@ public class LoginController {
             map.put("name",user2.getName());
             map.put("group",usersVo.getGroup());
             map.put("branch",usersVo.getBranch());
+            if ("南宁分公司".equals(usersVo.getBranch())){
+                map.put("branchId",14);
+            }
+            if ("梧州分公司".equals(usersVo.getBranch())){
+                map.put("branchId",15);
+            }
             map.put("department",usersVo.getDepartment());
             map.put("username",username);
             return Message.success("登录成功",map);

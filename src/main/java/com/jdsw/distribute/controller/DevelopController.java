@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -158,4 +159,38 @@ public class DevelopController {
     public Message qureyCustomer(Integer id,String trackId)throws IOException{
         return Message.success("操作成功",developService.selectDeveolpById(id));
     }
+    /**
+     * 业务员提交录单
+     * @param network
+     * @return
+     */
+    @RequestMapping(value = "/submitRecordingNetwork",method = RequestMethod.POST,produces="application/json")
+    public Message submitRecordingNetwork(@RequestBody List<Distribute> network){
+        int i = developService.submitRecordingNetwork(network);
+        if (i > 0){
+            return Message.success("提交成功");
+        }
+        return Message.fail("提交失败");
+    }
+
+    /**
+     * 主管转交
+     * @param distribute
+     * @return
+     */
+    @RequestMapping("/transferNetwork")
+    public Message transferNetwork(@RequestBody List<Distribute> distribute,HttpServletRequest request){
+        //String name = (String) request.getAttribute("name");
+        String token = request.getHeader("token"); // 获取头中token
+        System.out.println(token);
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        int i = developService.transferNetwork(distribute,name);
+        if ( i > 0){
+            return Message.success();
+        }
+        return Message.fail();
+    }
+
 }

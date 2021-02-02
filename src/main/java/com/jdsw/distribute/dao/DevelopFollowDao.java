@@ -10,6 +10,11 @@ public interface DevelopFollowDao {
     int insertDevelopFollow(DistributeFollow distributeFollow);
 
     List<DistributeFollow> qureyFollowList(Integer id);
-
+    /**
+     * 批量插入跟进日志
+     * @param networkFollow
+     * @return
+     */
+    int insertNetworkFollow2(List<DistributeFollow> networkFollow);
 
 }

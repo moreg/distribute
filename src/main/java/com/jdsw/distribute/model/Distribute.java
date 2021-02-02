@@ -47,7 +47,7 @@ public class Distribute {
     /**
      * 最后跟进时间
      */
-    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     String lastFollowTime;
     /**
      * 最后跟进人
@@ -210,4 +210,8 @@ public class Distribute {
      * 积分
      */
     BigDecimal integral;
+    /**
+     * 下次跟进时间
+     */
+    String nextTime;
 }

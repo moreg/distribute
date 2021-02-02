@@ -28,4 +28,8 @@ public class ArmyPool {
     private BigDecimal total;
     private String grade;
     private String receivingTime;
+    private String lastFollowResult;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
+    private Date activationTime;
+
 }

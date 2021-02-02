@@ -23,6 +23,10 @@
     <result column="create_time"  property="createTime" />
     <result column="industry"  property="industry" />
     <result column="integral"  property="integral" />
+    <result column="activation_time"  property="activationTime" />
+    <result column="activation_name"  property="activationName" />
+    <result column="corporate_phone2"  property="corporatePhone2" />
+    <result column="corporate_phone3"  property="corporatePhone3" />
   </resultMap>
   <resultMap id="pool" type="com.jdsw.distribute.vo.ComePool">
     <result column="contacts"  property="contacts" />
@@ -139,8 +143,8 @@
   </select>
   <!--跟单池-->
   <select id="withPool" resultMap="aMap" parameterType="Map">
-    SELECT * from (SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue from customer_network WHERE
-    `status` = 10 UNION all SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue FROM customer_telemarke WHERE `status` =10 )
+    SELECT * from (SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,leader_sign from customer_network WHERE
+    `status` in (7,10) UNION all SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,leader_sign FROM customer_telemarke WHERE `status` in (7,10) )
     as t  WHERE last_follow_name = #{lastFollowName} and activation = 0 and issue = #{issue}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -222,7 +226,7 @@
   </select>
   <!--成交订单-->
   <select id="dealListNetwork" resultMap="aMap" parameterType="String">
-    select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
+    select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,leader_sign,last_follow_result,total,grade,activation_time from customer_order
     where  last_follow_name = #{name} and status = #{status}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -464,14 +468,17 @@
 
   <update id="updateNetwork2" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set
-    <if test="lastFollowTime != null and lastFollowTime != ''">
-      last_follow_time = #{lastFollowTime}
-    </if>
+
+      last_follow_time = sysdate()
+
     <if test="overdueTime !=null">
       ,overdue_time = #{overdueTime}
     </if>
     <if test="lastFollowResult != null and lastFollowResult !=''">
       ,last_follow_result = #{lastFollowResult}
+    </if>
+    <if test="nextTime != null and nextTime !=''">
+      ,next_time = #{nextTime}
     </if>
     where track_id = #{trackId}
   </update>
@@ -506,7 +513,11 @@
     last_follow_name = #{lastFollowName},receiving_time = #{receivingTime},sign = #{sign}
     where track_Id = #{trackId}
   </update>
-
+  <update id="updateBytrackId3" parameterType="com.jdsw.distribute.model.Distribute">
+    update customer_order
+    set status = #{status}
+    where track_Id = #{trackId}
+  </update>
   <!--强制超时-->
   <update id="setOvertime" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set status = 5 where track_id = #{trackId}
@@ -628,5 +639,23 @@
   <insert id="insertDealOrder" parameterType="com.jdsw.distribute.model.Distribute">
     insert into deal_order(name,corporate_name,corporate_phone,create_time,source,last_follow_name,track_id,conduct,order_state)
     values (#{name},#{corporateName},#{corporatePhone},#{createTime},#{source},#{lastFollowName},#{trackId},#{conduct},0)
+  </insert>
+  <!--提交录单-->
+  <insert id="insertDistrbuteOrder"  parameterType="com.jdsw.distribute.model.Distribute">
+    insert into customer_order(corporate_name,corporate_phone
+    ,create_time,track_id,status
+      ,last_follow_name
+      ,last_follow_result
+      ,branch
+      ,receiving_time
+
+    )
+    values (
+    #{corporateName},#{corporatePhone},sysdate(),#{trackId},3
+      ,#{lastFollowName}
+      ,#{lastFollowResult}
+      ,#{branch}
+      ,#{receivingTime}
+    )
   </insert>
 </mapper>

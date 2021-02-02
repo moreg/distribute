@@ -133,6 +133,9 @@ public class NetworkController {
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
+        Map map1 = new HashMap();
+        map1.put("name",name);
+        map1.put("username",username);
         int i = distributeService.excelNetwork(file,username,name);
         if (i > 0){
             return Message.success("导入成功");
@@ -294,6 +297,7 @@ public class NetworkController {
      */
     @RequestMapping("/activation")
     public Message activation(HttpServletRequest request, @RequestBody Distribute distribute){
+        String strid = distribute.getTrackId().substring(0,1);
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");

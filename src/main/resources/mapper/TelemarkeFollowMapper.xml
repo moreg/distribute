@@ -58,10 +58,10 @@
   </insert>
 
   <update id="updateFolloupNetwork" parameterType="com.jdsw.distribute.model.DistributeFollow">
-    update customer_telemarke set state = #{state},last_follow_up = #{lastFollowUp},last_follow_time = #{followTime} where id = #{networkId}
+    update customer_telemarke set last_follow_up = #{lastFollowUp},last_follow_time = #{followTime} where id = #{networkId}
   </update>
 
   <select id="qureyFollowList" parameterType="java.lang.Integer" resultMap="DistributeMap">
-    select id,follow_name,follow_time,follow_result,contact_type,network_id,img_url,remarks,record,create_time from customer_telemarke_follow where network_id = #{id}
+    select id,follow_name,follow_time,follow_result,contact_type,network_id,img_url,remarks,record,create_time from customer_telemarke_follow where network_id = #{id} ORDER BY id DESC
   </select>
 </mapper>

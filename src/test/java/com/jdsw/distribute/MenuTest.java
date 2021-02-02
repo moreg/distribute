@@ -28,6 +28,7 @@ public class MenuTest {
     }
     @Test
     public void rolename(){
-        dao.findRoleByUserName3("zl");
+
+        System.out.println(menuService.findTree("cz"));
     }
 }

@@ -201,6 +201,12 @@ public interface NetworkDao {
 
     int insertDealOrder(Distribute distribute);
 
+    /**
+     *  提交录单
+     * @param distribute
+     * @return
+     */
+    int insertDistrbuteOrder(Distribute distribute);
 
     /**
      * 查询超时时间
@@ -228,6 +234,12 @@ public interface NetworkDao {
      */
     int updateBytrackId2(Distribute distribute);
     /**
+     * 完成录单修改订单状态
+     * @param distribute
+     * @return
+     */
+    int updateBytrackId3(Distribute distribute);
+    /**
      * 强制超时
      * @param
      * @return
@@ -252,10 +264,4 @@ public interface NetworkDao {
      */
     int updateNetwork2(Distribute distribute);
 
-    /**
-     * 激活
-     * @param
-     * @return
-     */
-    int insertCustomer(Distribute distribute);
 }

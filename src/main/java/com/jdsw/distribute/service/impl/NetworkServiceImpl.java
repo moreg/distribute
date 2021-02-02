@@ -245,7 +245,6 @@ public class NetworkServiceImpl implements NetworkService {
                 distribute.setLeaderSign(1);
                 distribute.setStatus(5);
             }else {//客服
-                String LeaderName = userDao.queryDepartment3((distribute.getLastFollowName()));//获取主管
                 if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
                     distribute.setReceivingTime(df.format(new Date()));
@@ -371,6 +370,7 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setLastFollowResult(networkFollow.getFollowResult());
         distribute.setTrackId(networkFollow.getTrackId());
         distribute.setOverdueTime(networkFollow.getFollowTime());
+        distribute.setNextTime(networkFollow.getFollowTime());
         distribute.setLastFollowTime(networkFollow.getFollowTime());
         networkDao.updateNetwork2(distribute);
         return networkFollowDao.insertNetworkFollow(networkFollow);
@@ -384,6 +384,7 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.get(i).setStatus(3);
             distribute2 = networkDao.selectNetworkById(distribute.get(i).getId());
             networkDao.insertDealOrder(distribute2);
+            networkDao.insertDistrbuteOrder(distribute2);
         }
         return networkDao.SubmitRecordingNetwork2(distribute);
     }
@@ -394,12 +395,22 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setStatus(4);
         String tid = networkDao.qureydealOrder(distribute);
         distribute.setTrackId(tid);
-        int i = networkDao.updateBytrackId(distribute);
-        telemarkeDao.updateBytrackId(distribute);
-        distribute = networkDao.selectNetworkById3(tid);
+        if ("K".equals(tid.substring(0,1))){
+            //networkDao.updateBytrackId(distribute);
+            networkDao.updateBytrackId3(distribute);
+            distribute = networkDao.selectNetworkById3(tid);
+        }else if ("L".equals(tid.substring(0,1))){
+            //telemarkeDao.updateBytrackId(distribute);
+            networkDao.updateBytrackId3(distribute);
+            distribute = telemarkeDao.selectNetworkById3(tid);
+        }else if ("Z".equals(tid.substring(0,1))){
+            //developDao.updateBytrackId(distribute);
+            networkDao.updateBytrackId3(distribute);
+            distribute = developDao.selectDeveolpById3(tid);
+        }
         Enterprise enterprise = new Enterprise();
-        enterprise.setAddName(distribute.getCorporateName());
-        enterprise.setCorporateName(distribute.getLastFollowName());
+        enterprise.setAddName(distribute.getLastFollowName());
+        enterprise.setCorporateName(distribute.getCorporateName());
         enterprise.setCorporatePhone(distribute.getCorporatePhone());
         enterprise.setCorporatePhone2(distribute.getCorporatePhone2());
         enterprise.setCorporatePhone3(distribute.getCorporatePhone3());
@@ -475,7 +486,6 @@ public class NetworkServiceImpl implements NetworkService {
             networkFollow.setFollowResult(str);
             ls.add(networkFollow);
             distribute1.setLastFollowName(distribute.get(0).getLeaderName());
-            distribute1.setFirstFollowName(distribute.get(0).getLeaderName());
             distribute1.setOverdueTime(DateUtil.getOverTime(600000));
             distribute1.setId(distribute.get(i).getId());
             distribute1.setStatus(10);
@@ -589,11 +599,16 @@ public class NetworkServiceImpl implements NetworkService {
             networkFollowDao.insertNetworkFollow(networkFollow);
         }else if ("L".equals(trid)){
             telemarkeFollowDao.insertNetworkFollow(networkFollow);
-            distribute.setIssue(0);
-            distribute.setStatus(1);
-            return telemarkeDao.updateworkOverdueTime(distribute);
+            distribute.setIssue(1);
+            distribute.setStatus(0);
+            distribute.setLastFollowTime(null);
+            distribute.setLastFollowResult(null);
+            networkFollow.setImgUrl(distribute.getImgUrl());
+            networkFollow.setFollowResult(distribute.getLastFollowResult());
+            telemarkeFollowDao.insertNetworkFollow(networkFollow);
+            return telemarkeDao.updateBytrackId2(distribute);
         }
-        distribute.setIssue(3);
+        distribute.setIssue(2);
         distribute.setStatus(7);
         return networkDao.updateBytrackId(distribute);
     }

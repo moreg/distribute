@@ -39,6 +39,9 @@
     <select id="selectDeveolpById" resultMap="DistributeMap">
         select * from customer_develop where id = #{id}
     </select>
+    <select id="selectDeveolpById3" resultMap="DistributeMap">
+        select * from customer_develop where track_id =#{trackId}
+    </select>
     <!--新增-->
     <insert id="insertDevelop" parameterType="com.jdsw.distribute.model.Distribute" useGeneratedKeys="true" keyProperty="id">
         insert into customer_develop(
@@ -72,6 +75,7 @@
         ,activation_name
         ,activation_time
         ,create_time
+        ,status
         )VALUES (
         <if test="corporateName != null and corporateName !=''">
             #{corporateName}
@@ -103,17 +107,18 @@
         ,#{lastFollowName}
         ,SYSDATE()
         ,SYSDATE()
+        ,10
         )
     </insert>
-    <!--新增-->
+    <!--导入-->
     <insert id="excelNetwork" parameterType="java.util.List">
         insert into customer_develop(corporate_name,corporate_phone
-        ,create_time,track_id,activation,leader_name,branch,`group`,activation_name,last_follow_name,department,activation_time
+        ,create_time,track_id,activation,leader_name,branch,`group`,activation_name,last_follow_name,department,activation_time,status
         )
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.corporateName},#{item.corporatePhone},sysdate()
-            ,#{item.trackId},#{item.activation},#{item.leaderName},#{item.branch},#{item.group},#{item.activationName},#{item.lastFollowName},#{item.department},sysdate()
+            ,#{item.trackId},#{item.activation},#{item.leaderName},#{item.branch},#{item.group},#{item.activationName},#{item.lastFollowName},#{item.department},sysdate(),10
 
             )
         </foreach>
@@ -121,7 +126,7 @@
     <!--列表-->
     <select id="developList" parameterType="Map" resultMap="aMap">
         select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,activation_time,activation from customer_develop
-        where  last_follow_name = #{name}
+        where  last_follow_name = #{name} and status = 10
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -183,12 +188,49 @@
         <if test="activationName != null and activationName != ''">
             activation_name = #{activationName},
         </if>
+        <if test="lastFollowTime != null and lastFollowTime != ''">
+            last_follow_time = #{lastFollowTime},
+        </if>
 
         </trim>
         where id = #{id}
     </update>
+
+    <update id="updateBytrackId" parameterType="com.jdsw.distribute.model.Distribute">
+        update customer_develop
+        set
+        <if test="status  !=null">
+            status = #{status}
+        </if>
+        where track_Id = #{trackId}
+    </update>
+
     <!--删除-->
     <delete id="deleteDevelop" parameterType="com.jdsw.distribute.model.Distribute">
         delete from customer_develop where id = #{id}
     </delete>
+
+
+    <update id="updateNetworkLastFollowName" parameterType="java.util.List">
+        <if test="list!=null">
+            <foreach collection="list" item="Distribute" index="index" open="" close="" separator=";">
+                update customer_develop
+                <set>
+                    <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != ''">
+                        last_follow_name =#{Distribute.lastFollowName},
+                    </if>
+                    <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
+                        leader_name = #{Distribute.leaderName},
+                    </if>
+                    <if test="Distribute.status != null">
+                        status = #{Distribute.status},
+                    </if>
+                </set>
+                <where>
+                    id=#{Distribute.id}
+                </where>
+
+            </foreach>
+        </if>
+    </update>
 </mapper>

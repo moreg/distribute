@@ -56,4 +56,13 @@ public interface DevelopService {
      * @return
      */
     Distribute selectDeveolpById(Integer id);
+
+    int submitRecordingNetwork(List<Distribute> list);
+    /**
+     * 主管转单
+     * @param distribute
+     * @return
+     */
+    int transferNetwork(List<Distribute> distribute,String name);
+
 }

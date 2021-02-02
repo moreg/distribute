@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
+import com.jdsw.distribute.dao.NetworkDao;
 import com.jdsw.distribute.dao.TelemarkeDao;
 import com.jdsw.distribute.dao.TelemarkeFollowDao;
 import com.jdsw.distribute.dao.UserDao;
@@ -39,6 +40,9 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     private TelemarkeFollowDao telemarkeFollowDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private NetworkDao networkDao;
+
     @Override
     public PageInfo<Distribute> armyListPoolList(Map map) {
         Integer pageNum = (Integer) map.get("pageNum");
@@ -77,12 +81,10 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         }
         for (Object str : set) {
            if (str.equals(Department.ARMCUSTOMER.value)){//线索管理员
-               String LeaderName = userDao.queryDepartment3((distribute.getLastFollowName()));//获取主管
                if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
                    distribute.setReceivingTime(df.format(new Date()));
                    distribute.setStatus(10);
-                   distribute.setIssue(1);
                    String LeaderName2 = userDao.queryDepartment3(distribute.getLastFollowName());//获取主管
                    distribute.setLeaderName(LeaderName2);
                }else if (StringUtils.isNotEmpty(distribute.getBranch())){
@@ -92,10 +94,10 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                    distribute.setIssue(0);
                    distribute.setStatus(0);
                }
-               distribute.setLeaderSign(1);
-               distribute.setProposer(name);
+
             }
         }
+        distribute.setProposer(name);
         telemarkDao.insertTelemarke(distribute);
         distributeFollow.setNetworkId(distribute.getId());
         telemarkeFollowDao.insertNetworkFollow(distributeFollow);
@@ -201,7 +203,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             if (StringUtil.isNotEmpty(network.get(i).getFirstFollowName())){
                 distribute.setFirstFollowName(network.get(i).getFirstFollowName());
                 distribute.setLastFollowName(network.get(i).getFirstFollowName());
-                distribute.setOverdueTime(DateUtil.getOverTime(600000));
+                distribute.setOverdueTime(DateUtil.getOverTime(86400000 ));
                 distribute.setAppoint(1);
                 distribute.setStatus(10);
                 networkFollow.setFollowName(name);
@@ -273,12 +275,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public int followupNetwork(DistributeFollow distributeFollow) {
         Distribute distribute = new Distribute();
         distribute.setOverdueTime(distributeFollow.getFollowTime());
-        distribute.setActivation(1);
         distribute.setId(distributeFollow.getNetworkId());
-        int repool = distributeFollow.getReturnPool();
-        if (repool == 1){
-            distribute.setStatus(2);
-        }
         telemarkDao.updateworkOverdueTime(distribute);
         telemarkeFollowDao.updateFolloupNetwork(distributeFollow);
         return telemarkeFollowDao.insertNetworkFollow(distributeFollow);
@@ -305,6 +302,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             distribute.get(i).setStatus(3);
             distribute2 = telemarkDao.selectNetworkById(distribute.get(i).getId());
             telemarkDao.insertDealOrder(distribute2);
+            networkDao.insertDistrbuteOrder(distribute2);
 
         }
         return telemarkDao.SubmitRecordingNetwork(distribute);

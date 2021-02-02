@@ -42,4 +42,14 @@ public interface DevelopDao {
     int deleteDevelop(Distribute distribute);
 
     Distribute selectDeveolpById(Integer id);
+
+    int updateBytrackId(Distribute distribute);
+
+    Distribute selectDeveolpById3(String trackId);
+    /**
+     *修改网络库跟踪人
+     * @param distribute
+     * @return
+     */
+    int updateNetworkLastFollowName (List<Distribute> distribute);
 }

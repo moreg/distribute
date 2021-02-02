@@ -6,6 +6,7 @@ import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Branch;
 import com.jdsw.distribute.model.Menu;
+import com.jdsw.distribute.model.SysMune;
 import com.jdsw.distribute.service.MenuService;
 import com.jdsw.distribute.util.Rand;
 import com.jdsw.distribute.vo.UsersVo;
@@ -36,31 +37,31 @@ public class MenuServiceImpl  implements MenuService {
     }
 
     @Override
-    public List<Menu> findTree(String username) {
+    public List<SysMune> findTree(String username) {
         Map<String,Object> data = new HashMap<String,Object>();
         try {//查询所有菜单
-            List<Menu> allMenu = menuMapper.findTree(username);
+            List<SysMune> allMenu = menuMapper.findTree(username);
             //根节点
-            List<Menu> rootMenu = new ArrayList<Menu>();
+           /*List<Menu> rootMenu = new ArrayList<Menu>();
             for (Menu nav : allMenu) {
-                if(nav.getParentId().equals("0")){//父节点是0的，为根节点。
+                if(nav.getParentId().equals("-1")){//父节点是0的，为根节点。
                     rootMenu.add(nav);
                 }
             }
-            /* 根据Menu类的order排序 */
+            //根据Menu类的order排序
             Collections.sort(rootMenu, order());
             //为根菜单设置子菜单，getClild是递归调用的
             for (Menu nav : rootMenu) {
-                /* 获取根节点下的所有子节点 使用getChild方法*/
+                // 获取根节点下的所有子节点 使用getChild方法
                 List<Menu> childList = getChild(nav.getId(), allMenu);
                 nav.setChildren(childList);//给根节点设置子节点
-            }
+            }*/
             /**
              * 输出构建好的菜单数据。
              *
              */
-            data.put("list", rootMenu);
-            return rootMenu;
+            data.put("list", allMenu);
+            return allMenu;
         } catch (Exception e) {
             data.put("success", "false");
             data.put("list", new ArrayList());
@@ -167,8 +168,8 @@ public class MenuServiceImpl  implements MenuService {
     }
 
     @Override
-    public List<Menu> getMenuLsit() {
-        List<Menu> list = menuMapper.getMenuList();
+    public List<SysMune> getMenuLsit(String username) {
+        List<SysMune> list = menuMapper.getMenuList(username);
         return list;
     }
 

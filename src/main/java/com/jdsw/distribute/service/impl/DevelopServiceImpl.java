@@ -10,13 +10,16 @@ import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.DevelopService;
+import com.jdsw.distribute.util.DateUtil;
 import com.jdsw.distribute.util.Rand;
 import com.jdsw.distribute.vo.UsersVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +33,8 @@ public class DevelopServiceImpl implements DevelopService {
     private UserDao userDao;
     @Autowired
     private DevelopFollowDao developFollowDao;
+    @Autowired
+    private NetworkDao networkDao;
 
     @Override
     public int insertDevelop(Map map) {
@@ -89,11 +94,57 @@ public class DevelopServiceImpl implements DevelopService {
     }
 
     @Override
+    @Transactional
     public int followupDevelop(DistributeFollow distributeFollow) {
+        Distribute distribute = new Distribute();
+        distribute.setId(distributeFollow.getNetworkId());
+        distribute.setLastFollowResult(distributeFollow.getFollowResult());
+        distribute.setLastFollowTime(DateUtil.getDate("yyyy-MM-dd HH:mm:ss"));
+        developDao.updateDevelop(distribute);
         return developFollowDao.insertDevelopFollow(distributeFollow);
     }
     @Override
     public Distribute selectDeveolpById(Integer id) {
         return developDao.selectDeveolpById(id);
+    }
+
+    @Override
+    @Transactional
+    public int submitRecordingNetwork(List<Distribute> distribute) {
+        for (int i=0;i<distribute.size();i++){
+            Distribute distribute2;
+            Distribute distribute3 = new Distribute();
+            distribute2 = developDao.selectDeveolpById(distribute.get(i).getId());
+            distribute3.setStatus(3);
+            distribute3.setTrackId(distribute2.getTrackId());
+            developDao.updateBytrackId(distribute3);
+            networkDao.insertDealOrder(distribute2);
+            return networkDao.insertDistrbuteOrder(distribute2);
+        }
+        return 0;
+    }
+    @Override
+    @Transactional
+    public int transferNetwork(List<Distribute> distribute,String name) {
+        String str = "给"+distribute.get(0).getLeaderName()+"转交了一条线索";
+        DistributeFollow networkFollow;
+        Distribute distribute1;
+        List<Distribute> ld = new ArrayList<>();
+        List<DistributeFollow> ls = new ArrayList<>();
+        for (int i=0;i<distribute.size();i++){
+            networkFollow = new DistributeFollow();
+            distribute1 = new Distribute();
+            networkFollow.setFollowName(name);
+            networkFollow.setNetworkId(distribute.get(i).getId());
+            networkFollow.setFollowResult(str);
+            ls.add(networkFollow);
+            distribute1.setLastFollowName(distribute.get(0).getLeaderName());
+            distribute1.setId(distribute.get(i).getId());
+            distribute1.setStatus(10);
+            ld.add(distribute1);
+            System.out.println(ls);
+            // developFollowDao.insertNetworkFollow2(ls);
+        }
+        return developDao.updateNetworkLastFollowName(ld);
     }
 }

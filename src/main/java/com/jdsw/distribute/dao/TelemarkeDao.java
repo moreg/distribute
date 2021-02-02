@@ -10,9 +10,6 @@ import java.util.Map;
 public interface TelemarkeDao {
     /**
      * 陆军池列表
-     * @param content
-     * @param strtime
-     * @param endtime
      * @return
      */
     List<Distribute> armyListPoolList(Map map);
@@ -43,25 +40,11 @@ public interface TelemarkeDao {
      */
     int updateTelemarke(Distribute distribute);
     /**
-     * 编辑查询
-     * @param id
-     * @return
-     */
-    List<Map> qureyTelemarke(Integer id);
-    /**
      * 导入电销
      * @param excels
      * @return
      */
     int excelTelemarke(List<Object> excels);
-    /**
-     * 抢单列表
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @return
-     */
-    List<Distribute> grabbingOrdersList(String content, String strtime, String endtime);
 
     /**
      * 指定接单人
@@ -69,12 +52,6 @@ public interface TelemarkeDao {
      * @return
      */
     int appoint(List<Distribute> distribute);
-    /**
-     * 生成跟踪单号
-     * @param distribute
-     * @return
-     */
-    int updateNetworkTrackId(Distribute distribute);
     /**
      *修改网络库跟踪人
      * @param distribute
@@ -104,15 +81,6 @@ public interface TelemarkeDao {
 
     List<Distribute> queryTelemarkeByLastName2(Map map);
 
-    /**
-     * 我客户待处理
-     * @param content
-     * @param strtime
-     * @param endtime
-     * @param lastFollowName
-     * @return
-     */
-    List<Distribute> pendingNetworkList(String content, String strtime, String endtime,String lastFollowName);
     /**
      * 超时
      * @param network
@@ -181,4 +149,8 @@ public interface TelemarkeDao {
      * @return
      */
     int updateBytrackId(Distribute distribute);
+
+    Distribute selectNetworkById3(String trackId);
+
+    int updateBytrackId2(Distribute distribute);
 }

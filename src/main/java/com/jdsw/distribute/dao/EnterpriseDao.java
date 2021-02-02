@@ -1,5 +1,6 @@
 package com.jdsw.distribute.dao;
 
+import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.Enterprise;
 
 import java.util.List;
@@ -26,4 +27,5 @@ public interface EnterpriseDao {
      * @return
      */
     List<Enterprise> enterprisePoolList(Map map);
+
 }
