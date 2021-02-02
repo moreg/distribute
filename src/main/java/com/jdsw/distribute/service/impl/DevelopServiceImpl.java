@@ -143,7 +143,7 @@ public class DevelopServiceImpl implements DevelopService {
             distribute1.setStatus(10);
             ld.add(distribute1);
             System.out.println(ls);
-            // developFollowDao.insertNetworkFollow2(ls);
+            developFollowDao.insertNetworkFollow2(ls);
         }
         return developDao.updateNetworkLastFollowName(ld);
     }
