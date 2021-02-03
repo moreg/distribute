@@ -126,7 +126,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("LJ");//获得跟踪单号
+                    String trackId = Rand.getTrackId("L");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("lastFollowName",user.getName());
                     map.put("firstFollowName",user.getName());
@@ -141,7 +141,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("LJ");//获得跟踪单号
+                    String trackId = Rand.getTrackId("L");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("leaderName",user.getName());
                     map.put("lastFollowName","");
@@ -158,7 +158,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("LJ");//获得跟踪单号
+                    String trackId = Rand.getTrackId("L");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("issue",0);
                     map.put("appoint",0);
@@ -227,11 +227,15 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         networkFollow.setNetworkId(network.getId());
         networkFollow.setFollowResult(str);
         telemarkeFollowDao.insertNetworkFollow(networkFollow);
-        network.setLeaderSign(0);
+        Distribute distribute = new Distribute();
+        distribute = telemarkDao.selectNetworkById(network.getId());
+        if (distribute.getSign() == 1){
+            network.setOverdueTime(DateUtil.getNextDay());
+            network.setActivation(0);
+            network.setLeaderSign(0);
+        }
         String leader = userDao.queryDepartment3(name);
         network.setLeaderName(leader);
-        network.setOverdueTime(DateUtil.getNextDay());
-        network.setActivation(0);
         network.setStatus(10);
         telemarkDao.updateworkOverdueTime(network);//修改激活时间
         int i = telemarkDao.updateNetworkFirstFollowName(network);
@@ -297,8 +301,8 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Override
     @Transactional
     public int SubmitRecordingNetwork(List<Distribute> distribute) {
-        Distribute distribute2;
         for (int i=0;i<distribute.size();i++){
+            Distribute distribute2 = new Distribute();
             distribute.get(i).setStatus(3);
             distribute2 = telemarkDao.selectNetworkById(distribute.get(i).getId());
             telemarkDao.insertDealOrder(distribute2);

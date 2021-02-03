@@ -70,7 +70,10 @@ public class UserServiceImpl implements UserService {
     public Set<String> findRoleByUserName(String username) {
         return userDao.findRoleByUserName(username);
     }
-
+    @Override
+    public Set<String> findRoleByUserName2(String username) {
+        return userDao.findRoleByUserName2(username);
+    }
     @Override
     public List<User> queryDepartment(String department,String branch,String group) {
         List<String> list = new ArrayList();

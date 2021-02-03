@@ -48,7 +48,7 @@ public class LoginController {
             UsersVo usersVo = userService.queryBranch(username);
             Map map = new HashMap();
             map.put("token",toToken);
-            map.put("role",userService.findRoleByUserName(username));
+            map.put("role",userService.findRoleByUserName2(username));
             map.put("userId",user2.getId());
             map.put("name",user2.getName());
             map.put("group",usersVo.getGroup());

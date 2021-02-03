@@ -22,6 +22,12 @@
     <result column="conduct"  property="conduct" />
     <result column="create_time"  property="createTime" />
     <result column="industry"  property="industry" />
+    <result column="activation_time"  property="activationTime" />
+    <result column="activation_name"  property="activationName" />
+    <result column="corporate_phone2"  property="corporatePhone2" />
+    <result column="corporate_phone3"  property="corporatePhone3" />
+
+
 
   </resultMap>
   <resultMap id="pool" type="com.jdsw.distribute.vo.ComePool">
@@ -55,6 +61,7 @@
     <result column="receiving_time"  property="receivingTime" />
     <result column="last_follow_result"  property="lastFollowResult" />
     <result column="activation_time"  property="activationTime" />
+    <result column="activation_name"  property="activationName" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -121,7 +128,7 @@
   <!--抢单池-->
   <select id="grabbingPool" resultMap="aMap" parameterType="Map">
     select id,track_id,source,last_follow_result,proposer,create_time,issue,sign,last_follow_name,last_follow_result,corporate_name from customer_telemarke
-    where  issue = 1 and `status` = 0
+    where  issue = 1 and `status` in(0,1)
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -154,8 +161,8 @@
   <!--陆军客户 业务员-->
   <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
-    source,last_follow_time,activation,address,receiving_time,proposer from customer_telemarke
-    where last_follow_name = #{lastFollowName} and status = #{status}
+    source,last_follow_time,activation,address,receiving_time,proposer,sign from customer_telemarke
+    where last_follow_name = #{lastFollowName} and status = #{status} and status = 10 and activation = 1
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -374,6 +381,9 @@
       <if test="issue != null">
         issue = #{issue},
       </if>
+      <if test="name != null and name != ''">
+        name = #{name},
+      </if>
     </trim>
 
     where id = #{id}
@@ -445,7 +455,8 @@
       issue = #{issue},
       last_follow_name = #{lastFollowName},
       last_follow_time = #{lastFollowTime},
-      last_follow_result = #{lastFollowResult}
+      last_follow_result = #{lastFollowResult},
+      sign = #{sign}
     where track_Id = #{trackId}
   </update>
 

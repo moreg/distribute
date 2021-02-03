@@ -35,6 +35,12 @@
         <result column="create_time"  property="createTime" />
         <result column="industry"  property="industry" />
         <result column="integral"  property="integral" />
+        <result column="activation_time"  property="activationTime" />
+        <result column="activation_name"  property="activationName" />
+        <result column="corporate_phone2"  property="corporatePhone2" />
+        <result column="corporate_phone3"  property="corporatePhone3" />
+        <result column="last_follow_result"  property="lastFollowResult" />
+
     </resultMap>
     <select id="selectDeveolpById" resultMap="DistributeMap">
         select * from customer_develop where id = #{id}
@@ -191,7 +197,9 @@
         <if test="lastFollowTime != null and lastFollowTime != ''">
             last_follow_time = #{lastFollowTime},
         </if>
-
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
         </trim>
         where id = #{id}
     </update>

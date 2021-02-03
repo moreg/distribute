@@ -31,5 +31,6 @@ public class ArmyPool {
     private String lastFollowResult;
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date activationTime;
+    private String activationName;
 
 }

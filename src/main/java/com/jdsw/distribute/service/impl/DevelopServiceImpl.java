@@ -46,7 +46,7 @@ public class DevelopServiceImpl implements DevelopService {
         distribute.setLastFollowName((String) map.get("name"));
         distribute.setGrade(usersVo.getGroup());
         if (StringUtils.isEmpty(distribute.getTrackId())){
-            String trackId = Rand.getTrackId("ZJ");//获得跟踪单号
+            String trackId = Rand.getTrackId("Z");//获得跟踪单号
             distribute.setTrackId(trackId);
         }
         for (Object str : set) {
@@ -112,12 +112,13 @@ public class DevelopServiceImpl implements DevelopService {
     @Transactional
     public int submitRecordingNetwork(List<Distribute> distribute) {
         for (int i=0;i<distribute.size();i++){
-            Distribute distribute2;
+            Distribute distribute2 = new Distribute();
             Distribute distribute3 = new Distribute();
             distribute2 = developDao.selectDeveolpById(distribute.get(i).getId());
             distribute3.setStatus(3);
             distribute3.setTrackId(distribute2.getTrackId());
             developDao.updateBytrackId(distribute3);
+            System.out.println(distribute2);
             networkDao.insertDealOrder(distribute2);
             return networkDao.insertDistrbuteOrder(distribute2);
         }

@@ -14,7 +14,7 @@ public class Rand {
             sb.append(str.charAt(number));
         }
         StringBuffer st=new StringBuffer(string);
-        SimpleDateFormat s = new SimpleDateFormat("yyyyMMddssSSSS");
+        SimpleDateFormat s = new SimpleDateFormat("yyMMddSSSS");
         String strd = s.format(new Date());
         return st.append(strd).append(sb).toString();
     }
