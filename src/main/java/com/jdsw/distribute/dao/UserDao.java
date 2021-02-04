@@ -37,6 +37,8 @@ public interface UserDao {
     Set<String> findRoleByUserName2(String username);
 
     UsersVo findRoleByUserName3(String username);
+
+    String findRoleByUserName4(String name);
     /**
      * 查询部门下的人员
      * @param

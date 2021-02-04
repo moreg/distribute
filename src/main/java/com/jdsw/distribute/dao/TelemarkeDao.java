@@ -153,4 +153,18 @@ public interface TelemarkeDao {
     Distribute selectNetworkById3(String trackId);
 
     int updateBytrackId2(Distribute distribute);
+    /**
+     * 主管跟单池
+     * @param map
+     * @return
+     */
+    List<Distribute> withPool2(Map map);
+    /**
+     * 业务员跟单池
+     * @param map
+     * @return
+     */
+    List<Distribute> withPool(Map map);
+
+
 }

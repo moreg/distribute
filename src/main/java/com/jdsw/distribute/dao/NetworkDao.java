@@ -75,13 +75,13 @@ public interface NetworkDao {
      * @param
      * @return
      */
-    List<Distribute> queryNetworkByLastName(String content, String strtime, String endtime,String lastFollowName);
+    List<Distribute> queryNetworkByLastName(Map map);
     /**
      * 查询我的客户
      * @param
      * @return
      */
-    List<Distribute> queryNetworkByLastName2(String content, String strtime, String endtime,String lastFollowName);
+    List<Distribute> queryNetworkByLastName2(Map map);
     /**
      * 主管待处理
      * @param content
@@ -209,12 +209,6 @@ public interface NetworkDao {
     int insertDistrbuteOrder(Distribute distribute);
 
     /**
-     * 查询超时时间
-     * @return
-     */
-    List<Distribute> queryOverTime();
-
-    /**
      * 状态查询
      * @param
      * @return
@@ -263,5 +257,7 @@ public interface NetworkDao {
      * 跟进修改订单
      */
     int updateNetwork2(Distribute distribute);
+
+    List<Distribute> queryOverTime();
 
 }

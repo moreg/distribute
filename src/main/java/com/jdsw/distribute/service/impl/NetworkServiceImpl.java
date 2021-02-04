@@ -60,7 +60,6 @@ public class NetworkServiceImpl implements NetworkService {
     public int appoint(List<Distribute> network, String name) {
         Distribute distribute;
         DistributeFollow networkFollow;
-        String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
         String str = "给"+network.get(0).getFirstFollowName()+"转交了一条线索";
         List<DistributeFollow> ls = new ArrayList<>();
         List<Distribute> ld = new ArrayList<>();
@@ -71,7 +70,11 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.setDepartment(network.get(i).getDepartment());
             distribute.setAppoint(0);
             distribute.setBranch(network.get(i).getBranch());
-            distribute.setLeaderName(leader);
+            String role = userDao.findRoleByUserName4(network.get(0).getFirstFollowName());
+            if (!"主管".equals(role)){
+                String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
+                distribute.setLeaderName(leader);
+            }
             distribute.setStatus(0);
             if (StringUtil.isNotEmpty(network.get(i).getFirstFollowName())){
                 distribute.setAppoint(0);
@@ -90,11 +93,12 @@ public class NetworkServiceImpl implements NetworkService {
         if(ls.size() > 0){
             networkFollowDao.insertNetworkFollow2(ls);
         }
+        System.out.println(ld);
         return networkDao.appoint(ld);
     }
     @Override
     @Transactional
-    public int orderTaking(Distribute network,String username,String name) {
+    public int orderTaking(Distribute network,String username,String name,String role) {
         TransactionStatus transactionStatus = null;
         int i = 0;
         try {
@@ -105,8 +109,10 @@ public class NetworkServiceImpl implements NetworkService {
             networkFollow.setNetworkId(network.getId());
             networkFollow.setFollowResult(str);
             networkFollowDao.insertNetworkFollow(networkFollow);
-            String leader = userDao.queryDepartment2(username);
-            network.setLeaderName(leader);
+            if (!"主管".equals(role)){
+                String leader = userDao.queryDepartment2(username);
+                network.setLeaderName(leader);
+            }
             network.setStatus(10);
             network.setBranch(usersVo.getBranch());
             i = networkDao.updateNetworkFirstFollowName(network);
@@ -121,17 +127,20 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
-    public PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String username) throws ParseException {
-        Set set = userDao.findRoleByUserName2(username);
+    public PageInfo<Distribute> queryNetworkByLastName(Map map) throws ParseException {
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
+        map.put("status",10);
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
         for (Object str : set) {
             if (str.equals(Department.CHARGE.value)) {//主管
                 PageHelper.startPage(pageNum, limit);
-                List<Distribute> Network = networkDao.queryNetworkByLastName(content,strtime,endtime,lastFollowName);
+                List<Distribute> Network = networkDao.queryNetworkByLastName(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
             }else if (str.equals(Department.SALESMAN.value)){//业务员
                 PageHelper.startPage(pageNum, limit);
-                List<Distribute> Network = networkDao.queryNetworkByLastName2(content,strtime,endtime,lastFollowName);
+                List<Distribute> Network = networkDao.queryNetworkByLastName2(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
             }
@@ -178,20 +187,34 @@ public class NetworkServiceImpl implements NetworkService {
     public PageInfo<Distribute> withPool(Map map) {
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
         map.put("lastFollowName",map.get("name"));
+        String pool = (String) map.get("pool");
         for (Object str : set) {
             if (str.equals(Department.CHARGE.value)){
-                List<Distribute> Network = networkDao.withPool2(map);
-                PageInfo result = new PageInfo(Network);
-                return result;
+                if ("K".equals(pool)){
+                    List<Distribute> Network = networkDao.withPool2(map);
+                    PageInfo result = new PageInfo(Network);
+                    return result;
+                }else if ("L".equals(pool)){
+                    List<Distribute> Network = telemarkeDao.withPool2(map);
+                    PageInfo result = new PageInfo(Network);
+                    return result;
+                }
+
             }
             if (str.equals(Department.SALESMAN.value)){
-                List<Distribute> Network = networkDao.withPool(map);
-                PageInfo result = new PageInfo(Network);
-                return result;
+                if ("K".equals(pool)){
+                    List<Distribute> Network = networkDao.withPool(map);
+                    PageInfo result = new PageInfo(Network);
+                    return result;
+                }else if ("L".equals(pool)){
+                    List<Distribute> Network = telemarkeDao.withPool(map);
+                    PageInfo result = new PageInfo(Network);
+                    return result;
+                }
+
             }
         }
         return null;
-
     }
 
 
@@ -225,6 +248,7 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setAppoint(0);
         distribute.setSign(1);
         distribute.setInvalid(0);
+        distribute.setOverrun(0);
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("K");//获得跟踪单号
             distribute.setTrackId(trackId);
@@ -338,6 +362,7 @@ public class NetworkServiceImpl implements NetworkService {
                     map.put("activation",0);
                     map.put("appoint",0);
                     map.put("invalid",0);
+                    map.put("overrun",0);
                     ls.add(map);
                 }
             }
@@ -459,7 +484,7 @@ public class NetworkServiceImpl implements NetworkService {
         Integer limit = (Integer) map.get("limit");
         if ("K".equals(map.get("pool").toString())){
             PageHelper.startPage(pageNum, limit);
-            List<Distribute> CashierVo = networkDao.subordinateList(map);
+            List<Distribute> CashierVo = networkDao.queryNetworkByLastName2(map);
             PageInfo result = new PageInfo(CashierVo);
             return result;
         }else if ("L".equals(map.get("pool").toString())){
@@ -626,12 +651,18 @@ public class NetworkServiceImpl implements NetworkService {
         networkFollow.setFollowName((String) map.get("name"));
         networkFollow.setNetworkId(distribute.getId());
         String str = map.get("name")+"驳回申请";
-        if (distribute2.getInvalid() == 1){
-            distribute.setStatus(5);
-            distribute.setOverdueTime(null);
-        }else {
+        String role = userDao.findRoleByUserName4(distribute2.getLastFollowName());
+        if ("主管".equals(role)){
             distribute.setStatus(10);
             distribute.setOverdueTime(DateUtil.getOverTime(86400000));
+        }else {
+            if (distribute2.getInvalid() == 1){
+                distribute.setStatus(5);
+                distribute.setOverdueTime(null);
+            }else {
+                distribute.setStatus(10);
+                distribute.setOverdueTime(DateUtil.getOverTime(86400000));
+            }
         }
         networkFollow.setFollowResult(str);
         networkFollowDao.insertNetworkFollow(networkFollow);

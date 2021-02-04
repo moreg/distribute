@@ -178,8 +178,9 @@ public class TelemarkeController {
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String lastFollowName = (String) map.get("name");
+        String role = (String) map.get("role");
         distribute.setLastFollowName(lastFollowName);
-        int i = telemarkService.orderTaking(distribute,lastFollowName);
+        int i = telemarkService.orderTaking(distribute,lastFollowName,role);
         if (i > 0){
             return Message.success("抢单成功");
         }

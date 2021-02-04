@@ -214,4 +214,8 @@ public class Distribute {
      * 下次跟进时间
      */
     String nextTime;
+    /**
+     * 是否超时退回
+     */
+    Integer overrun;
 }

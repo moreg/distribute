@@ -23,7 +23,7 @@ public class AirForcePool {
     private String overdueTime;
     private Integer leaderSign;
     private Integer activation;
-    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private  Date receivingTime;
     private String lastFollowResult;
     private Integer sign;
@@ -31,4 +31,5 @@ public class AirForcePool {
     private String activationTime;
     private BigDecimal total;
     private String grade;
+    private Integer overrun;
 }

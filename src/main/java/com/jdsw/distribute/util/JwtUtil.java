@@ -45,7 +45,7 @@ public class JwtUtil {
      * @param
      * @return
      */
-    public static String sign(String userName,String userId,String name,String pwd){
+    public static String sign(String userName,String userId,String name,String pwd,String role){
         //签名算法
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         //生成签发时间，直接获取系统毫秒数
@@ -61,6 +61,7 @@ public class JwtUtil {
                 .claim("userName", userName)
                 .claim("pwd", pwd)
                 .claim("name", name)
+                .claim("role", role)
                 .setIssuedAt(nowDate)
                 .setIssuer(issuer)
                 .signWith(signatureAlgorithm, signingkey);
@@ -99,11 +100,11 @@ public class JwtUtil {
     }
 
     public static void main(String[] args) {
-        String token = JwtUtil.sign("cz","2","陈真","12346");
+       String token = JwtUtil.sign("cz","2","陈真","12346","主管");
        System.out.println(token);
         //解析Token
         Claims claims = JwtUtil.parseJWT(token);
-        System.err.println(claims.get("userName"));
+        System.err.println(claims.get("role"));
         System.out.println(JwtUtil.verity(token));
 
     }

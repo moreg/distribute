@@ -29,14 +29,14 @@ public interface NetworkService {
      * @param distribute
      * @return
      */
-    int orderTaking(Distribute distribute,String username,String name);
+    int orderTaking(Distribute distribute,String username,String name,String role);
 
     /**
      * 我的客户
      * @param
      * @return
      */
-    PageInfo<Distribute> queryNetworkByLastName(int pageNum, int limit,String content, String strtime, String endtime,String lastFollowName,String usernmae) throws ParseException;
+    PageInfo<Distribute> queryNetworkByLastName(Map map) throws ParseException;
 
     /**
      * 企业池

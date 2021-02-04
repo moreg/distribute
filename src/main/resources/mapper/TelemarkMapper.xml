@@ -39,29 +39,28 @@
     <result column="record"  property="record" />
     <result column="remarks"  property="remarks" />
   </resultMap>
-  <resultMap id="aMap" type="com.jdsw.distribute.vo.ArmyPool">
+  <resultMap id="aMap" type="com.jdsw.distribute.vo.AirForcePool">
     <result column="id"  property="id" />
     <result column="track_id"  property="trackId" />
-    <result column="name"  property="name" />
     <result column="corporate_name" property="corporateName" />
     <result column="corporate_phone"  property="corporatePhone" />
-    <result column="registered_capital"  property="registeredCapital" />
-    <result column="establish_time"  property="establishTime" />
     <result column="issue"  property="issue" />
     <result column="create_time"  property="createTime" />
-    <result column="source"  property="source" />
-    <result column="address"  property="address" />
-    <result column="proposer"  property="proposer" />
-    <result column="activation"  property="activation" />
-    <result column="status"  property="status" />
-    <result column="sign"  property="sign" />
     <result column="last_follow_name"  property="lastFollowName" />
-    <result column="total"  property="total" />
-    <result column="grade"  property="grade" />
+    <result column="source"  property="source" />
+    <result column="last_follow_time"  property="lastFollowTime" />
+    <result column="overdue_time"  property="overdueTime" />
+    <result column="status"  property="status" />
+    <result column="leader_sign"  property="leaderSign" />
     <result column="receiving_time"  property="receivingTime" />
     <result column="last_follow_result"  property="lastFollowResult" />
+    <result column="sign"  property="sign" />
+    <result column="proposer"  property="proposer" />
+    <result column="issue"  property="issue" />
+    <result column="grade"  property="grade" />
+    <result column="total"  property="total" />
     <result column="activation_time"  property="activationTime" />
-    <result column="activation_name"  property="activationName" />
+    <result column="overrun"  property="overrun" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -141,11 +140,44 @@
     </if>
     ORDER BY id DESC
   </select>
+  <!--业务员跟单池-->
+  <select id="withPool" resultMap="aMap" parameterType="Map">
+    SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time)
+     as overdue_time,issue,leader_sign from customer_telemarke WHERE
+    `status` in (7,10) and last_follow_name = #{lastFollowName} and activation = 0 and issue = #{issue}
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY create_time DESC
+  </select>
+  <!--主管跟单池-->
+  <select id="withPool2" resultMap="aMap" parameterType="Map">
+    SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,`status`,overrun from customer_telemarke WHERE
+    ((leader_name = #{lastFollowName} and status = 5) or (last_follow_name = #{lastFollowName} and `status` = 10 and activation = 0))   and issue =  #{issue}
+    <if test="strtime != null and strtime!=''">
+      AND create_time <![CDATA[ >= ]]> #{strtime}
+    </if>
+    <if test="endtime != null and endtime!=''">
+      AND create_time <![CDATA[ <= ]]> #{endtime}
+    </if>
+    <if test="content != null and content!= ''">
+      <bind name="content" value="'%' + content + '%'" ></bind>
+      and (corporate_name like #{content} or corporate_phone like #{content})
+    </if>
+    ORDER BY create_time DESC
+  </select>
   <!--陆军客户 主管-->
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
     source,last_follow_time,activation,address,receiving_time from customer_telemarke
-    where (last_follow_name = #{lastFollowName} and status = 10 or  (leader_name = #{lastFollowName} and status = 5)
+    where (last_follow_name = #{lastFollowName} and status = 10 or  (leader_name = #{lastFollowName} and status = 5))
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -162,7 +194,7 @@
   <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
     source,last_follow_time,activation,address,receiving_time,proposer,sign from customer_telemarke
-    where last_follow_name = #{lastFollowName} and status = #{status} and status = 10 and activation = 1
+    where last_follow_name = #{lastFollowName}  and status = #{status} and activation = 1
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -235,8 +267,11 @@
     <if test="branch !=null and branch != ''">
       ,branch
     </if>
-    <if test="sign !=null and sign != ''">
+    <if test="sign !=null">
       ,sign
+    </if>
+    <if test="overrun !=null'">
+      ,overrun
     </if>
     )
     values (
@@ -268,19 +303,22 @@
     <if test="branch !=null and branch != ''">
       ,#{branch}
     </if>
-    <if test="sign !=null and sign != ''">
+    <if test="sign !=null">
       ,#{sign}
+    </if>
+    <if test="overrun !=null'">
+      ,#{overrun}
     </if>
     )
   </insert>
 
   <insert id="excelTelemarke" parameterType="java.util.List">
     insert into customer_telemarke(name,corporate_name,corporate_phone,establish_time,registered_capital,address
-    ,create_time,status,track_id,issue,appoint,activation,source,sign,proposer)
+    ,create_time,status,track_id,issue,appoint,activation,source,sign,proposer,overrun)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.establishTime},#{item.registeredCapital},#{item.address},sysdate(),#{item.status},
-      #{item.trackId},#{item.issue},#{item.appoint},#{item.activation},6,1,#{item.proposer}
+      #{item.trackId},#{item.issue},#{item.appoint},#{item.activation},6,1,#{item.proposer},#{item.overrun}
       )
     </foreach>
   </insert>

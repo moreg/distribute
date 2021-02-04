@@ -22,7 +22,10 @@ import com.jdsw.distribute.vo.CashierVo;
 import com.jdsw.distribute.vo.RecordingVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +37,10 @@ import java.util.*;
 
 @Service
 public class TelemarkeServiceImpl implements TelemarkeService {
+    @Autowired
+    DataSourceTransactionManager dataSourceTransactionManager;
+    @Autowired
+    TransactionDefinition transactionDefinition;
     @Autowired
     private TelemarkeDao telemarkDao;
     @Autowired
@@ -75,6 +82,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         distribute.setAppoint(0);
         distribute.setSign(1);
         distribute.setInvalid(0);
+        distribute.setOverrun(0);
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("L");//获得跟踪单号
             distribute.setTrackId(trackId);
@@ -154,7 +162,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                     ls.add(map);
                 }
             }
-            if (str.equals(Department.ARMCUSTOMER.value)){
+            if (str.equals(Department.ARMCUSTOMER.value)){//线索管理员
                 for (int i = 0;i<result.size();i++){
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
@@ -165,6 +173,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                     map.put("status",0);
                     map.put("activation",0);
                     map.put("proposer",name);
+                    map.put("overrun",0);
                     ls.add(map);
                 }
             }
@@ -186,7 +195,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public int appoint(List<Distribute> network, String name) {
         Distribute distribute;
         DistributeFollow networkFollow;
-        String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
         String str = "给"+network.get(0).getFirstFollowName()+"转交了一条线索";
         List<DistributeFollow> ls = new ArrayList<>();
         List<Distribute> ld = new ArrayList<>();
@@ -198,7 +206,11 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             distribute.setAppoint(0);
             distribute.setStatus(0);
             distribute.setBranch(network.get(i).getBranch());
-            distribute.setLeaderName(leader);
+            String role = userDao.findRoleByUserName4(network.get(0).getFirstFollowName());
+            if (!"主管".equals(role)){
+                String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
+                distribute.setLeaderName(leader);
+            }
             distribute.setLeaderSign(0);
             if (StringUtil.isNotEmpty(network.get(i).getFirstFollowName())){
                 distribute.setFirstFollowName(network.get(i).getFirstFollowName());
@@ -220,29 +232,40 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
     @Override
     @Transactional
-    public int orderTaking(Distribute network,String name) {
-        String str = name+"领取了线索";
-        DistributeFollow networkFollow = new DistributeFollow();
-        networkFollow.setFollowName(name);
-        networkFollow.setNetworkId(network.getId());
-        networkFollow.setFollowResult(str);
-        telemarkeFollowDao.insertNetworkFollow(networkFollow);
-        Distribute distribute = new Distribute();
-        distribute = telemarkDao.selectNetworkById(network.getId());
-        if (distribute.getSign() == 1){
-            network.setOverdueTime(DateUtil.getNextDay());
-            network.setActivation(0);
-            network.setLeaderSign(0);
-        }
-        String leader = userDao.queryDepartment3(name);
-        network.setLeaderName(leader);
-        network.setStatus(10);
-        telemarkDao.updateworkOverdueTime(network);//修改激活时间
-        int i = telemarkDao.updateNetworkFirstFollowName(network);
-        if (i > 0){
+    public int orderTaking(Distribute network,String name,String role) {
+        TransactionStatus transactionStatus = null;
+        int i= 0;
+        try {
+            String str = name+"领取了线索";
+            DistributeFollow networkFollow = new DistributeFollow();
+            networkFollow.setFollowName(name);
+            networkFollow.setNetworkId(network.getId());
+            networkFollow.setFollowResult(str);
+            telemarkeFollowDao.insertNetworkFollow(networkFollow);
+            Distribute distribute = new Distribute();
+            distribute = telemarkDao.selectNetworkById(network.getId());
+            if (distribute.getSign() == 1){
+                network.setOverdueTime(DateUtil.getNextDay());
+                network.setActivation(0);
+                network.setLeaderSign(0);
+            }
+            if (!"主管".equals(role)){
+                String leader = userDao.queryDepartment3(name);
+                network.setLeaderName(leader);
+            }
+            network.setStatus(10);
+            telemarkDao.updateworkOverdueTime(network);//修改激活时间
+             i = telemarkDao.updateNetworkFirstFollowName(network);
+            if (i > 0){
                 return 1;
+            }
+        }catch (Exception e){
+
+        }finally {
+            dataSourceTransactionManager.commit(transactionStatus);
         }
-        return 0;
+
+        return i;
     }
 
     @Override

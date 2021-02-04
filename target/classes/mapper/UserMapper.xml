@@ -68,7 +68,9 @@
   <select id="findRoleByUserName3" parameterType="string" resultType="com.jdsw.distribute.vo.UsersVo">
     select r.rolename,r.leader,r.group,r.id from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
   </select>
-
+  <select id="findRoleByUserName4" parameterType="string" resultType="String">
+    select r.rolename from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and u.`name` = #{name}
+  </select>
 
   <select id="countUser" resultType="java.lang.Integer">
   select count(*) from user

@@ -84,7 +84,7 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/withPool")
-    public Message withPool(int pageNum, int limit, String content, String strtime, String endtime, Integer issue, HttpServletRequest request){
+    public Message withPool(int pageNum, int limit, String content, String strtime, String endtime, Integer issue,String pool,HttpServletRequest request){
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
@@ -98,6 +98,7 @@ public class NetworkController {
         mapl.put("username",username);
         mapl.put("name",name);
         mapl.put("issue",issue);
+        mapl.put("pool",pool);
         return Message.success("查询成功",distributeService.withPool(mapl));
     }
     /**
@@ -179,9 +180,10 @@ public class NetworkController {
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String lastFollowName = (String) map.get("name");
+        String role = (String) map.get("role");
         distribute.setLastFollowName(lastFollowName);
         distribute.setFirstFollowName(lastFollowName);
-        int i = distributeService.orderTaking(distribute,username,lastFollowName);
+        int i = distributeService.orderTaking(distribute,username,lastFollowName,role);
         if (i == 1){
             return Message.success("抢单成功");
         }else if (i == 2){
@@ -202,6 +204,7 @@ public class NetworkController {
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
+        String role = (String) map.get("role");
         int i = distributeService.appoint(network,name);
         if (i > 0){
             return Message.success();
@@ -223,9 +226,11 @@ public class NetworkController {
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
         mapl.put("content",content);
-        map.put("strtime",strtime);
-        map.put("endtime",endtime);
-        return Message.success("操作成功",distributeService.queryNetworkByLastName(pageNum,limit,content,strtime,endtime,lastFollowName,username),0);
+        mapl.put("strtime",strtime);
+        mapl.put("endtime",endtime);
+        mapl.put("lastFollowName",lastFollowName);
+        mapl.put("username",username);
+        return Message.success("操作成功",distributeService.queryNetworkByLastName(mapl),0);
     }
 
     /**

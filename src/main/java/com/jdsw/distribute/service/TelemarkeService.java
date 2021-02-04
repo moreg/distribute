@@ -63,7 +63,7 @@ public interface TelemarkeService {
      * @param distribute
      * @return
      */
-    int orderTaking(Distribute distribute,String name);
+    int orderTaking(Distribute distribute,String name,String role);
 
     /**
      * 我的客户

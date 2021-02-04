@@ -27,10 +27,12 @@ public class ArmyPool {
     private String lastFollowName;
     private BigDecimal total;
     private String grade;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private String receivingTime;
     private String lastFollowResult;
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date activationTime;
     private String activationName;
+    private  Integer overrun;
 
 }

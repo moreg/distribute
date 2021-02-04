@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class LoginController {
@@ -44,11 +45,17 @@ public class LoginController {
         try {
             User user2 = userService.findByUserName(username);
             subject.login(token);
-            String toToken = JwtUtil.sign(username,user2.getId().toString(),user2.getName(),pwd);
+            Set<String> roles = userService.findRoleByUserName2(username);
+            String toToken = null;
+
+            for (String role :roles){
+                System.out.println(role);
+                 toToken = JwtUtil.sign(username,user2.getId().toString(),user2.getName(),pwd,role);
+            }
             UsersVo usersVo = userService.queryBranch(username);
             Map map = new HashMap();
             map.put("token",toToken);
-            map.put("role",userService.findRoleByUserName2(username));
+            map.put("role",roles);
             map.put("userId",user2.getId());
             map.put("name",user2.getName());
             map.put("group",usersVo.getGroup());
