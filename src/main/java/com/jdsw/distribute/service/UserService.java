@@ -7,6 +7,7 @@ import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.vo.UsersVo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface UserService {
@@ -19,11 +20,11 @@ public interface UserService {
     Set<String> findRoleByUserName2(String username);
     /**
      * 查询部门下的人员
-     * @param department
+     * @param
      * @param
      * @return
      */
-    List<User> queryDepartment(String department,String branch,String group);
+    List<User> queryDepartment(Map map);
 
     /**
      * 查询组下的人员

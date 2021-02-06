@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jdsw.distribute.dao.TelemarkeDao">
   <resultMap id="DistributeMap" type="com.jdsw.distribute.model.Distribute">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id"  property="id" />
     <result column="name"  property="name" />
     <result column="corporate_name"  property="corporateName" />
     <result column="corporate_phone"  property="corporatePhone" />
@@ -26,6 +26,7 @@
     <result column="activation_name"  property="activationName" />
     <result column="corporate_phone2"  property="corporatePhone2" />
     <result column="corporate_phone3"  property="corporatePhone3" />
+    <result column="leader_sign"  property="leaderSign" />
 
 
 
@@ -99,8 +100,9 @@
 
   <select id="selectNetworkById2" resultMap="DistributeMap">
     select *
-    from customer_telemarke where id =#{id}
+    from customer_network where id =#{id} FOR UPDATE
   </select>
+
   <select id="selectNetworkById3" resultMap="DistributeMap">
     select *
     from customer_telemarke where track_id =#{trackId}
@@ -111,7 +113,7 @@
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,
     source,address,proposer,status,activation,last_follow_result from customer_telemarke
-    where  1 = 1 and issue = #{issue}
+    where  1 = 1 and issue = #{issue} and proposer = #{proposer}
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -177,7 +179,7 @@
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
     source,last_follow_time,activation,address,receiving_time from customer_telemarke
-    where (last_follow_name = #{lastFollowName} and status = 10 or  (leader_name = #{lastFollowName} and status = 5))
+    where last_follow_name = #{lastFollowName} and status = #{status} and activation = 1
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -191,7 +193,7 @@
     ORDER BY id DESC
   </select>
   <!--陆军客户 业务员-->
-  <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="Map">
+ <!-- <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
     source,last_follow_time,activation,address,receiving_time,proposer,sign from customer_telemarke
     where last_follow_name = #{lastFollowName}  and status = #{status} and activation = 1
@@ -206,7 +208,7 @@
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
     ORDER BY id DESC
-  </select>
+  </select>-->
   
   <select id="querySign" resultType="Integer">
     select leader_sign from customer_telemarke where track_id = #{id}
@@ -224,7 +226,7 @@
   </select>
 
   <select id="queryOverTime" resultMap="DistributeMap">
-    select id,overdue_time,activation,leader_sign,last_follow_name from customer_telemarke where status in(10,6)  and issue = 1
+    select id,overdue_time,activation,leader_sign,last_follow_name from customer_telemarke where status = 10
   </select>
 
   <insert id="insertTelemarkting" parameterType="java.util.List">
@@ -273,6 +275,9 @@
     <if test="overrun !=null'">
       ,overrun
     </if>
+    <if test="leaderSign !=null'">
+      ,leader_sign
+    </if>
     )
     values (
     #{name},#{corporateName},#{corporatePhone},#{source},#{address},sysdate(),#{trackId},#{proposer}
@@ -309,16 +314,19 @@
     <if test="overrun !=null'">
       ,#{overrun}
     </if>
+    <if test="leaderSign !=null'">
+      ,#{leaderSign}
+    </if>
     )
   </insert>
 
   <insert id="excelTelemarke" parameterType="java.util.List">
     insert into customer_telemarke(name,corporate_name,corporate_phone,establish_time,registered_capital,address
-    ,create_time,status,track_id,issue,appoint,activation,source,sign,proposer,overrun)
+    ,create_time,status,track_id,issue,appoint,activation,source,sign,proposer,overrun,leader_sign)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.name},#{item.corporateName},#{item.corporatePhone},#{item.establishTime},#{item.registeredCapital},#{item.address},sysdate(),#{item.status},
-      #{item.trackId},#{item.issue},#{item.appoint},#{item.activation},6,1,#{item.proposer},#{item.overrun}
+      #{item.trackId},#{item.issue},#{item.appoint},#{item.activation},6,1,#{item.proposer},#{item.overrun},#{item.leaderSign}
       )
     </foreach>
   </insert>
@@ -329,7 +337,7 @@
   </insert>
 
   <update id="overTime" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set status = #{status},last_follow_name = #{lastFollowName} where id = #{id}
+    update customer_telemarke set status = #{status},last_follow_name = #{lastFollowName},overdue_time = #{overdueTime},overrun = #{overrun} where id = #{id}
   </update>
 
   <update id="appoint" parameterType="java.util.List">
@@ -344,7 +352,8 @@
         status = #{distribute.status},
         leader_sign = #{distribute.leaderSign},
         leader_name = #{distribute.leaderName},
-        overdue_time = #{distribute.overdueTime}
+        overdue_time = #{distribute.overdueTime},
+        receiving_time = sysdate()
       </set>
       <where>
         id = #{distribute.id}
@@ -494,7 +503,9 @@
       last_follow_name = #{lastFollowName},
       last_follow_time = #{lastFollowTime},
       last_follow_result = #{lastFollowResult},
-      sign = #{sign}
+      sign = #{sign},
+      receiving_time = #{receivingTime},
+      overdue_time = #{overdueTime}
     where track_Id = #{trackId}
   </update>
 

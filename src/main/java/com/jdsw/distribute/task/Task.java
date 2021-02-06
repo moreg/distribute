@@ -1,9 +1,8 @@
 package com.jdsw.distribute.task;
 
-import com.jdsw.distribute.dao.NetworkDao;
-import com.jdsw.distribute.dao.TelemarkeDao;
-import com.jdsw.distribute.dao.UserDao;
+import com.jdsw.distribute.dao.*;
 import com.jdsw.distribute.model.Distribute;
+import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,10 @@ public class Task {
     private UserDao userDao;
     @Autowired
     private TelemarkeDao telemarkeDao;
+    @Autowired
+    private NetworkFollowDao networkFollowDao;
+    @Autowired
+    private TelemarkeFollowDao telemarkeFollowDao;
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -58,12 +61,18 @@ public class Task {
                         System.out.println(distribute.get(i).getId());
                         System.out.println("超时二十分钟提醒");
                     }else if (start.getTime() - now.getTime() <= -1500000){
-                        System.out.println(distribute.get(i).getId());
+                        String str = distribute.get(i).getLastFollowName()+"超时退回";
                         distribute1.setId(distribute.get(i).getId());
                         distribute1.setStatus(5);
                         distribute1.setOverdueTime(null);
                         distribute1.setOverrun(1);
+                        distribute1.setLastFollowName(null);
                         networkDao.overTime(distribute1);
+                        DistributeFollow networkFollow= new DistributeFollow();
+                        networkFollow.setFollowName(distribute.get(i).getLastFollowName());
+                        networkFollow.setNetworkId(distribute.get(i).getId());
+                        networkFollow.setFollowResult(str);
+                        networkFollowDao.insertNetworkFollow(networkFollow);
                         System.out.println("超时返回主管");
                     }
                 }
@@ -89,22 +98,40 @@ public class Task {
                         if (distribute.get(i).getActivation() == null){
                             return;
                         }
+                        distribute1.setId(distribute.get(i).getId());
                         if (distribute.get(i).getActivation() == 1){//已激活
                             distribute1.setLastFollowName(null);
-                            distribute1.setStatus(2);
+                            distribute1.setStatus(0);
+                            distribute1.setOverrun(1);
+                            distribute1.setOverdueTime(null);
                             telemarkeDao.overTime(distribute1);
                         }else if (distribute.get(i).getActivation() == 0){//未激活
                             if (distribute.get(i).getLeaderSign() == 1){
                                 distribute1.setLastFollowName(null);
-                                distribute1.setStatus(2);
+                                distribute1.setStatus(0);
+                                distribute1.setOverrun(1);
+                                distribute1.setOverdueTime(null);
                                 telemarkeDao.overTime(distribute1);
-                            }else if (distribute.get(i).getLeaderSign() == 0){
-                                distribute1.setStatus(9);
+                            }else if (distribute.get(i).getLeaderSign() == 0){//退回给主管
+                                distribute1.setStatus(5);
+                                distribute1.setOverrun(1);
+                                distribute1.setOverdueTime(null);
                                 telemarkeDao.overTime(distribute1);
                             }
                         }
+                        System.out.println("distribute:"+distribute);
+                        System.out.println("distribute1:"+distribute1);
+                        String str = distribute.get(i).getLastFollowName()+"超时退回";
+                        DistributeFollow networkFollow= new DistributeFollow();
+                        networkFollow.setFollowName(distribute.get(i).getLastFollowName());
+                        networkFollow.setNetworkId(distribute.get(i).getId());
+                        networkFollow.setFollowResult(str);
+                        telemarkeFollowDao.insertNetworkFollow(networkFollow);
                     }
+
                 }
+
+
             }
         }
     }

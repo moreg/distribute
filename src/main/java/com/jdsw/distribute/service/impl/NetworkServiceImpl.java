@@ -70,13 +70,14 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.setDepartment(network.get(i).getDepartment());
             distribute.setAppoint(0);
             distribute.setBranch(network.get(i).getBranch());
-            String role = userDao.findRoleByUserName4(network.get(0).getFirstFollowName());
-            if (!"主管".equals(role)){
-                String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
-                distribute.setLeaderName(leader);
-            }
             distribute.setStatus(0);
+            //指定人
             if (StringUtil.isNotEmpty(network.get(i).getFirstFollowName())){
+                String role = userDao.findRoleByUserName4(network.get(0).getFirstFollowName());
+                if (!Department.CHARGE.value.equals(role)){
+                    String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
+                    distribute.setLeaderName(leader);
+                }
                 distribute.setAppoint(0);
                 distribute.setLeaderSign(0);
                 distribute.setStatus(10);
@@ -109,7 +110,7 @@ public class NetworkServiceImpl implements NetworkService {
             networkFollow.setNetworkId(network.getId());
             networkFollow.setFollowResult(str);
             networkFollowDao.insertNetworkFollow(networkFollow);
-            if (!"主管".equals(role)){
+            if (!Department.CHARGE.value.equals(role)){
                 String leader = userDao.queryDepartment2(username);
                 network.setLeaderName(leader);
             }
@@ -131,21 +132,11 @@ public class NetworkServiceImpl implements NetworkService {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
         map.put("status",10);
-        Set set = userDao.findRoleByUserName2((String) map.get("username"));
-        for (Object str : set) {
-            if (str.equals(Department.CHARGE.value)) {//主管
-                PageHelper.startPage(pageNum, limit);
-                List<Distribute> Network = networkDao.queryNetworkByLastName(map);
-                PageInfo result = new PageInfo(Network);
-                return result;
-            }else if (str.equals(Department.SALESMAN.value)){//业务员
-                PageHelper.startPage(pageNum, limit);
-                List<Distribute> Network = networkDao.queryNetworkByLastName2(map);
-                PageInfo result = new PageInfo(Network);
-                return result;
-            }
-        }
-        return null;
+        PageHelper.startPage(pageNum, limit);
+        List<Distribute> Network = networkDao.queryNetworkByLastName(map);
+        PageInfo result = new PageInfo(Network);
+        return result;
+
     }
 
     @Override
@@ -165,6 +156,7 @@ public class NetworkServiceImpl implements NetworkService {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
         map.put("issue",distribute.getIssue());
+        map.put("proposer",map.get("name"));
         for (Object str : set) {
             if (str.equals(Department.AirCUSTOMER.value)){//线索管理员
                 PageHelper.startPage(pageNum,limit);
@@ -633,6 +625,8 @@ public class NetworkServiceImpl implements NetworkService {
             telemarkeFollowDao.insertNetworkFollow(networkFollow);
             distribute.setLastFollowTime(null);
             distribute.setLastFollowResult(null);
+            distribute.setReceivingTime(null);
+            distribute.setOverdueTime(null);
             networkFollow.setImgUrl(distribute.getImgUrl());
             networkFollow.setFollowResult(distribute.getLastFollowResult());
             return telemarkeDao.updateBytrackId2(distribute);
@@ -693,6 +687,7 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setStatus(1);
         distribute.setSign(0);
         distribute.setInvalid(1);
+        distribute.setOverdueTime(null);
         networkDao.updateBytrackId(distribute);
         return networkDao.updateBytrackId2(distribute);
     }

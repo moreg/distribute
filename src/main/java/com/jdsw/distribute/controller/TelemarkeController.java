@@ -46,6 +46,7 @@ public class TelemarkeController {
         map1.put("strtime",strtime);
         map1.put("endtime",endtime);
         map1.put("issue",issue);
+        map1.put("name",name);
         return Message.success("操作成功",telemarkService.armyListPoolList(map1),0);
     }
     /**

@@ -1,6 +1,7 @@
 package com.jdsw.distribute.service.impl;
 
 import com.github.pagehelper.util.StringUtil;
+import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Enterprise;
 import com.jdsw.distribute.service.UserService;
 import com.jdsw.distribute.util.DateUtil;
@@ -75,23 +76,49 @@ public class UserServiceImpl implements UserService {
         return userDao.findRoleByUserName2(username);
     }
     @Override
-    public List<User> queryDepartment(String department,String branch,String group) {
+    public List<User> queryDepartment(Map map) {
         List<String> list = new ArrayList();
         List<String> list2 = new ArrayList();
-        System.out.println(group);
-        if (StringUtils.isNotEmpty(department)){
-            String temp[]=department.split(",");
-            for (int i=0;i<temp.length;i++){
-                String string1 = temp[i];
-                list.add(temp[i]);
+        String department = (String) map.get("department");
+        String group = (String) map.get("group");
+        String branch = (String) map.get("branch");
+        UsersVo  user = userDao.queryBranch((String) map.get("username"));
+        if (Department.CHARGE.value.equals(user.getRolename())){
+            if (StringUtils.isNotEmpty(department)){
+                String temp[]=department.split(",");
+                for (int i=0;i<temp.length;i++){
+                    String string1 = temp[i];
+                    if (!string1.equals(user.getDepartment())) {
+                        return null;
+                    }
+                    list.add(temp[i]);
+                }
             }
-        }
-        if (StringUtils.isNotEmpty(group)){
-            String temp[]=group.split(",");
-            for (int i=0;i<temp.length;i++){
-                String string1 = temp[i];
-                list2.add(temp[i]);
+            if (StringUtils.isNotEmpty(group)){
+                String temp[]=group.split(",");
+                for (int i=0;i<temp.length;i++){
+                    String string1 = temp[i];
+                    if (!string1.equals(user.getGroup())){
+                        return  null;
+                    }
+                    list2.add(temp[i]);
+                }
             }
+        }else if (Department.AirCUSTOMER.value.equals(user.getRolename()) || Department.ARMCUSTOMER.value.equals(user.getRolename() )){
+            if (StringUtils.isNotEmpty(department)){
+                String temp[]=department.split(",");
+                for (int i=0;i<temp.length;i++){
+                    list.add(temp[i]);
+                }
+            }
+            if (StringUtils.isNotEmpty(group)){
+                String temp[]=group.split(",");
+                for (int i=0;i<temp.length;i++){
+                    list2.add(temp[i]);
+                }
+            }
+        }else {
+            return null;
         }
 
         Map map2 = new HashMap();
@@ -101,12 +128,12 @@ public class UserServiceImpl implements UserService {
         List<User> ls = userDao.queryDepartment(map2);
         List li = new ArrayList<>();
         for(int i=0;i<ls.size();i++){
-            Map<String,Object> map = new HashMap<String, Object>();
+            Map<String,Object> map1 = new HashMap<String, Object>();
             if (StringUtils.isNotEmpty(ls.get(i).getName())){
-                map.put("name",ls.get(i).getName());
-                map.put("department",ls.get(i).getDepartment());
-                map.put("group",ls.get(i).getGroup());
-                li.add( map);
+                map1.put("name",ls.get(i).getName());
+                map1.put("department",ls.get(i).getDepartment());
+                map1.put("group",ls.get(i).getGroup());
+                li.add( map1);
             }
         }
         return li;

@@ -1,6 +1,7 @@
 package com.jdsw.distribute.controller;
 
 import com.github.pagehelper.util.StringUtil;
+import com.jdsw.distribute.util.JwtUtil;
 import com.jdsw.distribute.util.Message;
 import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.model.User;
@@ -58,11 +59,21 @@ public class UserController {
      * @return
      */
     @RequestMapping("/queryDepartment")
-    public Message queryDepartment(String department,String branch,String group){
+    public Message queryDepartment(String department,String branch,String group,HttpServletRequest request){
 /*        if (StringUtils.isEmpty(department) && StringUtils.isEmpty(branch)){
             return Message.fail("参数不能为空");
         }*/
-        return Message.success("操作成功",userService.queryDepartment(department,branch,group));
+        String token = request.getHeader("token"); // 获取头中token
+        Map<String, Object> map = JwtUtil.parseJWT(token);
+        String username = (String) map.get("userName");
+        String name = (String) map.get("name");
+        Map map1 = new HashMap();
+        map1.put("name",name);
+        map1.put("username",username);
+        map1.put("department",department);
+        map1.put("branch",branch);
+        map1.put("group",group);
+        return Message.success("操作成功",userService.queryDepartment(map1));
     }
     /**
      * 查询部门下的人员

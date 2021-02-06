@@ -72,6 +72,8 @@ public interface TelemarkeDao {
      */
     Distribute selectNetworkById(Integer id);
 
+    Distribute selectNetworkById2(Integer id);
+
     /**
      * 查询我的客户
      * @param

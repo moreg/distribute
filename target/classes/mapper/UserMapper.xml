@@ -120,7 +120,7 @@
   </select>
 
   <select id="queryBranch" resultType="com.jdsw.distribute.vo.UsersVo">
-    select branch,r.`group`,r.department from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and u.username = #{username}
+    select branch,r.`group`,r.department,r.rolename from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and u.username = #{username}
   </select>
 
   <!--查询下属名字-->

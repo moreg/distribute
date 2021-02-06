@@ -54,6 +54,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public PageInfo<Distribute> armyListPoolList(Map map) {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
+        map.put("proposer",map.get("name"));
         PageHelper.startPage(pageNum, limit);
         List<Distribute> Network = telemarkDao.armyListPoolList(map);
         PageInfo result = new PageInfo(Network);
@@ -83,6 +84,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         distribute.setSign(1);
         distribute.setInvalid(0);
         distribute.setOverrun(0);
+        distribute.setLeaderSign(0);
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("L");//获得跟踪单号
             distribute.setTrackId(trackId);
@@ -174,6 +176,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                     map.put("activation",0);
                     map.put("proposer",name);
                     map.put("overrun",0);
+                    map.put("leaderSign",0);
                     ls.add(map);
                 }
             }
@@ -206,13 +209,13 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             distribute.setAppoint(0);
             distribute.setStatus(0);
             distribute.setBranch(network.get(i).getBranch());
-            String role = userDao.findRoleByUserName4(network.get(0).getFirstFollowName());
-            if (!"主管".equals(role)){
-                String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
-                distribute.setLeaderName(leader);
-            }
             distribute.setLeaderSign(0);
             if (StringUtil.isNotEmpty(network.get(i).getFirstFollowName())){
+                String role = userDao.findRoleByUserName4(network.get(0).getFirstFollowName());
+                if (!Department.CHARGE.value.equals(role)){
+                    String leader = userDao.queryDepartment3(network.get(0).getFirstFollowName());
+                    distribute.setLeaderName(leader);
+                }
                 distribute.setFirstFollowName(network.get(i).getFirstFollowName());
                 distribute.setLastFollowName(network.get(i).getFirstFollowName());
                 distribute.setOverdueTime(DateUtil.getOverTime(86400000 ));
@@ -256,9 +259,8 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             network.setStatus(10);
             telemarkDao.updateworkOverdueTime(network);//修改激活时间
              i = telemarkDao.updateNetworkFirstFollowName(network);
-            if (i > 0){
-                return 1;
-            }
+            transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+            telemarkDao.selectNetworkById2(network.getId());
         }catch (Exception e){
 
         }finally {
@@ -272,22 +274,11 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     public PageInfo<Distribute> queryTelemarkeByLastName(Map map) {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
-        Set set = userDao.findRoleByUserName2((String) map.get("username"));
-        for (Object str : set) {
-            if (str.equals(Department.CHARGE.value)) {//主管
-                PageHelper.startPage(pageNum, limit);
-                List<Distribute> Network = telemarkDao.queryTelemarkeByLastName(map);
-                PageInfo result = new PageInfo(Network);
-                return result;
-            }else if (str.equals(Department.SALESMAN.value)){//普通员工
-                map.put("status",10);
-                PageHelper.startPage(pageNum, limit);
-                List<Distribute> Network = telemarkDao.queryTelemarkeByLastName2(map);
-                PageInfo result = new PageInfo(Network);
-                return result;
-            }
-        }
-        return null;
+        map.put("status",10);
+        PageHelper.startPage(pageNum, limit);
+        List<Distribute> Network = telemarkDao.queryTelemarkeByLastName(map);
+        PageInfo result = new PageInfo(Network);
+        return result;
     }
 
     @Override

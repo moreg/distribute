@@ -113,7 +113,7 @@
   <!--空军分发池-->
   <select id="airForcePoolList" resultMap="aMap" parameterType="Map">
     select <include refid="PoolList"></include> from customer_network
-    where 1 = 1 and issue = #{issue}
+    where 1 = 1 and issue = #{issue} and proposer = #{proposer}
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -207,10 +207,10 @@
     ORDER BY id DESC
   </select>
 
-  <!--空中客户 主管-->
+  <!--空中客户-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
-    where  (last_follow_name = #{lastFollowName} and status = 10 and activation = 1 or  (leader_name = #{lastFollowName} and status = 5)
+    where  last_follow_name = #{lastFollowName} and #{status} and activation = 1
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -224,7 +224,7 @@
     ORDER BY id DESC
   </select>
   <!--空中客户 业务员-->
-  <select id="queryNetworkByLastName2" resultMap="aMap" parameterType="String">
+ <!-- <select id="queryNetworkByLastName2" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time,sign from customer_network
     where  last_follow_name = #{lastFollowName} and status = #{status} and activation = 1
     <if test="strtime != null and strtime!=''">
@@ -238,7 +238,7 @@
       and (corporate_name like #{content} or corporate_phone like #{content})
     </if>
     ORDER BY id DESC
-  </select>
+  </select> -->
   <!--成交订单-->
   <select id="dealListNetwork" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,leader_sign,last_follow_result,total,grade,activation_time,create_time from customer_order
@@ -296,7 +296,7 @@
   </select>
 
   <select id="queryOverTime" resultMap="DistributeMap">
-    select id,overdue_time from customer_network where status = 10  and sign = 1
+    select id,overdue_time,last_follow_name from customer_network where status = 10  and sign = 1
   </select>
 
   <select id="statusList" resultMap="aMap" parameterType="com.jdsw.distribute.model.Distribute">
@@ -316,7 +316,7 @@
 
   <!--定时器超时调用-->
   <update id="overTime" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set status = #{status},overdue_time = #{overdueTime},overrun = #{overrun} where id = #{id}
+    update customer_network set status = #{status},overdue_time = #{overdueTime},overrun = #{overrun},last_follow_name = #{lastFollowName} where id = #{id}
   </update>
 
   <update id="appoint" parameterType="java.util.List">
@@ -330,7 +330,8 @@
               issue = 1,
                 status = #{distribute.status},
               overdue_time = #{distribute.overdueTime},
-              leader_name = #{distribute.leaderName}
+              leader_name = #{distribute.leaderName},
+              receiving_time = sysdate()
             </set>
                 <where>
                   id = #{distribute.id}

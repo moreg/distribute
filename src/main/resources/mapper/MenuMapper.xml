@@ -8,6 +8,7 @@
         <result column="url"  property="url" />
         <result column="icon"  property="icon" />
         <result column="order"  property="order" />
+        <result column="parent_name"  property="parentName" />
 
 
 
@@ -27,6 +28,6 @@
     </select>
 
     <select id="findBranch" resultMap="BaseResultMap">
-         select bm.id,bm.label,bm.parent_id,bm.order from branch_menu bm
+         select bm.id,bm.label,bm.parent_id,bm.parent_name,bm.order from branch_menu bm
     </select>
 </mapper>
