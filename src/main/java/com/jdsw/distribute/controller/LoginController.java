@@ -20,7 +20,6 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 @Controller
 public class LoginController {
     private static Logger logger = Logger.getLogger(LoginController.class);

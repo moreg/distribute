@@ -18,7 +18,7 @@ public class CashierVo {
     private String corporatePhone;
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date createTime;
-    private Integer source;
+    private String source;
     private String lastFollowName;
     private String trackId;
     private Integer orderState;

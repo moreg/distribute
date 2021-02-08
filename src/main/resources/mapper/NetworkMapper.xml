@@ -143,22 +143,6 @@
     ORDER BY id DESC
   </select>
   <!--业务员跟单池-->
- <!-- <select id="withPool" resultMap="aMap" parameterType="Map">
-    SELECT * from (SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,leader_sign from customer_network WHERE
-    `status` in (7,10) UNION all SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,leader_sign FROM customer_telemarke WHERE `status` in (7,10) )
-    as t  WHERE last_follow_name = #{lastFollowName} and activation = 0 and issue = #{issue}
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY create_time DESC
-  </select> -->
   <select id="withPool" resultMap="aMap" parameterType="Map">
     SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,leader_sign from customer_network WHERE
     `status` in (6,7,10) and last_follow_name = #{lastFollowName} and activation = 0 and issue = #{issue}
@@ -190,23 +174,6 @@
     </if>
     ORDER BY create_time DESC
   </select>
-  <!--客服待处理-->
-  <select id="pendingPoolList" resultMap="aMap" parameterType="Map">
-    select <include refid="PoolList"></include> from customer_network
-    where  `status` = 7
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY id DESC
-  </select>
-
   <!--空中客户-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
@@ -223,22 +190,6 @@
     </if>
     ORDER BY id DESC
   </select>
-  <!--空中客户 业务员-->
- <!-- <select id="queryNetworkByLastName2" resultMap="aMap" parameterType="String">
-    select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time,sign from customer_network
-    where  last_follow_name = #{lastFollowName} and status = #{status} and activation = 1
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY id DESC
-  </select> -->
   <!--成交订单-->
   <select id="dealListNetwork" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,leader_sign,last_follow_result,total,grade,activation_time,create_time from customer_order
@@ -316,7 +267,7 @@
 
   <!--定时器超时调用-->
   <update id="overTime" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set status = #{status},overdue_time = #{overdueTime},overrun = #{overrun},last_follow_name = #{lastFollowName} where id = #{id}
+    update customer_network set status = #{status},overdue_time = #{overdueTime},overrun = #{overrun},last_follow_name = #{lastFollowName},issue = #{issue} where id = #{id}
   </update>
 
   <update id="appoint" parameterType="java.util.List">

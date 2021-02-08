@@ -6,13 +6,9 @@
     <result column="name"  property="name" />
     <result column="corporate_name"  property="corporateName" />
     <result column="corporate_phone"  property="corporatePhone" />
-    <result column="contacts"  property="contacts" />
-    <result column="contacts_phone"  property="contactsPhone" />
     <result column="source"  property="source" />
-    <result column="follow_number"  property="followNumber" />
     <result column="state"  property="state" />
     <result column="last_follow_up"  property="lastFollowUp" />
-    <result column="last_follow_content"  property="lastFollowContent" />
     <result column="last_follow_time"  property="lastFollowTime" />
     <result column="last_follow_name"  property="lastFollowName" />
     <result column="track_id"  property="trackId" />
@@ -192,23 +188,7 @@
     </if>
     ORDER BY id DESC
   </select>
-  <!--陆军客户 业务员-->
- <!-- <select id="queryTelemarkeByLastName2" resultMap="aMap" parameterType="Map">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
-    source,last_follow_time,activation,address,receiving_time,proposer,sign from customer_telemarke
-    where last_follow_name = #{lastFollowName}  and status = #{status} and activation = 1
-    <if test="strtime != null and strtime!=''">
-      AND create_time <![CDATA[ >= ]]> #{strtime}
-    </if>
-    <if test="endtime != null and endtime!=''">
-      AND create_time <![CDATA[ <= ]]> #{endtime}
-    </if>
-    <if test="content != null and content!= ''">
-      <bind name="content" value="'%' + content + '%'" ></bind>
-      and (corporate_name like #{content} or corporate_phone like #{content})
-    </if>
-    ORDER BY id DESC
-  </select>-->
+
   
   <select id="querySign" resultType="Integer">
     select leader_sign from customer_telemarke where track_id = #{id}

@@ -4,6 +4,7 @@ import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.TelemarkeService;
 import com.jdsw.distribute.util.*;
+import com.jdsw.distribute.vo.InsertVo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,13 +74,13 @@ public class TelemarkeController {
      * @return
      */
     @RequestMapping("/insertTelemarke")
-    public Message insertTelemarke(@RequestBody Distribute distribute,HttpServletRequest request){
+    public Message insertTelemarke(@RequestBody InsertVo insertVo, HttpServletRequest request){
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
-        int i = telemarkService.insertTelemarke(distribute,username,name);
+        int i = telemarkService.insertTelemarke(insertVo,username,name);
         if (i > 0){
             return Message.success();
         }

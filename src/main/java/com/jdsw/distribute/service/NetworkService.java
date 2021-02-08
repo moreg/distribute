@@ -65,13 +65,6 @@ public interface NetworkService {
     PageInfo<Distribute> withPool(Map map);
 
     /**
-     * 待处理
-     * @return
-     */
-    PageInfo<Distribute> pendingPoolList(Map map);
-
-
-    /**
      * 新增
      * @param
      * @return

@@ -1,12 +1,14 @@
-package com.jdsw.distribute.model;
+package com.jdsw.distribute.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 @Data
-public class Distribute {
+public class InsertVo {
     Integer id;
     /**
      * 客户名称
@@ -31,7 +33,7 @@ public class Distribute {
     /**
      * 客户来源
      */
-    String source;
+    List source;
     /**
      * 客户状态
      */
@@ -202,8 +204,8 @@ public class Distribute {
      */
     String activationName;
     /*
-    *
-    *激活时间
+     *
+     *激活时间
      */
     String activationTime;
     /**

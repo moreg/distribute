@@ -13,6 +13,17 @@
 
 
     </resultMap>
+    <resultMap id="MenuVo" type="com.jdsw.distribute.vo.MenuVo">
+        <id column="id"  property="id" />
+        <result column="name"  property="name" />
+        <result column="parent_id"  property="parentId" />
+        <result column="order"  property="order" />
+        <result column="parent_name"  property="parentName" />
+        <result column="value"  property="value" />
+
+
+
+    </resultMap>
     <sql id="Base_Column_List">
     id, `name`, parentId, url, icon, `order`
   </sql>
@@ -29,5 +40,13 @@
 
     <select id="findBranch" resultMap="BaseResultMap">
          select bm.id,bm.label,bm.parent_id,bm.parent_name,bm.order from branch_menu bm
+    </select>
+
+    <select id="kSourceMenu" resultMap="MenuVo">
+        select ks.id,ks.label,ks.parent_id,ks.parent_name,ks.order,ks.label as `value` from k_source ks
+    </select>
+
+    <select id="lSourceMenu" resultMap="MenuVo">
+        select ls.id,ls.label,ls.parent_id,ls.parent_name,ls.order,ls.label as `value` from l_source ls
     </select>
 </mapper>

@@ -26,6 +26,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.beans.IntrospectionException;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -196,4 +197,27 @@ public class MbackstageApplicationTests {
         System.out.println(dao.queryBranch("cz"));
 
     }
+    @Test
+    public void dbBackUp() throws Exception {
+        //String pathSql = backPath+backName;
+        File fileSql = new File("E://sql/");
+        //创建备份sql文件
+        if (!fileSql.exists()){
+            fileSql.createNewFile();
+        }
+        //mysqldump -hlocalhost -uroot -p123456 db > /home/back.sql
+        StringBuffer sb = new StringBuffer();
+        sb.append("mysqldump");
+        sb.append(" -h10.0.0.242");
+        sb.append(" -u"+"root");
+        sb.append(" -p"+"jdsw123456");
+        sb.append(" "+"distribute"+" >");
+        sb.append("E://sql/");
+        System.out.println("cmd命令为："+sb.toString());
+        Runtime runtime = Runtime.getRuntime();
+        System.out.println("开始备份："+"distribute");
+        Process process = runtime.exec("cmd /c"+sb.toString());
+        System.out.println("备份成功!");
+    }
+
 }

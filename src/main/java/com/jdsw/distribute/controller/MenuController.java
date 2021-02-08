@@ -35,6 +35,11 @@ public class MenuController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 主菜单
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/menuList")
     public Message menuLsit(HttpServletRequest request){
         String token = request.getHeader("token"); // 获取头中token
@@ -82,7 +87,7 @@ public class MenuController {
     }
 
     /**
-     *
+     *  下属客户
      * @param branch
      * @param request
      * @return
@@ -97,5 +102,14 @@ public class MenuController {
         map2.put("branch",branch);
 
         return Message.success("查询成功",menuService.getsubordinateMenuList(map2));
+    }
+
+    /**
+     * 来源
+     * @return
+     */
+    @RequestMapping("/kSourceMenu")
+    public Message kSourceMenu(String type){
+        return Message.success("查询成功",menuService.kSourceMenu(type));
     }
 }

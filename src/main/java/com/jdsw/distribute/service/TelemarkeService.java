@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.vo.CashierVo;
+import com.jdsw.distribute.vo.InsertVo;
 import com.jdsw.distribute.vo.RecordingVo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +28,10 @@ public interface TelemarkeService {
     PageInfo<Distribute> grabbingPool(Map map);
     /**
      * 新增
-     * @param distribute
+     * @param
      * @return
      */
-    int insertTelemarke(Distribute distribute,String username,String name);
+    int insertTelemarke(InsertVo insertVo, String username, String name);
     /**
      * 导入电销线索
      * @param file

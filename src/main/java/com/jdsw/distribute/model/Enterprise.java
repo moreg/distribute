@@ -7,7 +7,7 @@ import lombok.Data;
 public class Enterprise {
     private Integer id;
     private String name;
-    private Integer source;
+    private String source;
     private String corporateName;
     private String corporatePhone;
     private String relation;

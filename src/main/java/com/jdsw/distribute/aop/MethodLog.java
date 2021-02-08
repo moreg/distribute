@@ -1,4 +1,4 @@
-package com.jdsw.distribute.logaop;
+package com.jdsw.distribute.aop;
 
 
 import com.jdsw.distribute.service.UserService;
@@ -13,7 +13,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.*;
 import java.util.Arrays;
 
 /**

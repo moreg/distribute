@@ -208,32 +208,13 @@ public class NetworkServiceImpl implements NetworkService {
         }
         return null;
     }
-
-
-
-    @Override
-    public PageInfo<Distribute> pendingPoolList(Map map) {
-        Set set = userDao.findRoleByUserName2((String) map.get("username"));
-        Integer pageNum = (Integer) map.get("pageNum");
-        Integer limit = (Integer) map.get("limit");
-        List<Distribute> Network = null;
-        for (Object str : set) {
-            if (str.equals(Department.AirCUSTOMER.value)){
-                PageHelper.startPage(pageNum, limit);
-                Network = networkDao.pendingPoolList(map);
-            }
-        }
-        PageInfo result = new PageInfo(Network);
-        return result;
-    }
-
-
     @Override
     public int insertNetwoork(Map map) {
         DistributeFollow distributeFollow = new DistributeFollow();
         String str2 = map.get("name")+"新建线索";
         Set set = userDao.findRoleByUserName2((String) map.get("username"));//获取角色
-        Distribute distribute = (Distribute) map.get("distribute");
+        InsertVo insertVo = (InsertVo) map.get("distribute");
+        Distribute distribute = new Distribute();
         distributeFollow.setFollowResult(str2);
         distributeFollow.setFollowName((String) map.get("name"));
         distribute.setActivation(0);
@@ -241,6 +222,11 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setSign(1);
         distribute.setInvalid(0);
         distribute.setOverrun(0);
+        distribute.setSource(insertVo.getSource().toString());
+        distribute.setCorporatePhone(insertVo.getCorporatePhone());
+        distribute.setCorporateName(insertVo.getCorporateName());
+        distribute.setLastFollowResult(insertVo.getLastFollowResult());
+        distribute.setTrackId(insertVo.getTrackId());
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("K");//获得跟踪单号
             distribute.setTrackId(trackId);
@@ -260,17 +246,19 @@ public class NetworkServiceImpl implements NetworkService {
                 distribute.setIssue(0);
                 distribute.setLeaderSign(1);
                 distribute.setStatus(5);
-            }else {//客服
-                if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
+            }else if (str.equals(Department.AirCUSTOMER.value)){//客服
+                if (StringUtils.isNotEmpty(insertVo.getLastFollowName())){
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
                     distribute.setReceivingTime(df.format(new Date()));
+                    distribute.setLastFollowName(insertVo.getLastFollowName());
                     distribute.setStatus(10);
                     distribute.setIssue(1);
                     String LeaderName2 = userDao.queryDepartment3(distribute.getLastFollowName());//获取主管
                     distribute.setLeaderName(LeaderName2);
-                }else if (StringUtils.isNotEmpty(distribute.getBranch())){
+                }else if (StringUtils.isNotEmpty(insertVo.getBranch())){
                     distribute.setIssue(1);
                     distribute.setStatus(0);
+                    distribute.setBranch(insertVo.getBranch());
                 }else {
                     distribute.setIssue(0);
                     distribute.setStatus(0);
@@ -283,7 +271,7 @@ public class NetworkServiceImpl implements NetworkService {
         distributeFollow.setNetworkId(distribute.getId());
         networkFollowDao.insertNetworkFollow(distributeFollow);
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
-        distributeFollow.setImgUrl(distribute.getImgUrl());
+        distributeFollow.setImgUrl(insertVo.getImgUrl());
         return networkFollowDao.insertNetworkFollow(distributeFollow);
     }
 
@@ -433,7 +421,7 @@ public class NetworkServiceImpl implements NetworkService {
         enterprise.setCorporatePhone3(distribute.getCorporatePhone3());
         enterprise.setTrackId(tid);
         enterprise.setName(distribute.getName());
-        enterprise.setSource(distribute.getSource());
+        enterprise.setSource(distribute.getSource().toString());
         enterpriseDao.insertEnterprise(enterprise);
         return networkDao.UpdateRecordingNetwork((Distribute) map.get("distribute"));
     }

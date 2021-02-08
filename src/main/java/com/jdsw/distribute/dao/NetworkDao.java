@@ -115,14 +115,6 @@ public interface NetworkDao {
      * @return
      */
     List<Distribute> withPool2(Map map);
-    /**
-     * 客服待处理
-     * @param
-     * @param
-     * @param
-     * @return
-     */
-    List<Distribute> pendingPoolList(Map map);
 
     /**
      * 成交订单

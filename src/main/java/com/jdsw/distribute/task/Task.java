@@ -1,6 +1,7 @@
 package com.jdsw.distribute.task;
 
 import com.jdsw.distribute.dao.*;
+import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.util.DateUtil;
@@ -62,8 +63,15 @@ public class Task {
                         System.out.println("超时二十分钟提醒");
                     }else if (start.getTime() - now.getTime() <= -1500000){
                         String str = distribute.get(i).getLastFollowName()+"超时退回";
+                        String role = userDao.findRoleByUserName4(distribute.get(i).getLastFollowName());
+                        if (Department.SALESMAN.value.equals(role)){
+                            distribute1.setStatus(5);
+                            distribute1.setIssue(1);
+                        }else if (Department.CHARGE.value.equals(role)){
+                            distribute1.setStatus(7);
+                            distribute1.setIssue(3);
+                        }
                         distribute1.setId(distribute.get(i).getId());
-                        distribute1.setStatus(5);
                         distribute1.setOverdueTime(null);
                         distribute1.setOverrun(1);
                         distribute1.setLastFollowName(null);
@@ -73,12 +81,10 @@ public class Task {
                         networkFollow.setNetworkId(distribute.get(i).getId());
                         networkFollow.setFollowResult(str);
                         networkFollowDao.insertNetworkFollow(networkFollow);
-                        System.out.println("超时返回主管");
                     }
                 }
             }
         }
-
     }
 
 

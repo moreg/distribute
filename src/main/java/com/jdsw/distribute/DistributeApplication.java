@@ -7,6 +7,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -19,7 +20,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @MapperScan("com.jdsw.distribute.dao")
 @EnableCaching
 @EnableScheduling
-public class DistributeApplication {
+public class DistributeApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(DistributeApplication.class, args);
     }
@@ -28,6 +29,11 @@ public class DistributeApplication {
     public TaskExecutor primaryTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         return executor;
+    }
+    @Override//为了打包springboot项目
+    protected SpringApplicationBuilder configure(
+            SpringApplicationBuilder builder) {
+        return builder.sources(this.getClass());
     }
 
 }

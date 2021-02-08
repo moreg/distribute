@@ -52,7 +52,9 @@
             <if test="trackId != null and trackId != ''">
                 track_id,
             </if>
-            deal_time,
+            <if test="dealTime != null and dealTime != ''">
+                deal_time,
+            </if>
             order_state,
             create_time
         </trim>
@@ -84,7 +86,9 @@
             <if test="trackId != null and trackId != ''">
                 #{trackId},
             </if>
-            sysdate(),
+            <if test="dealTime != null and dealTime != ''">
+                #{dealTime},
+            </if>
             1,
             sysdate()
         </trim>

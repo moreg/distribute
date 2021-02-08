@@ -19,7 +19,7 @@ public class EnterpriseTest {
     @Test
     public void insert(){
         Enterprise enterprise = new Enterprise();
-        enterprise.setSource(2);
+        //enterprise.setSource(2);
         enterprise.setTrackId("KZ12345679");
         enterprise.setCorporatePhone("17620116556");
         enterprise.setCorporateName("叶问");

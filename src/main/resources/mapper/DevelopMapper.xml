@@ -12,6 +12,7 @@
         <result column="grade"  property="grade" />
         <result column="total"  property="total" />
         <result column="activation_time"  property="activationTime" />
+        <result column="create_time"  property="createTime" />
     </resultMap>
     <resultMap id="DistributeMap" type="com.jdsw.distribute.model.Distribute">
         <id column="id" jdbcType="INTEGER" property="id" />
@@ -40,6 +41,8 @@
         <result column="corporate_phone2"  property="corporatePhone2" />
         <result column="corporate_phone3"  property="corporatePhone3" />
         <result column="last_follow_result"  property="lastFollowResult" />
+
+
 
     </resultMap>
     <select id="selectDeveolpById" resultMap="DistributeMap">
@@ -131,7 +134,7 @@
     </insert>
     <!--列表-->
     <select id="developList" parameterType="Map" resultMap="aMap">
-        select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,activation_time,activation from customer_develop
+        select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,activation_time,activation,create_time from customer_develop
         where  last_follow_name = #{name} and status = 10
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}

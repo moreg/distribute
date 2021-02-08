@@ -10,7 +10,7 @@ public class DealOrder {
     private String corporateName;
     private String corporatePhone;
     private String createTime;
-    private Integer source;
+    private String source;
     private String lastFollowName;
     private String trackId;
     private Integer orderState;

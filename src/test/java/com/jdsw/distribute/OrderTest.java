@@ -41,7 +41,7 @@ public class OrderTest {
         dealOrder2.setLastFollowName("陈真");
         dealOrder2.setContractNo("165465756154");
         dealOrder2.setConduct("开公司");
-        dealOrder2.setSource(3);
+        //dealOrder2.setSource(3);
         System.out.println(dealOrder.insertOrder(dealOrder2));
     }
 }

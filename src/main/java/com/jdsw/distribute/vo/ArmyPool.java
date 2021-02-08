@@ -18,7 +18,7 @@ public class ArmyPool {
     private Integer issue;
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date createTime;
-    private Integer source;
+    private String source;
     private String address;
     private String proposer;
     private Integer status;

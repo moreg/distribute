@@ -7,6 +7,7 @@ import com.jdsw.distribute.util.ImageUtil;
 import com.jdsw.distribute.util.JwtUtil;
 import com.jdsw.distribute.util.Message;
 import com.jdsw.distribute.util.Rand;
+import com.jdsw.distribute.vo.InsertVo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,12 +29,12 @@ public class DevelopController {
     private DevelopService developService;
     /**
      * 自开发新增
-     * @param distribute
+     * @param
      * @param request
      * @return
      */
     @RequestMapping("insertDevelop")
-    public Message insertDevelop(@RequestBody Distribute distribute, HttpServletRequest request){
+    public Message insertDevelop(@RequestBody InsertVo insertVo, HttpServletRequest request){
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
@@ -41,7 +42,7 @@ public class DevelopController {
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("username",username);
-        map1.put("distribute",distribute);
+        map1.put("insertVo",insertVo);
         int i = developService.insertDevelop(map1);
         if (i > 0){
             return Message.success();

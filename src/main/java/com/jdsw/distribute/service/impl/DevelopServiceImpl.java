@@ -12,6 +12,7 @@ import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.service.DevelopService;
 import com.jdsw.distribute.util.DateUtil;
 import com.jdsw.distribute.util.Rand;
+import com.jdsw.distribute.vo.InsertVo;
 import com.jdsw.distribute.vo.UsersVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,18 @@ public class DevelopServiceImpl implements DevelopService {
     @Override
     public int insertDevelop(Map map) {
         String str2 =map.get("name")+"新建线索";
-        Distribute distribute = (Distribute) map.get("distribute");
+        InsertVo insertVo = (InsertVo) map.get("insertVo");
+        Distribute distribute = new Distribute();
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
         UsersVo usersVo = userDao.queryBranch((String) map.get("username"));
         distribute.setActivation(1);
         distribute.setLastFollowName((String) map.get("name"));
         distribute.setGrade(usersVo.getGroup());
+        distribute.setSource(insertVo.getSource().toString());
+        distribute.setCorporatePhone(insertVo.getCorporatePhone());
+        distribute.setCorporateName(insertVo.getCorporateName());
+        distribute.setLastFollowResult(insertVo.getLastFollowResult());
+        distribute.setTrackId(insertVo.getTrackId());
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("Z");//获得跟踪单号
             distribute.setTrackId(trackId);
@@ -63,8 +70,8 @@ public class DevelopServiceImpl implements DevelopService {
         distributeFollow.setFollowResult(str2);
         distributeFollow.setNetworkId(distribute.getId());
         developFollowDao.insertDevelopFollow(distributeFollow);
-        distributeFollow.setFollowResult(distribute.getLastFollowResult());
-        distributeFollow.setImgUrl(distribute.getImgUrl());
+        distributeFollow.setFollowResult(insertVo.getLastFollowResult());
+        distributeFollow.setImgUrl(insertVo.getImgUrl());
         return developFollowDao.insertDevelopFollow(distributeFollow);
     }
 

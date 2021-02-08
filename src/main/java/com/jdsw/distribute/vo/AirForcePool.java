@@ -16,7 +16,7 @@ public class AirForcePool {
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date createTime;
     private String lastFollowName;
-    private Integer source;
+    private String source;
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date lastFollowTime;
     private Integer status;

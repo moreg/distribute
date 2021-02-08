@@ -44,13 +44,5 @@ public class Permission implements Serializable {
         this.remarks = remarks == null ? null : remarks.trim();
     }
 
-    @Override
-    public String toString() {
-        return "Permission{" +
-                "id=" + id +
-                ", permissionname='" + permissionname + '\'' +
-                ", remarks='" + remarks + '\'' +
-                ", roles=" + roles +
-                '}';
-    }
+
 }

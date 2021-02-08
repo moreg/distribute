@@ -7,6 +7,7 @@ import com.jdsw.distribute.util.*;
 
 import com.jdsw.distribute.vo.AirForcePool;
 
+import com.jdsw.distribute.vo.InsertVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,6 @@ public class NetworkController {
     private NetworkService distributeService;
     @Resource
     private TelemarkeService telemarkeService;
-    @Resource
-    private CustomerService customerService;
     @Resource
     private DevelopService developService;
     /**
@@ -107,7 +106,7 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/insertNetwoork")
-    public Message insertNetwoork(@RequestBody Distribute distribute,HttpServletRequest request){
+    public Message insertNetwoork(@RequestBody InsertVo distribute, HttpServletRequest request){
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);

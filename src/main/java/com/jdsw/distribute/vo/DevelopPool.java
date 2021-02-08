@@ -20,4 +20,6 @@ public class DevelopPool {
     private String activationTime;
     private BigDecimal total;
     private String grade;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
+    private Date createTime;
 }
