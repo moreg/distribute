@@ -1,4 +1,3 @@
-/*
 package com.jdsw.distribute.filter;
 
 import com.jdsw.distribute.util.JwtUtil;
@@ -16,6 +15,10 @@ public class MyInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String headToken = request.getHeader("token"); // 获取头中token
+        String uri = request.getRequestURI();
+        if (uri.substring(0,2).equals("/K")  || uri.substring(0,2).equals("/L") || uri.substring(0,2).equals("/Z")){
+            return true;
+        }
         // 验证是否为空，格式是否满足预定要求
         if (!StringUtils.isEmpty(headToken)) {
             Map<String, Object> map = JwtUtil.parseJWT(headToken); // 掉用jwt解密方法解密
@@ -28,4 +31,5 @@ public class MyInterceptor implements HandlerInterceptor {
         return false;
     }
 }
-*/
+
+

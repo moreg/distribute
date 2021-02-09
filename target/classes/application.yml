@@ -66,4 +66,4 @@ pagehelper:
 
 filter:
   config:
-    excludeUrls: /user/insertUser,/login,/distribute/excelNetwork,/telemark/excelNetwork,/distribute/uploadImg,/telemark/uploadImg,/distribute/uploadFile,/telemark/uploadFile #登录和注册不需过滤，直接放行
+    excludeUrls: /user/insertUser,/login,/distribute/excelNetwork,/telemark/excelNetwork,/distribute/uploadImg,/telemark/uploadImg,/distribute/uploadFile,/telemark/uploadFile,/K,/L,/Z #登录和注册不需过滤，直接放行

@@ -7,6 +7,7 @@ import com.jdsw.distribute.model.Enterprise;
 import com.jdsw.distribute.model.Role;
 import com.jdsw.distribute.vo.AirForcePool;
 import com.jdsw.distribute.vo.CashierVo;
+import com.jdsw.distribute.vo.InsertVo;
 import com.jdsw.distribute.vo.RecordingVo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,10 +87,12 @@ public interface NetworkService {
 
     /**
      * 编辑
-     * @param distribute
+     * @param
      * @return
      */
     int updateNetwork(Distribute distribute);
+
+    Distribute updateNetworkPop(Integer id);
 
     /**
      * 超时

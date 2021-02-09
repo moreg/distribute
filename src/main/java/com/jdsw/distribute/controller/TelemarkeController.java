@@ -70,17 +70,17 @@ public class TelemarkeController {
     }
     /**
      * 新增
-     * @param distribute
+     * @param
      * @return
      */
     @RequestMapping("/insertTelemarke")
-    public Message insertTelemarke(@RequestBody InsertVo insertVo, HttpServletRequest request){
+    public Message insertTelemarke(@RequestBody Distribute distribute, HttpServletRequest request){
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
-        int i = telemarkService.insertTelemarke(insertVo,username,name);
+        int i = telemarkService.insertTelemarke(distribute,username,name);
         if (i > 0){
             return Message.success();
         }
@@ -119,7 +119,7 @@ public class TelemarkeController {
 
     /**
      * 编辑
-     * @param distribute
+     * @param
      * @return
      */
     @RequestMapping(value = "/updateTelemarke",method = RequestMethod.POST,produces="application/json")
@@ -129,6 +129,16 @@ public class TelemarkeController {
             return  Message.success();
         }
         return  Message.fail();
+    }
+    /**
+     * 编辑弹窗
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/updateTelemarkePop")
+    public Message updateTelemarkePop(Integer id){
+
+       return Message.success("查询成功",telemarkService.updateTelemarkePop(id));
     }
     /**
      * 线索分发

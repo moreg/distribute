@@ -252,10 +252,10 @@
     <if test="sign !=null">
       ,sign
     </if>
-    <if test="overrun !=null'">
+    <if test="overrun !=null">
       ,overrun
     </if>
-    <if test="leaderSign !=null'">
+    <if test="leaderSign !=null">
       ,leader_sign
     </if>
     )
@@ -291,10 +291,10 @@
     <if test="sign !=null">
       ,#{sign}
     </if>
-    <if test="overrun !=null'">
+    <if test="overrun !=null">
       ,#{overrun}
     </if>
-    <if test="leaderSign !=null'">
+    <if test="leaderSign !=null">
       ,#{leaderSign}
     </if>
     )
@@ -464,8 +464,8 @@
   </update>
 
   <update id="updateTelemarke" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_telemarke set name = #{name},corporate_name = #{corporateName},corporate_phone = #{corporatePhone},deal_time = #{dealTime},registered_capital = #{registeredCapital},
-    operation = #{operation},conduct = #{conduct},city = #{city},source = #{source},address = #{address},other_phone = #{otherPhone} where id = #{id}
+    update customer_telemarke set corporate_name = #{corporateName},corporate_phone = #{corporatePhone},
+    source = #{source},last_follow_result = #{lastFollowResult} where id = #{id}
   </update>
 
   <update id="updateBytrackId" parameterType="com.jdsw.distribute.model.Distribute">

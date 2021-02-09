@@ -34,7 +34,7 @@ public class DevelopController {
      * @return
      */
     @RequestMapping("insertDevelop")
-    public Message insertDevelop(@RequestBody InsertVo insertVo, HttpServletRequest request){
+    public Message insertDevelop(@RequestBody Distribute distribute, HttpServletRequest request){
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
@@ -42,7 +42,7 @@ public class DevelopController {
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("username",username);
-        map1.put("insertVo",insertVo);
+        map1.put("distribute",distribute);
         int i = developService.insertDevelop(map1);
         if (i > 0){
             return Message.success();

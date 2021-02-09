@@ -1,3 +1,4 @@
+/*
 
 package com.jdsw.distribute.config;
 
@@ -22,3 +23,4 @@ public class WebConfigure implements WebMvcConfigurer {
 
 }
 
+*/

@@ -40,18 +40,12 @@ public class DevelopServiceImpl implements DevelopService {
     @Override
     public int insertDevelop(Map map) {
         String str2 =map.get("name")+"新建线索";
-        InsertVo insertVo = (InsertVo) map.get("insertVo");
-        Distribute distribute = new Distribute();
+        Distribute distribute = (Distribute) map.get("distribute");
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
         UsersVo usersVo = userDao.queryBranch((String) map.get("username"));
         distribute.setActivation(1);
         distribute.setLastFollowName((String) map.get("name"));
         distribute.setGrade(usersVo.getGroup());
-        distribute.setSource(insertVo.getSource().toString());
-        distribute.setCorporatePhone(insertVo.getCorporatePhone());
-        distribute.setCorporateName(insertVo.getCorporateName());
-        distribute.setLastFollowResult(insertVo.getLastFollowResult());
-        distribute.setTrackId(insertVo.getTrackId());
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("Z");//获得跟踪单号
             distribute.setTrackId(trackId);
@@ -70,8 +64,8 @@ public class DevelopServiceImpl implements DevelopService {
         distributeFollow.setFollowResult(str2);
         distributeFollow.setNetworkId(distribute.getId());
         developFollowDao.insertDevelopFollow(distributeFollow);
-        distributeFollow.setFollowResult(insertVo.getLastFollowResult());
-        distributeFollow.setImgUrl(insertVo.getImgUrl());
+        distributeFollow.setFollowResult(distribute.getLastFollowResult());
+        distributeFollow.setImgUrl(distribute.getImgUrl());
         return developFollowDao.insertDevelopFollow(distributeFollow);
     }
 

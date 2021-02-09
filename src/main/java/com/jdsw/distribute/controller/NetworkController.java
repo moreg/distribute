@@ -106,7 +106,7 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/insertNetwoork")
-    public Message insertNetwoork(@RequestBody InsertVo distribute, HttpServletRequest request){
+    public Message insertNetwoork(@RequestBody Distribute distribute, HttpServletRequest request){
         //String username = (String) request.getAttribute("username");
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
@@ -158,7 +158,7 @@ public class NetworkController {
 
     /**
      * 编辑
-     * @param distribute
+     * @param
      * @return
      */
     @RequestMapping(value = "/updateNetwork",method = RequestMethod.POST,produces="application/json")
@@ -168,6 +168,15 @@ public class NetworkController {
             return  Message.success();
         }
         return  Message.fail();
+    }
+    /**
+     * 编辑弹窗
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/updateNetworkPop")
+    public Message updateNetworkPop(Integer id){
+        return Message.success("查询成功",distributeService.updateNetworkPop(id));
     }
     /**
      * 抢单接口
@@ -301,7 +310,6 @@ public class NetworkController {
      */
     @RequestMapping("/activation")
     public Message activation(HttpServletRequest request, @RequestBody Distribute distribute){
-        String strid = distribute.getTrackId().substring(0,1);
         String token = request.getHeader("token"); // 获取头中token
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");

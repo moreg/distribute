@@ -74,8 +74,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
 
     @Override
     @Transactional
-    public int insertTelemarke(InsertVo insertVo, String username, String name) {
-        Distribute distribute = new Distribute();
+    public int insertTelemarke(Distribute distribute, String username, String name) {
         String str1 = name+"新建线索";
         DistributeFollow distributeFollow = new DistributeFollow();
         Set set = userDao.findRoleByUserName2(username);
@@ -87,28 +86,23 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         distribute.setInvalid(0);
         distribute.setOverrun(0);
         distribute.setLeaderSign(0);
-        distribute.setSource(insertVo.getSource().toString());
-        distribute.setCorporatePhone(insertVo.getCorporatePhone());
-        distribute.setCorporateName(insertVo.getCorporateName());
-        distribute.setLastFollowResult(insertVo.getLastFollowResult());
-        distribute.setTrackId(insertVo.getTrackId());
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("L");//获得跟踪单号
             distribute.setTrackId(trackId);
         }
         for (Object str : set) {
            if (str.equals(Department.ARMCUSTOMER.value)){//线索管理员
-               if (StringUtils.isNotEmpty(insertVo.getLastFollowName())){
+               if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
                    distribute.setReceivingTime(df.format(new Date()));
-                   distribute.setLastFollowName(insertVo.getLastFollowName());
+                   distribute.setLastFollowName(distribute.getLastFollowName());
                    distribute.setStatus(10);
                    String LeaderName2 = userDao.queryDepartment3(distribute.getLastFollowName());//获取主管
                    distribute.setLeaderName(LeaderName2);
-               }else if (StringUtils.isNotEmpty(insertVo.getBranch())){
+               }else if (StringUtils.isNotEmpty(distribute.getBranch())){
                    distribute.setIssue(1);
                    distribute.setStatus(0);
-                   distribute.setBranch(insertVo.getBranch());
+                   distribute.setBranch(distribute.getBranch());
                }else {
                    distribute.setIssue(0);
                    distribute.setStatus(0);
@@ -121,7 +115,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         distributeFollow.setNetworkId(distribute.getId());
         telemarkeFollowDao.insertNetworkFollow(distributeFollow);
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
-        distributeFollow.setImgUrl(insertVo.getImgUrl());
+        distributeFollow.setImgUrl(distribute.getImgUrl());
         return telemarkeFollowDao.insertNetworkFollow(distributeFollow);
     }
     @Override
@@ -203,6 +197,11 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     }
 
     @Override
+    public Distribute updateTelemarkePop(Integer id) {
+        return telemarkDao.selectNetworkById(id);
+    }
+
+    @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
         Distribute distribute;
@@ -245,7 +244,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Override
     @Transactional
     public int orderTaking(Distribute network,String name,String role) {
-        TransactionStatus transactionStatus = null;
         int i= 0;
         try {
             String str = name+"领取了线索";
@@ -266,13 +264,11 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             }
             network.setStatus(10);
             telemarkDao.updateworkOverdueTime(network);//修改激活时间
-             i = telemarkDao.updateNetworkFirstFollowName(network);
-            //transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-            telemarkDao.selectNetworkById2(network.getId());
+            i = telemarkDao.updateNetworkFirstFollowName(network);
         }catch (Exception e){
 
         }finally {
-            dataSourceTransactionManager.commit(transactionStatus);
+
         }
         return i;
     }

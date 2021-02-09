@@ -213,8 +213,7 @@ public class NetworkServiceImpl implements NetworkService {
         DistributeFollow distributeFollow = new DistributeFollow();
         String str2 = map.get("name")+"新建线索";
         Set set = userDao.findRoleByUserName2((String) map.get("username"));//获取角色
-        InsertVo insertVo = (InsertVo) map.get("distribute");
-        Distribute distribute = new Distribute();
+        Distribute distribute = (Distribute) map.get("distribute");
         distributeFollow.setFollowResult(str2);
         distributeFollow.setFollowName((String) map.get("name"));
         distribute.setActivation(0);
@@ -222,43 +221,24 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setSign(1);
         distribute.setInvalid(0);
         distribute.setOverrun(0);
-        distribute.setSource(insertVo.getSource().toString());
-        distribute.setCorporatePhone(insertVo.getCorporatePhone());
-        distribute.setCorporateName(insertVo.getCorporateName());
-        distribute.setLastFollowResult(insertVo.getLastFollowResult());
-        distribute.setTrackId(insertVo.getTrackId());
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("K");//获得跟踪单号
             distribute.setTrackId(trackId);
         }
         for (Object str : set) {//遍历角色
-            if (str.equals(Department.SALESMAN.value)){//业务员
-                String LeaderName = userDao.queryDepartment2((String) map.get("username"));//获取主管
-                distribute.setLastFollowName((String) map.get("name"));
-                distribute.setFirstFollowName((String) map.get("name"));
-                distribute.setIssue(1);
-                distribute.setStatus(10);
-                distribute.setLeaderSign(0);
-                distribute.setAppoint(1);
-                distribute.setLeaderName(LeaderName);
-            } else if (str.equals(Department.CHARGE.value)){//主管
-                distribute.setLeaderName((String) map.get("name"));
-                distribute.setIssue(0);
-                distribute.setLeaderSign(1);
-                distribute.setStatus(5);
-            }else if (str.equals(Department.AirCUSTOMER.value)){//客服
-                if (StringUtils.isNotEmpty(insertVo.getLastFollowName())){
+            if (str.equals(Department.AirCUSTOMER.value)){//客服
+                if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
                     distribute.setReceivingTime(df.format(new Date()));
-                    distribute.setLastFollowName(insertVo.getLastFollowName());
+                    distribute.setLastFollowName(distribute.getLastFollowName());
                     distribute.setStatus(10);
                     distribute.setIssue(1);
                     String LeaderName2 = userDao.queryDepartment3(distribute.getLastFollowName());//获取主管
                     distribute.setLeaderName(LeaderName2);
-                }else if (StringUtils.isNotEmpty(insertVo.getBranch())){
+                }else if (StringUtils.isNotEmpty(distribute.getBranch())){
                     distribute.setIssue(1);
                     distribute.setStatus(0);
-                    distribute.setBranch(insertVo.getBranch());
+                    distribute.setBranch(distribute.getBranch());
                 }else {
                     distribute.setIssue(0);
                     distribute.setStatus(0);
@@ -271,7 +251,7 @@ public class NetworkServiceImpl implements NetworkService {
         distributeFollow.setNetworkId(distribute.getId());
         networkFollowDao.insertNetworkFollow(distributeFollow);
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
-        distributeFollow.setImgUrl(insertVo.getImgUrl());
+        distributeFollow.setImgUrl(distribute.getImgUrl());
         return networkFollowDao.insertNetworkFollow(distributeFollow);
     }
 
@@ -359,6 +339,11 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     public int updateNetwork(Distribute distribute) {
         return networkDao.updateNetwork(distribute);
+    }
+
+    @Override
+    public Distribute updateNetworkPop(Integer id) {
+        return networkDao.selectNetworkById(id);
     }
 
     @Override

@@ -31,7 +31,7 @@ public interface TelemarkeService {
      * @param
      * @return
      */
-    int insertTelemarke(InsertVo insertVo, String username, String name);
+    int insertTelemarke(Distribute distribute, String username, String name);
     /**
      * 导入电销线索
      * @param file
@@ -47,10 +47,12 @@ public interface TelemarkeService {
 
     /**
      * 编辑
-     * @param distribute
+     * @param
      * @return
      */
     int updateTelemarke(Distribute distribute);
+
+    Distribute updateTelemarkePop(Integer id);
 
     /**
      * 指定接单人
