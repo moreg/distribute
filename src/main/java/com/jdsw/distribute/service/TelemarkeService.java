@@ -31,7 +31,7 @@ public interface TelemarkeService {
      * @param
      * @return
      */
-    int insertTelemarke(Distribute distribute, String username, String name);
+    Distribute insertTelemarke(Distribute distribute, String username, String name);
     /**
      * 导入电销线索
      * @param file

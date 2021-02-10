@@ -39,10 +39,6 @@ import java.util.*;
 @Service
 public class TelemarkeServiceImpl implements TelemarkeService {
     @Autowired
-    DataSourceTransactionManager dataSourceTransactionManager;
-    @Autowired
-    TransactionDefinition transactionDefinition;
-    @Autowired
     private TelemarkeDao telemarkDao;
     @Autowired
     private TelemarkeFollowDao telemarkeFollowDao;
@@ -74,7 +70,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
 
     @Override
     @Transactional
-    public int insertTelemarke(Distribute distribute, String username, String name) {
+    public Distribute insertTelemarke(Distribute distribute, String username, String name) {
         String str1 = name+"新建线索";
         DistributeFollow distributeFollow = new DistributeFollow();
         Set set = userDao.findRoleByUserName2(username);
@@ -116,7 +112,8 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         telemarkeFollowDao.insertNetworkFollow(distributeFollow);
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
         distributeFollow.setImgUrl(distribute.getImgUrl());
-        return telemarkeFollowDao.insertNetworkFollow(distributeFollow);
+        telemarkeFollowDao.insertNetworkFollow(distributeFollow);
+        return distribute;
     }
     @Override
     @Transactional

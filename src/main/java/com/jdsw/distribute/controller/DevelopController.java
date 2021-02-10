@@ -111,6 +111,15 @@ public class DevelopController {
         return  Message.fail();
     }
     /**
+     * 编辑弹窗
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/updateDevelopPop")
+    public Message updateDevelopPop(Integer id){
+        return Message.success("查询成功",developService.updateDevelopPop(id));
+    }
+    /**
      * 删除
      * @param
      * @return

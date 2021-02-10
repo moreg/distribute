@@ -85,6 +85,11 @@ public class DevelopServiceImpl implements DevelopService {
     }
 
     @Override
+    public Distribute updateDevelopPop(Integer id) {
+        return developDao.selectDeveolpById(id);
+    }
+
+    @Override
     public int deleteDevelop(Distribute distribute) {
         return developDao.deleteDevelop(distribute);
     }

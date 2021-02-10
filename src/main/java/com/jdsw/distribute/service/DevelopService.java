@@ -33,6 +33,13 @@ public interface DevelopService {
     int updateDevelop(Distribute distribute);
 
     /**
+     * 编辑弹窗
+     * @param id
+     * @return
+     */
+    Distribute updateDevelopPop(Integer id);
+
+    /**
      * 删除
      * @param distribute
      * @return

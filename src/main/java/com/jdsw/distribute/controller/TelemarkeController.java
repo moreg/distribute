@@ -80,11 +80,8 @@ public class TelemarkeController {
         Map<String, Object> map = JwtUtil.parseJWT(token);
         String username = (String) map.get("userName");
         String name = (String) map.get("name");
-        int i = telemarkService.insertTelemarke(distribute,username,name);
-        if (i > 0){
-            return Message.success();
-        }
-        return Message.fail();
+        return Message.success("新增成功",telemarkService.insertTelemarke(distribute,username,name));
+
     }
     /**
      * 导入电销线索

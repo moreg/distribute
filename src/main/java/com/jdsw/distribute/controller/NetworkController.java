@@ -116,11 +116,8 @@ public class NetworkController {
         map1.put("name",name);
         map1.put("username",username);
         map1.put("distribute",distribute);
-        int i = distributeService.insertNetwoork(map1);
-        if (i > 0){
-            return Message.success();
-        }
-        return Message.fail();
+        return Message.success("新增成功",distributeService.insertNetwoork(map1));
+
     }
     /**
      * 导入网销线索

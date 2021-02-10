@@ -34,10 +34,6 @@ import static com.jdsw.distribute.util.DateUtil.parseDate;
 @Service
 public class NetworkServiceImpl implements NetworkService {
     @Autowired
-    DataSourceTransactionManager dataSourceTransactionManager;
-    @Autowired
-    TransactionDefinition transactionDefinition;
-    @Autowired
     private NetworkDao networkDao;
     @Autowired
     private NetworkFollowDao networkFollowDao;
@@ -100,7 +96,6 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     @Transactional
     public int orderTaking(Distribute network,String username,String name,String role) {
-        TransactionStatus transactionStatus = null;
         int i = 0;
         try {
             UsersVo usersVo = userDao.queryBranch(username);
@@ -117,12 +112,9 @@ public class NetworkServiceImpl implements NetworkService {
             network.setStatus(10);
             network.setBranch(usersVo.getBranch());
             i = networkDao.updateNetworkFirstFollowName(network);
-            transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-            networkDao.selectNetworkById2(network.getId());
         }catch (Exception e){
-            //dataSourceTransactionManager.rollback(transactionStatus);
         }finally {
-            dataSourceTransactionManager.commit(transactionStatus);
+
         }
         return i;
     }
@@ -209,7 +201,7 @@ public class NetworkServiceImpl implements NetworkService {
         return null;
     }
     @Override
-    public int insertNetwoork(Map map) {
+    public Distribute insertNetwoork(Map map) {
         DistributeFollow distributeFollow = new DistributeFollow();
         String str2 = map.get("name")+"新建线索";
         Set set = userDao.findRoleByUserName2((String) map.get("username"));//获取角色
@@ -252,7 +244,8 @@ public class NetworkServiceImpl implements NetworkService {
         networkFollowDao.insertNetworkFollow(distributeFollow);
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
         distributeFollow.setImgUrl(distribute.getImgUrl());
-        return networkFollowDao.insertNetworkFollow(distributeFollow);
+        networkFollowDao.insertNetworkFollow(distributeFollow);
+        return distribute;
     }
 
     @Override

@@ -4,10 +4,7 @@ import com.jdsw.distribute.util.PathUtil;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -35,12 +32,8 @@ public class MyInterceptorConfig implements WebMvcConfigurer{
         registry.addInterceptor(myInterceptor)
                 .addPathPatterns("/**") //所有路径都被拦截
                 .excludePathPatterns("/login");
-
-
-
     }
 
 
-
-
 }
+

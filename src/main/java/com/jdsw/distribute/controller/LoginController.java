@@ -48,7 +48,6 @@ public class LoginController {
             String toToken = null;
 
             for (String role :roles){
-                System.out.println(role);
                  toToken = JwtUtil.sign(username,user2.getId().toString(),user2.getName(),pwd,role);
             }
             UsersVo usersVo = userService.queryBranch(username);
@@ -69,19 +68,19 @@ public class LoginController {
             map.put("username",username);
             return Message.success("登录成功",map);
         }  catch (IncorrectCredentialsException e) {
-            msg = "登录密码错误. Password for account " + token.getPrincipal() + " was incorrect.";
+            msg = "登录密码错误";
         } catch (ExcessiveAttemptsException e) {
             msg = "登录失败次数过多";
         } catch (LockedAccountException e) {
-            msg = "帐号已被锁定. The account for username " + token.getPrincipal() + " was locked.";
+            msg = "帐号已被锁定";
         } catch (DisabledAccountException e) {
-            msg = "帐号已被禁用. The account for username " + token.getPrincipal() + " was disabled.";
+            msg = "帐号已被禁用";
         } catch (ExpiredCredentialsException e) {
-            msg = "帐号已过期. the account for username " + token.getPrincipal() + "  was expired.";
+            msg = "帐号已过期";
         } catch (UnknownAccountException e) {
-            msg = "帐号不存在. There is no user with username of " + token.getPrincipal();
+            msg = "帐号不存在";
         } catch (UnauthorizedException e) {
-            msg = "您没有得到相应的授权！" + e.getMessage();
+            msg = "您没有得到相应的授权！";
         }
         return Message.fail(msg);
 
