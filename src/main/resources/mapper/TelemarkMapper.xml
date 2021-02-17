@@ -36,7 +36,7 @@
     <result column="record"  property="record" />
     <result column="remarks"  property="remarks" />
   </resultMap>
-  <resultMap id="aMap" type="com.jdsw.distribute.vo.AirForcePool">
+  <resultMap id="aMap" type="com.jdsw.distribute.vo.ArmyPool">
     <result column="id"  property="id" />
     <result column="track_id"  property="trackId" />
     <result column="corporate_name" property="corporateName" />
@@ -58,6 +58,11 @@
     <result column="total"  property="total" />
     <result column="activation_time"  property="activationTime" />
     <result column="overrun"  property="overrun" />
+    <result column="establish_time"  property="establishTime" />
+    <result column="registered_capital"  property="registeredCapital" />
+    <result column="address"  property="address" />
+    <result column="total"  property="total" />
+
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -110,6 +115,9 @@
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,
     source,address,proposer,status,activation,last_follow_result from customer_telemarke
     where  1 = 1 and issue = #{issue} and proposer = #{proposer}
+        <if test="sign != null">
+        AND sign = #{sign}
+        </if>
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -171,10 +179,10 @@
     </if>
     ORDER BY create_time DESC
   </select>
-  <!--陆军客户 主管-->
+  <!--陆军客户-->
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
-    source,last_follow_time,activation,address,receiving_time from customer_telemarke
+    source,last_follow_time,activation,address,activation_time,name,proposer,last_follow_result,total from customer_telemarke
     where last_follow_name = #{lastFollowName} and status = #{status} and activation = 1
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -312,8 +320,8 @@
   </insert>
 
   <insert id="insertDealOrder" parameterType="com.jdsw.distribute.model.Distribute">
-    insert into deal_order(name,corporate_name,create_time,source,last_follow_name,track_id,conduct,order_state)
-    values (#{name},#{corporateName},#{createTime},#{source},#{lastFollowName},#{trackId},#{conduct},0)
+    insert into deal_order(name,corporate_name,create_time,source,last_follow_name,track_id,conduct,order_state,corporate_phone)
+    values (#{name},#{corporateName},#{createTime},#{source},#{lastFollowName},#{trackId},#{conduct},0,#{corporatePhone})
   </insert>
 
   <update id="overTime" parameterType="com.jdsw.distribute.model.Distribute">

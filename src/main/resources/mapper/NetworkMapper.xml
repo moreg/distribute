@@ -71,6 +71,7 @@
     <result column="last_follow_name"  property="lastFollowName" />
     <result column="source"  property="source" />
     <result column="order_state"  property="orderState" />
+    <result column="deal_time"  property="dealTime" />
   </resultMap>
   <resultMap id="recording" type="com.jdsw.distribute.vo.RecordingVo">
     <result column="id"  property="id" />
@@ -114,6 +115,9 @@
   <select id="airForcePoolList" resultMap="aMap" parameterType="Map">
     select <include refid="PoolList"></include> from customer_network
     where 1 = 1 and issue = #{issue} and proposer = #{proposer}
+        <if test="sign != null">
+          AND sign = #{sign}
+        </if>
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -177,7 +181,7 @@
   <!--空中客户-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
-    where  last_follow_name = #{lastFollowName} and #{status} and activation = 1
+    where  last_follow_name = #{lastFollowName} and status = #{status} and activation = 1
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -222,9 +226,9 @@
     </if>
     ORDER BY id DESC
   </select>
-  <!--跟单管理-->
+  <!--财务客户列表-->
   <select id="cashierListNetwork" resultMap="cashierMap" parameterType="Map">
-    select id,name,corporate_name,source,last_follow_name,track_id,order_state,deal_time,create_time from deal_order
+    select id,name,corporate_name,corporate_phone,source,last_follow_name,track_id,order_state,DATE_FORMAT(deal_time, '%Y-%m-%d')  as deal_time,create_time from deal_order
     where 1 = 1
     <if test="orderState != null ">
     and order_state = #{orderState}
@@ -433,8 +437,14 @@
       <if test="name != null and name != ''">
         name = #{name},
       </if>
-      <if test="status != null and status != ''">
+      <if test="status != null">
         status = #{status},
+      </if>
+      <if test="overrun != null">
+        overrun = #{overrun},
+      </if>
+      <if test="lastFollowName != null and lastFollowName !=''">
+        last_follow_name = #{lastFollowName},
       </if>
     </trim>
 
@@ -474,7 +484,9 @@
     <if test="issue  !=null">
       ,issue = #{issue}
     </if>
-
+    <if test="overrun  !=null">
+      ,overrun = #{overrun}
+    </if>
       ,overdue_time = #{overdueTime}
 
     <if test="invalid  !=null">

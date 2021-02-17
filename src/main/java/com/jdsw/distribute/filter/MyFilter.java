@@ -46,22 +46,18 @@ public class MyFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
         String uri = request.getRequestURI(); //获取请求uri
-
         try {
-           if (this.isExcludesUrl(uri)) { // 判断请求uri是否需要过滤（方法在下面）
+        /*   if(this.isExcludesUrl(uri)) { // 判断请求uri是否需要过滤（方法在下面）
                 chain.doFilter(req, resp); // 不需要，放行
             } else {
             String token = request.getHeader("token"); // 获取头中token
-               System.out.println(token);
-               System.out.println(uri+">>>>>>>>>>>>>>1");
                 if (!validateParams(token)) { // 验证头中的token（方法在下面）
-                    System.out.println(uri+">>>>>>>>>>>>>>3");
                     response.setContentType("text/xml;charset=UTF-8");
                     response.getWriter().write(VALID_ERROR); // 验证失败，返回验证失败消息
                     return;
                 }
-
-            }
+               chain.doFilter(req, resp); // 验证成功，放行
+            }*/
             chain.doFilter(req, resp); // 验证成功，放行
         } catch (Exception ex) {
             //log.error("Exception error", ex);
@@ -74,15 +70,10 @@ public class MyFilter implements Filter {
     }
 
     private boolean validateParams(String token) {
-        System.out.println(">>>>>>>>>>>>>>1");
-        System.out.println(token);
         // 验证是否为空，格式是否满足预定要求
         if (StringUtils.isNotEmpty(token)) {
-            System.out.println(">>>>>>>>>>>>>>2");
             Map<String, Object> map = JwtUtil.parseJWT(token);// 掉用jwt解密方法解密
-            System.out.println("map:"+map);
             if (map != null) {
-                System.out.println(">>>>>>>>>>>>>>3");
                 return true;  // 解密成功，返回true
             }
         }

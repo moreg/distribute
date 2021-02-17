@@ -34,5 +34,10 @@ public class ArmyPool {
     private Date activationTime;
     private String activationName;
     private  Integer overrun;
+    private String overdueTime;
+    private Integer leaderSign;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date lastFollowTime;
+
 
 }

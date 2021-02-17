@@ -376,18 +376,19 @@ public class NetworkServiceImpl implements NetworkService {
     public int updateRecordingNetwork(Map map) {
         Distribute distribute = (Distribute) map.get("distribute");
         distribute.setStatus(4);
+        distribute.setIssue(4);
         String tid = networkDao.qureydealOrder(distribute);
         distribute.setTrackId(tid);
         if ("K".equals(tid.substring(0,1))){
-            //networkDao.updateBytrackId(distribute);
+            networkDao.updateBytrackId(distribute);
             networkDao.updateBytrackId3(distribute);
             distribute = networkDao.selectNetworkById3(tid);
         }else if ("L".equals(tid.substring(0,1))){
-            //telemarkeDao.updateBytrackId(distribute);
+            telemarkeDao.updateBytrackId(distribute);
             networkDao.updateBytrackId3(distribute);
             distribute = telemarkeDao.selectNetworkById3(tid);
         }else if ("Z".equals(tid.substring(0,1))){
-            //developDao.updateBytrackId(distribute);
+            developDao.updateBytrackId(distribute);
             networkDao.updateBytrackId3(distribute);
             distribute = developDao.selectDeveolpById3(tid);
         }
@@ -442,12 +443,12 @@ public class NetworkServiceImpl implements NetworkService {
         Integer limit = (Integer) map.get("limit");
         if ("K".equals(map.get("pool").toString())){
             PageHelper.startPage(pageNum, limit);
-            List<Distribute> CashierVo = networkDao.queryNetworkByLastName2(map);
+            List<Distribute> CashierVo = networkDao.queryNetworkByLastName(map);
             PageInfo result = new PageInfo(CashierVo);
             return result;
         }else if ("L".equals(map.get("pool").toString())){
             PageHelper.startPage(pageNum, limit);
-            List<Distribute> CashierVo = telemarkeDao.queryTelemarkeByLastName2(map);
+            List<Distribute> CashierVo = telemarkeDao.queryTelemarkeByLastName(map);
             PageInfo result = new PageInfo(CashierVo);
             return result;
         }
@@ -590,7 +591,7 @@ public class NetworkServiceImpl implements NetworkService {
             networkFollow.setFollowResult(distribute.getLastFollowResult());
             telemarkeFollowDao.insertNetworkFollow(networkFollow);
             distribute.setLastFollowTime(null);
-            distribute.setLastFollowResult(null);
+            //distribute.setLastFollowResult(distribute.getLastFollowResult());
             distribute.setReceivingTime(null);
             distribute.setOverdueTime(null);
             networkFollow.setImgUrl(distribute.getImgUrl());
@@ -619,6 +620,7 @@ public class NetworkServiceImpl implements NetworkService {
             if (distribute2.getInvalid() == 1){
                 distribute.setStatus(5);
                 distribute.setOverdueTime(null);
+                distribute.setOverrun(1);
             }else {
                 distribute.setStatus(10);
                 distribute.setOverdueTime(DateUtil.getOverTime(86400000));
@@ -681,7 +683,10 @@ public class NetworkServiceImpl implements NetworkService {
         Distribute  distribute = (Distribute) map.get("distribute");
         String strid =  distribute.getTrackId().substring(0,1);
         distribute.setActivationName((String) map.get("name"));
+        distribute.setLastFollowName((String) map.get("name"));
         distribute.setActivation(1);
+        distribute.setStatus(10);
+        distribute.setOverrun(0);
         distribute.setActivationTime(DateUtil.getDate());
         DistributeFollow networkFollow = new DistributeFollow();
         networkFollow.setFollowName((String) map.get("name"));

@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         String group = (String) map.get("group");
         String branch = (String) map.get("branch");
         UsersVo  user = userDao.queryBranch((String) map.get("username"));
-        if (Department.CHARGE.value.equals(user.getRolename())){
+        if (Department.CHARGE.value.equals(user.getRolename()) || Department.SALESMAN.value.equals(user.getRolename())){
             if (StringUtils.isNotEmpty(department)){
                 String temp[]=department.split(",");
                 for (int i=0;i<temp.length;i++){
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
                     list2.add(temp[i]);
                 }
             }
-        }else if (Department.AirCUSTOMER.value.equals(user.getRolename()) || Department.ARMCUSTOMER.value.equals(user.getRolename() )){
+        }else if (Department.AirCUSTOMER.value.equals(user.getRolename()) || Department.ARMCUSTOMER.value.equals(user.getRolename() ) || Department.GENERAL.value.equals(user.getRolename()) || Department.DEPUTY.value.equals(user.getRolename())){
             if (StringUtils.isNotEmpty(department)){
                 String temp[]=department.split(",");
                 for (int i=0;i<temp.length;i++){

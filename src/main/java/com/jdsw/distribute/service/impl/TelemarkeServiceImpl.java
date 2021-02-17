@@ -294,6 +294,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         Distribute distribute = new Distribute();
         distribute.setOverdueTime(distributeFollow.getFollowTime());
         distribute.setId(distributeFollow.getNetworkId());
+        distribute.setLastFollowResult(distributeFollow.getFollowResult());
         telemarkDao.updateworkOverdueTime(distribute);
         telemarkeFollowDao.updateFolloupNetwork(distributeFollow);
         return telemarkeFollowDao.insertNetworkFollow(distributeFollow);

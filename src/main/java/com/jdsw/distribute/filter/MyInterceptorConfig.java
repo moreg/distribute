@@ -1,9 +1,11 @@
+
 package com.jdsw.distribute.filter;
 
 import com.jdsw.distribute.util.PathUtil;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.*;
 
 import javax.annotation.Resource;
@@ -11,7 +13,7 @@ import javax.annotation.Resource;
 @Configuration
 public class MyInterceptorConfig implements WebMvcConfigurer{
 
-    @Resource
+   @Resource
     private MyInterceptor myInterceptor;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -30,10 +32,9 @@ public class MyInterceptorConfig implements WebMvcConfigurer{
     public void addInterceptors(InterceptorRegistry registry) {
         // 注册拦截器，要声明拦截器对象和要拦截的请求
         registry.addInterceptor(myInterceptor)
-                .addPathPatterns("/**") //所有路径都被拦截
                 .excludePathPatterns("/login");
     }
 
-
 }
+
 
