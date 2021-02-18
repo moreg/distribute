@@ -15,7 +15,20 @@ public interface UserService {
     public User findByUserName(String username);
     Set<String> findPermissionByUserName(String username);
     int countUser();
+
+    /**
+     * 新增账号
+     * @param user
+     * @return
+     */
     int insertUser(User user);
+
+    /**
+     * 修改密码
+     * @param usersVo
+     * @return
+     */
+    int updatePassword(UsersVo usersVo);
     Set<String> findRoleByUserName(String username);
     Set<String> findRoleByUserName2(String username);
     /**

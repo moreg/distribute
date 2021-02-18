@@ -127,7 +127,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         File newFile = new File(filePath + newFileName);
         //复制操作
         file.transferTo(newFile);
-        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,9, Excel.class);
+        List<Object> result = excelRead.ReadExcelByPOJO(newFile.toString(),2,-1, Excel.class);
         List ls = new ArrayList();
         Set set = userDao.findRoleByUserName2(username);
         User user = userDao.findByUserName(username);

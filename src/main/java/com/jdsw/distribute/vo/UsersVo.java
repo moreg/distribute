@@ -14,4 +14,8 @@ public class UsersVo {
     private String department;
     private String branch;
     private String group;
+    private String oldPassword;
+    private String password1;
+    private String password2;
+
 }

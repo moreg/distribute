@@ -44,6 +44,25 @@ public class UserController {
             return Message.success("添加成功");
         }
     }
+
+    /**
+     * 修改密码
+     * @param user
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updatePassword")
+    public Message updatePassword(@RequestBody UsersVo user,HttpServletRequest request){
+        String username = (String) request.getAttribute("username");
+        user.setUsername(username);
+        int i = userService.updatePassword(user);
+        if (i == 2){
+            return Message.warn("密码不正确");
+        }else if (i == 3){
+            return Message.warn("两次密码不一致");
+        }
+        return Message.success("修改成功");
+    }
     @RequestMapping("/userStatistics")
     public String userStatistics(){
         return "/user/userStatistics";

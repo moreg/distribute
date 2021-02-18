@@ -16,6 +16,8 @@ public interface UserDao {
 
     int insert(User record);
 
+    int updatePassword(User user);
+
     int insertSelective(User record);
 
     User selectByPrimaryKey(Integer id);

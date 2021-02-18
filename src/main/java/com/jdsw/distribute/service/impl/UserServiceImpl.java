@@ -68,6 +68,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int updatePassword(UsersVo usersVo) {
+        User user = userDao.findByUserName(usersVo.getUsername());
+        String oldpwd = MD5Utils.loginMd5(usersVo.getOldPassword(),user.getSalt());
+        if (!oldpwd.equals(user.getPassword())){
+            return 2;
+        }else if (!usersVo.getPassword1().equals(usersVo.getPassword2())){
+            return 3;
+        }
+        user.setPassword(MD5Utils.loginMd5(usersVo.getPassword1(),user.getSalt()));
+        return userDao.updatePassword(user);
+    }
+
+    @Override
     public Set<String> findRoleByUserName(String username) {
         return userDao.findRoleByUserName(username);
     }

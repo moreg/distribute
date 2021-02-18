@@ -6,6 +6,7 @@ import com.jdsw.distribute.model.Excel;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.service.MenuService;
 import com.jdsw.distribute.service.UserService;
+import com.jdsw.distribute.util.MD5Utils;
 import com.jdsw.distribute.util.excelRead;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -56,11 +57,8 @@ public class MbackstageApplicationTests {
 
         //User u = us.findByUserName("pus");
         String password = "123456";
-        String hashAlgorithmName = "md5";//加密方式
-        ByteSource salt = ByteSource.Util.bytes("dd3736d1c3c4702e5170cde08bffd411");//以账号作为盐值
-        int hashIterations = 2;//加密2次
-        Object result = new SimpleHash(hashAlgorithmName,password,salt,hashIterations);
-        System.out.println(result);
+        String oldpwd = MD5Utils.loginMd5(password,"mmbXesF2SwWDChhBoJ9J332l");
+        System.out.println(oldpwd);
 
     }
     @Test
