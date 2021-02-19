@@ -45,6 +45,7 @@ public class DevelopServiceImpl implements DevelopService {
         UsersVo usersVo = userDao.queryBranch((String) map.get("username"));
         distribute.setActivation(1);
         distribute.setLastFollowName((String) map.get("name"));
+        distribute.setProposer((String) map.get("name"));
         distribute.setGrade(usersVo.getGroup());
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("Z");//获得跟踪单号
@@ -124,7 +125,6 @@ public class DevelopServiceImpl implements DevelopService {
             distribute3.setStatus(3);
             distribute3.setTrackId(distribute2.getTrackId());
             developDao.updateBytrackId(distribute3);
-            System.out.println(distribute2);
             networkDao.insertDealOrder(distribute2);
             return networkDao.insertDistrbuteOrder(distribute2);
         }

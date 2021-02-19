@@ -57,7 +57,7 @@ public class MbackstageApplicationTests {
 
         //User u = us.findByUserName("pus");
         String password = "123456";
-        String oldpwd = MD5Utils.loginMd5(password,"mmbXesF2SwWDChhBoJ9J332l");
+        String oldpwd = MD5Utils.loginMd5(password,"rJBBjol4z50ttBx394oLWJTi");
         System.out.println(oldpwd);
 
     }

@@ -90,7 +90,6 @@ public class NetworkServiceImpl implements NetworkService {
         if(ls.size() > 0){
             networkFollowDao.insertNetworkFollow2(ls);
         }
-        System.out.println(ld);
         return networkDao.appoint(ld);
     }
     @Override
@@ -121,8 +120,14 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public PageInfo<Distribute> queryNetworkByLastName(Map map) throws ParseException {
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
+        for (Object str : set){
+            if (str.equals(Department.ADMIN.value) || str.equals(Department.GENERAL.value) || str.equals(Department.DEPUTY.value)){
+                map.put("lastFollowName",null);
+            }
+        }
         map.put("status",10);
         PageHelper.startPage(pageNum, limit);
         List<Distribute> Network = networkDao.queryNetworkByLastName(map);
@@ -135,6 +140,12 @@ public class NetworkServiceImpl implements NetworkService {
     public PageInfo<Enterprise> enterprisePoolList(Map map) {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
+        for (Object str : set){
+            if (str.equals(Department.ADMIN.value) || str.equals(Department.GENERAL.value) || str.equals(Department.DEPUTY.value)){
+                map.put("name",null);
+            }
+        }
         PageHelper.startPage(pageNum, limit);
         List<Enterprise> enterprises = enterpriseDao.enterprisePoolList(map);
         PageInfo result = new PageInfo(enterprises);
@@ -148,9 +159,14 @@ public class NetworkServiceImpl implements NetworkService {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
         map.put("issue",distribute.getIssue());
-        map.put("proposer",map.get("name"));
         for (Object str : set) {
             if (str.equals(Department.AirCUSTOMER.value)){//线索管理员
+                map.put("proposer",map.get("name"));
+                PageHelper.startPage(pageNum,limit);
+                List<Distribute> Network = networkDao.airForcePoolList(map);
+                PageInfo result = new PageInfo(Network);
+                return result;
+            }else if (str.equals(Department.ADMIN.value)){//超级管理员
                 PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.airForcePoolList(map);
                 PageInfo result = new PageInfo(Network);
@@ -162,6 +178,16 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public PageInfo<Distribute> grabbingPool(Map map) {
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
+        for (Object str : set){
+            if (str.equals(Department.ADMIN.value)){
+                List<Distribute> Network = networkDao.grabbingPool(map);
+                PageInfo result = new PageInfo(Network);
+                return result;
+            }
+        }
+        UsersVo usersVo = userDao.queryBranch((String) map.get("username"));
+        map.put("branch",usersVo.getBranch());
         List<Distribute> Network = networkDao.grabbingPool(map);
         PageInfo result = new PageInfo(Network);
         return result;
@@ -196,6 +222,18 @@ public class NetworkServiceImpl implements NetworkService {
                     return result;
                 }
 
+            }
+            if (str.equals(Department.ADMIN.value)){
+                map.put("lastFollowName",null);
+                if ("K".equals(pool)){
+                    List<Distribute> Network = networkDao.withPool(map);
+                    PageInfo result = new PageInfo(Network);
+                    return result;
+                }else if ("L".equals(pool)){
+                    List<Distribute> Network = telemarkeDao.withPool(map);
+                    PageInfo result = new PageInfo(Network);
+                    return result;
+                }
             }
         }
         return null;
@@ -393,7 +431,8 @@ public class NetworkServiceImpl implements NetworkService {
             distribute = developDao.selectDeveolpById3(tid);
         }
         Enterprise enterprise = new Enterprise();
-        enterprise.setAddName(distribute.getLastFollowName());
+        enterprise.setLastFollowName(distribute.getLastFollowName());
+        enterprise.setAddName(distribute.getProposer());
         enterprise.setCorporateName(distribute.getCorporateName());
         enterprise.setCorporatePhone(distribute.getCorporatePhone());
         enterprise.setCorporatePhone2(distribute.getCorporatePhone2());

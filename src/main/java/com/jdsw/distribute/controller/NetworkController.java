@@ -9,6 +9,7 @@ import com.jdsw.distribute.vo.AirForcePool;
 
 import com.jdsw.distribute.vo.InsertVo;
 import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,11 +37,8 @@ public class NetworkController {
      */
     @RequestMapping("/airForcePoolList")
     public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute distribute, HttpServletRequest request, HttpServletResponse response){
-        //String username = (String) request.getAttribute("username");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
@@ -59,16 +57,16 @@ public class NetworkController {
      */
     @RequestMapping("/grabbingPool")
     public Message grabbingPool(int pageNum, int limit, String content, String strtime, String endtime, Distribute network, HttpServletRequest request, HttpServletResponse response){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
         mapl.put("content",content);
         mapl.put("strtime",strtime);
         mapl.put("endtime",endtime);
+        mapl.put("name",name);
+        mapl.put("username",username);
         return Message.success("查询成功",distributeService.grabbingPool(mapl));
     }
 
@@ -84,10 +82,8 @@ public class NetworkController {
      */
     @RequestMapping("/withPool")
     public Message withPool(int pageNum, int limit, String content, String strtime, String endtime, Integer issue,String pool,HttpServletRequest request){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
@@ -107,11 +103,8 @@ public class NetworkController {
      */
     @RequestMapping("/insertNetwoork")
     public Message insertNetwoork(@RequestBody Distribute distribute, HttpServletRequest request){
-        //String username = (String) request.getAttribute("username");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String username = (String) request.getAttribute("username");
+        String name = (String) request.getAttribute("name");
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("username",username);
@@ -126,10 +119,8 @@ public class NetworkController {
      */
     @RequestMapping("/excelNetwork")
     public Message excelNetwork(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String username = (String) request.getAttribute("username");
+        String name = (String) request.getAttribute("name");
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("username",username);
@@ -181,11 +172,9 @@ public class NetworkController {
      */
     @RequestMapping(value = "/orderTaking",method = RequestMethod.POST,produces="application/json")
     public Message orderTaking(HttpServletRequest request,@RequestBody Distribute distribute){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String lastFollowName = (String) map.get("name");
-        String role = (String) map.get("role");
+        String username = (String) request.getAttribute("username");
+        String lastFollowName = (String) request.getAttribute("name");
+        String role = (String) request.getAttribute("role");
         distribute.setLastFollowName(lastFollowName);
         distribute.setFirstFollowName(lastFollowName);
         int i = distributeService.orderTaking(distribute,username,lastFollowName,role);
@@ -204,12 +193,7 @@ public class NetworkController {
      */
     @RequestMapping(value = "/appoint" ,method = RequestMethod.POST,produces="application/json")
     public Message appoint(@RequestBody List<Distribute> network,HttpServletRequest request){
-        //String name = (String) request.getAttribute("name");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
-        String role = (String) map.get("role");
+        String name = (String) request.getAttribute("name");
         int i = distributeService.appoint(network,name);
         if (i > 0){
             return Message.success();
@@ -222,11 +206,8 @@ public class NetworkController {
      */
     @RequestMapping("/queryNetworkByLastName")
     public Message queryNetworkByLastName(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime) throws Exception{
-        //String lastFollowName = (String) request.getAttribute("name");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String lastFollowName = (String) map.get("name");
+        String lastFollowName = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
@@ -244,10 +225,8 @@ public class NetworkController {
      */
     @RequestMapping("/enterprisePoolList")
     public Message enterprisePoolList(HttpServletRequest request,int pageNum, int limit,String content, String strtime, String endtime){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
@@ -255,6 +234,7 @@ public class NetworkController {
         mapl.put("strtime",strtime);
         mapl.put("endtime",endtime);
         mapl.put("name",name);
+        mapl.put("username",username);
         return Message.success("操作成功",distributeService.enterprisePoolList(mapl));
     }
 
@@ -279,12 +259,8 @@ public class NetworkController {
     @RequestMapping(value = "/followupNetwork",method = RequestMethod.POST,produces="application/json")
     public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
         String strid = networkFollow.getTrackId().substring(0,1);
-        //String name = (String) request.getAttribute("name");
-        //String username = (String) request.getAttribute("username");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         networkFollow.setFollowName(name);
         int i = 0;
         if ("K".equals(strid)){
@@ -307,10 +283,8 @@ public class NetworkController {
      */
     @RequestMapping("/activation")
     public Message activation(HttpServletRequest request, @RequestBody Distribute distribute){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("username",username);
         mapl.put("distribute",distribute);
@@ -417,10 +391,8 @@ public class NetworkController {
      */
     @RequestMapping(value = "/recordingNetwork",method = RequestMethod.POST,produces="application/json")
     public Message recordingNetwork(@RequestBody Distribute distribute,HttpServletRequest request){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("username",username);
         mapl.put("distribute",distribute);
@@ -437,12 +409,8 @@ public class NetworkController {
      */
     @RequestMapping("/cashierCompleteLis")
     public Message cashierCompleteLis(int pageNum, int limit, String content, String strtime, String endtime,Integer orderState,HttpServletRequest request){
-        //String username = (String) request.getAttribute("username");
-        //String name = (String) request.getAttribute("name");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String username = (String) request.getAttribute("username");
+        String name = (String) request.getAttribute("name");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
@@ -466,11 +434,8 @@ public class NetworkController {
      */
     @RequestMapping("/dealListNetwork")
     public Message dealListNetwork(int pageNum, int limit, String content, String strtime, String endtime,Integer status,HttpServletRequest request){
-        //String username = (String) request.getAttribute("username");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
@@ -497,10 +462,8 @@ public class NetworkController {
      */
     @RequestMapping("/subordinateList")
     public Message subordinateList(int pageNum, int limit, String content, String strtime, String endtime,Integer status,String pool,String lastFollowName,HttpServletRequest request){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
@@ -521,11 +484,8 @@ public class NetworkController {
      */
     @RequestMapping("/transferNetwork")
     public Message transferNetwork(@RequestBody List<Distribute> distribute,HttpServletRequest request){
-        //String name = (String) request.getAttribute("name");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         int i = distributeService.transferNetwork(distribute,name);
         if ( i > 0){
             return Message.success();
@@ -540,11 +500,8 @@ public class NetworkController {
      */
     @RequestMapping("/customerTransfer")
     public Message customerTransfer(@RequestBody List<Distribute> distribute,HttpServletRequest request){
-        //String name = (String) request.getAttribute("name");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         int i = distributeService.customerTransfer(distribute,name);
         if (i > 0) {
             return Message.success();
@@ -614,10 +571,8 @@ public class NetworkController {
      */
     @RequestMapping("/addEnterprise")
     public Message addEnterprise(@RequestBody Enterprise enterprise, HttpServletRequest request){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
         mapl.put("name",name);
         mapl.put("enterprise",enterprise);
@@ -651,11 +606,9 @@ public class NetworkController {
      */
     @RequestMapping("/addBusiness")
     public Message addBusiness(@RequestBody DealOrder dealOrder,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
         mapl.put("name",name);
         mapl.put("dealOrder",dealOrder);
         int i = distributeService.addBusiness(mapl);
@@ -671,10 +624,8 @@ public class NetworkController {
      */
     @RequestMapping("/returnPool")
     public Message returnPool(@RequestBody Distribute distribute,HttpServletRequest request){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("distribute",distribute);
@@ -691,10 +642,8 @@ public class NetworkController {
      */
     @RequestMapping("/chargeback")
     public Message chargeback(@RequestBody Distribute distribute,HttpServletRequest request) {
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("distribute",distribute);
@@ -715,10 +664,8 @@ public class NetworkController {
      */
     @RequestMapping("/adopt")
     public Message adopt(@RequestBody Distribute distribute,HttpServletRequest request){
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("distribute",distribute);
@@ -738,11 +685,8 @@ public class NetworkController {
      */
     @RequestMapping("/statusList")
     public Message statusList(int pageNum, int limit,Integer status,HttpServletRequest request){
-        //String name = (String) request.getAttribute("name");
-        String token = request.getHeader("token"); // 获取头中token
-        Map<String, Object> map = JwtUtil.parseJWT(token);
-        String username = (String) map.get("userName");
-        String name = (String) map.get("name");
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
         return Message.success("查询成功",distributeService.statusList(pageNum,limit,status,name));
     }
     /**

@@ -114,7 +114,10 @@
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,
     source,address,proposer,status,activation,last_follow_result from customer_telemarke
-    where  1 = 1 and issue = #{issue} and proposer = #{proposer}
+    where  1 = 1 and issue = #{issue}
+    <if test="proposer != null and proposer !=''">
+      and proposer = #{proposer}
+    </if>
         <if test="sign != null">
         AND sign = #{sign}
         </if>
@@ -134,6 +137,9 @@
   <select id="grabbingPool" resultMap="aMap" parameterType="Map">
     select id,track_id,source,last_follow_result,proposer,create_time,issue,sign,last_follow_name,last_follow_result,corporate_name from customer_telemarke
     where  issue = 1 and `status` in(0,1)
+    <if test="branch !=null and branch !=''">
+      and branch = #{branch}
+    </if>
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -150,7 +156,10 @@
   <select id="withPool" resultMap="aMap" parameterType="Map">
     SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time)
      as overdue_time,issue,leader_sign from customer_telemarke WHERE
-    `status` in (7,10) and last_follow_name = #{lastFollowName} and activation = 0 and issue = #{issue}
+    `status` in (7,10) and activation = 0 and issue = #{issue}
+    <if test="lastFollowName != null and lastFollowName !=''">
+      and last_follow_name = #{lastFollowName}
+    </if>
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -182,8 +191,11 @@
   <!--陆军客户-->
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
-    source,last_follow_time,activation,address,activation_time,name,proposer,last_follow_result,total from customer_telemarke
-    where last_follow_name = #{lastFollowName} and status = #{status} and activation = 1
+    source,last_follow_time,activation,address,activation_time,name,proposer,last_follow_result,total,receiving_time from customer_telemarke
+    where status = #{status} and activation = 1
+    <if test="lastFollowName != null and lastFollowName !=''">
+      and last_follow_name = #{lastFollowName}
+    </if>
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>

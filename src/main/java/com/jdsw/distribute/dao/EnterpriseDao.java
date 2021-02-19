@@ -6,6 +6,9 @@ import com.jdsw.distribute.model.Enterprise;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 企业池
+ */
 public interface EnterpriseDao {
     /**
      * 新增企业信息

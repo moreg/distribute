@@ -19,5 +19,6 @@ public class Enterprise {
     private String corporatePhone2;
     private String corporatePhone3;
     private String trackId;
+    private String lastFollowName;
 
 }

@@ -7,6 +7,9 @@ import com.jdsw.distribute.vo.MenuVo;
 
 import java.util.List;
 
+/**
+ * 菜单
+ */
 public interface MenuDao {
      List<SysMune> findTree(String usernmae);
      List<Menu> findBranch();

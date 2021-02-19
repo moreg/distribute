@@ -88,6 +88,7 @@
         ,activation_time
         ,create_time
         ,status
+        ,proposer
         )VALUES (
         <if test="corporateName != null and corporateName !=''">
             #{corporateName}
@@ -120,6 +121,7 @@
         ,SYSDATE()
         ,SYSDATE()
         ,10
+        ,#{lastFollowName}
         )
     </insert>
     <!--导入-->

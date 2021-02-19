@@ -37,6 +37,7 @@ public class MyInterceptor implements HandlerInterceptor {
             if (map != null) {
                 request.setAttribute("username", map.get("userName"));
                 request.setAttribute("name",map.get("name"));
+                request.setAttribute("role",map.get("role"));
                 return true;
             }
         }

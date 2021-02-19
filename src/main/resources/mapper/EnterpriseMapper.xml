@@ -18,7 +18,10 @@
     <select id="enterprisePoolList" parameterType="Map" resultType="com.jdsw.distribute.model.Enterprise">
         select id,source,corporate_name as corporateName,corporate_phone as corporatePhone,name,relation,add_name as addName,add_time as addTime,
         registered_capital as registeredCapital,establish_time as establishTime,address,
-        track_id as trackId from enterprise where add_name = #{name}
+        track_id as trackId,last_follow_name as lastFollowName from enterprise where 1 = 1
+        <if test="name !=null and name != ''">
+            AND last_follow_name = #{name}
+        </if>
         <if test="strtime != null and strtime!=''">
             AND add_time <![CDATA[ >= ]]> #{strtime}
         </if>
@@ -52,6 +55,9 @@
             </if>
             <if test="addName != null and addName !=''">
                 add_name,
+            </if>
+            <if test="lastFollowName != null and lastFollowName !=''">
+                last_follow_name,
             </if>
             <if test="registeredCapital != null and registeredCapital != ''">
                 registered_capital,
@@ -91,6 +97,9 @@
             </if>
             <if test="addName != null and addName !=''">
                 #{addName},
+            </if>
+            <if test="lastFollowName != null and lastFollowName !=''">
+                #{lastFollowName},
             </if>
             <if test="registeredCapital != null and registeredCapital != ''">
                 #{registeredCapital},

@@ -21,6 +21,7 @@ import com.jdsw.distribute.util.excelRead;
 import com.jdsw.distribute.vo.CashierVo;
 import com.jdsw.distribute.vo.InsertVo;
 import com.jdsw.distribute.vo.RecordingVo;
+import com.jdsw.distribute.vo.UsersVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -49,19 +50,40 @@ public class TelemarkeServiceImpl implements TelemarkeService {
 
     @Override
     public PageInfo<Distribute> armyListPoolList(Map map) {
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
-        map.put("proposer",map.get("name"));
-        PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = telemarkDao.armyListPoolList(map);
-        PageInfo result = new PageInfo(Network);
-        return result;
+        for (Object str : set) {
+            if (str.equals(Department.ARMCUSTOMER.value)) {//线索管理员
+                map.put("proposer",map.get("name"));
+                PageHelper.startPage(pageNum, limit);
+                List<Distribute> Network = telemarkDao.armyListPoolList(map);
+                PageInfo result = new PageInfo(Network);
+                return result;
+            }else if (str.equals(Department.ADMIN.value)){
+                PageHelper.startPage(pageNum, limit);
+                List<Distribute> Network = telemarkDao.armyListPoolList(map);
+                PageInfo result = new PageInfo(Network);
+                return result;
+            }
+        }
+        return null;
     }
 
     @Override
     public PageInfo<Distribute> grabbingPool(Map map) {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
+        for (Object str : set){
+            if (str.equals(Department.ADMIN.value)){
+                List<Distribute> Network = networkDao.grabbingPool(map);
+                PageInfo result = new PageInfo(Network);
+                return result;
+            }
+        }
+        UsersVo usersVo = userDao.queryBranch((String) map.get("username"));
+        map.put("branch",usersVo.getBranch());
         PageHelper.startPage(pageNum, limit);
         List<Distribute> Network = telemarkDao.grabbingPool(map);
         PageInfo result = new PageInfo(Network);
@@ -272,8 +294,14 @@ public class TelemarkeServiceImpl implements TelemarkeService {
 
     @Override
     public PageInfo<Distribute> queryTelemarkeByLastName(Map map) {
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
+        for (Object str : set){
+            if (str.equals(Department.ADMIN.value) || str.equals(Department.GENERAL.value) || str.equals(Department.DEPUTY.value)){
+                map.put("lastFollowName",null);
+            }
+        }
         map.put("status",10);
         PageHelper.startPage(pageNum, limit);
         List<Distribute> Network = telemarkDao.queryTelemarkeByLastName(map);
