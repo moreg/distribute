@@ -17,7 +17,7 @@ public class DevelopPool {
     private Date lastFollowTime;
     private Integer activation;
     private String lastFollowResult;
-    private String activationTime;
+    private String receivingTime;
     private BigDecimal total;
     private String grade;
     @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")

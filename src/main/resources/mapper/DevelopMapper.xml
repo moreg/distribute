@@ -11,7 +11,7 @@
         <result column="last_follow_result"  property="lastFollowResult" />
         <result column="grade"  property="grade" />
         <result column="total"  property="total" />
-        <result column="activation_time"  property="activationTime" />
+        <result column="receiving_time"  property="receivingTime" />
         <result column="create_time"  property="createTime" />
         <result column="source"  property="source" />
 
@@ -84,8 +84,11 @@
         <if test="source != null">
             ,source
         </if>
+        <if test="weChat != null and weChat != ''">
+            ,weChat
+        </if>
         ,activation_name
-        ,activation_time
+        ,receiving_time
         ,create_time
         ,status
         ,proposer
@@ -117,8 +120,11 @@
         <if test="source != null">
             ,#{source}
         </if>
+        <if test="weChat != null and weChat != ''">
+            ,#{weChat}
+        </if>
         ,#{lastFollowName}
-        ,SYSDATE()
+        ,#{receivingTime}
         ,SYSDATE()
         ,10
         ,#{lastFollowName}
@@ -139,8 +145,11 @@
     </insert>
     <!--列表-->
     <select id="developList" parameterType="Map" resultMap="aMap">
-        select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,activation_time,activation,create_time,source from customer_develop
-        where  last_follow_name = #{name} and status = 10
+        select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,receiving_time,activation,source from customer_develop
+        where  status = 10
+        <if test="lastFollowName != null and lastFollowName !=''">
+            and last_follow_name = #{lastFollowName}
+        </if>
         <if test="strtime != null and strtime!=''">
             AND create_time <![CDATA[ >= ]]> #{strtime}
         </if>

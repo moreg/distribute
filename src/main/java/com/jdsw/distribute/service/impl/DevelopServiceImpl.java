@@ -47,6 +47,9 @@ public class DevelopServiceImpl implements DevelopService {
         distribute.setLastFollowName((String) map.get("name"));
         distribute.setProposer((String) map.get("name"));
         distribute.setGrade(usersVo.getGroup());
+        if (StringUtils.isEmpty(distribute.getReceivingTime())){
+            distribute.setReceivingTime(DateUtil.getDate("yyyy-MM-dd"));
+        }
         if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("Z");//获得跟踪单号
             distribute.setTrackId(trackId);
@@ -75,6 +78,7 @@ public class DevelopServiceImpl implements DevelopService {
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
         PageHelper.startPage(pageNum, limit);
+        map.put("lastFollowName",map.get("name"));
         List<Distribute> Network = developDao.developList(map);
         PageInfo result = new PageInfo(Network);
         return result;

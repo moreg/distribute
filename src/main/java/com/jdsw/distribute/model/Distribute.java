@@ -218,4 +218,8 @@ public class Distribute {
      * 是否超时退回
      */
     Integer overrun;
+    /**
+     * 录音地址
+     */
+    String record;
 }

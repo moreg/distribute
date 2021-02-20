@@ -154,7 +154,7 @@
   </select>
   <!--业务员跟单池-->
   <select id="withPool" resultMap="aMap" parameterType="Map">
-    SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time)
+    SELECT id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time)
      as overdue_time,issue,leader_sign from customer_telemarke WHERE
     `status` in (7,10) and activation = 0 and issue = #{issue}
     <if test="lastFollowName != null and lastFollowName !=''">
@@ -174,7 +174,7 @@
   </select>
   <!--主管跟单池-->
   <select id="withPool2" resultMap="aMap" parameterType="Map">
-    SELECT id,track_id,corporate_name,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,`status`,overrun from customer_telemarke WHERE
+    SELECT id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,`status`,overrun from customer_telemarke WHERE
     ((leader_name = #{lastFollowName} and status = 5) or (last_follow_name = #{lastFollowName} and `status` = 10 and activation = 0))   and issue =  #{issue}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -190,7 +190,7 @@
   </select>
   <!--陆军客户-->
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="Map">
-    select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,last_follow_name,
+    select id,track_id,name,corporate_name,corporate_phone,weChat,registered_capital,establish_time,issue,create_time,last_follow_name,
     source,last_follow_time,activation,address,activation_time,name,proposer,last_follow_result,total,receiving_time from customer_telemarke
     where status = #{status} and activation = 1
     <if test="lastFollowName != null and lastFollowName !=''">
@@ -278,6 +278,9 @@
     <if test="leaderSign !=null">
       ,leader_sign
     </if>
+    <if test="weChat != null and weChat != ''">
+      ,weChat
+    </if>
     )
     values (
     #{name},#{corporateName},#{corporatePhone},#{source},#{address},sysdate(),#{trackId},#{proposer}
@@ -316,6 +319,9 @@
     </if>
     <if test="leaderSign !=null">
       ,#{leaderSign}
+    </if>
+    <if test="weChat != null and weChat != ''">
+      ,#{weChat}
     </if>
     )
   </insert>

@@ -32,4 +32,5 @@ public class AirForcePool {
     private BigDecimal total;
     private String grade;
     private Integer overrun;
+    private String weChat;
 }
