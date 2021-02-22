@@ -238,4 +238,10 @@ public interface NetworkService {
      */
     int activation(Map map);
 
+    /**
+     * 查询是否有重复单号
+     * @param trackId
+     * @return
+     */
+    Distribute qureyTrackId(String trackId);
 }

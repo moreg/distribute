@@ -18,7 +18,6 @@ public interface NetworkDao {
      * @return
      */
     int appoint(List<Distribute> distribute);
-
     /**
      * 生成跟踪单号
      * @param distribute

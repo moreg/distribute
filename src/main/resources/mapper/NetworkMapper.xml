@@ -193,7 +193,7 @@
   </select>
   <!--空中客户-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
-    select id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time from customer_network
+    select id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time,sign from customer_network
     where status = #{status} and activation = 1
     <if test="lastFollowName != null and lastFollowName !=''">
       and last_follow_name = #{lastFollowName}

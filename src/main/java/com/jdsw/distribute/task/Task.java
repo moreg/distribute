@@ -68,8 +68,9 @@ public class Task {
                             distribute1.setStatus(5);
                             distribute1.setIssue(1);
                         }else if (Department.CHARGE.value.equals(role)){
-                            distribute1.setStatus(7);
-                            distribute1.setIssue(3);
+                            distribute1.setStatus(5);
+                            distribute1.setIssue(1);
+                            distribute1.setLeaderName(distribute.get(i).getLastFollowName());
                         }
                         distribute1.setId(distribute.get(i).getId());
                         distribute1.setOverdueTime(null);

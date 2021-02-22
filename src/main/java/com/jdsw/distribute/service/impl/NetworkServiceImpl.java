@@ -618,7 +618,13 @@ public class NetworkServiceImpl implements NetworkService {
     public int returnPool(Map map) {
         Distribute distribute = (Distribute) map.get("distribute");
         DistributeFollow networkFollow;
-        String str = map.get("name")+"提交退单";
+        Integer status = distribute.getStatus();
+        String str = null;
+        if (7 == status){
+            str = map.get("name")+"提交“无效”退单";
+        }else if (11 == status){
+            str = map.get("name")+"提交“有效（无法办理）”退单";
+        }
         String trid = distribute.getTrackId().substring(0, 1);;
         networkFollow = new DistributeFollow();
         networkFollow.setFollowName((String) map.get("name"));
@@ -761,5 +767,10 @@ public class NetworkServiceImpl implements NetworkService {
             return developDao.updateDevelop(distribute);
         }
         return 0;
+    }
+
+    @Override
+    public Distribute qureyTrackId(String trackId) {
+        return networkDao.selectNetworkById3(trackId);
     }
 }

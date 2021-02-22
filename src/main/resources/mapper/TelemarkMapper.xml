@@ -191,7 +191,7 @@
   <!--陆军客户-->
   <select id="queryTelemarkeByLastName" resultMap="aMap" parameterType="Map">
     select id,track_id,name,corporate_name,corporate_phone,weChat,registered_capital,establish_time,issue,create_time,last_follow_name,
-    source,last_follow_time,activation,address,activation_time,name,proposer,last_follow_result,total,receiving_time from customer_telemarke
+    source,last_follow_time,activation,address,activation_time,name,proposer,last_follow_result,total,receiving_time,sign from customer_telemarke
     where status = #{status} and activation = 1
     <if test="lastFollowName != null and lastFollowName !=''">
       and last_follow_name = #{lastFollowName}

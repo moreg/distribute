@@ -498,7 +498,7 @@ public class NetworkController {
      * @param distribute
      * @return
      */
-    @RequestMapping("/customerTransfer")
+   /* @RequestMapping("/customerTransfer")
     public Message customerTransfer(@RequestBody List<Distribute> distribute,HttpServletRequest request){
         String name = (String) request.getAttribute("name");
         String username = (String) request.getAttribute("username");
@@ -507,7 +507,7 @@ public class NetworkController {
             return Message.success();
         }
         return Message.fail();
-    }
+    }*/
     /**
      * 设置超时时间
      * @param
@@ -692,10 +692,10 @@ public class NetworkController {
     /**
      * 强制超时
      */
-    @RequestMapping("/setOvertime")
+   /* @RequestMapping("/setOvertime")
     public Message setOvertime(@RequestBody Distribute distribute){
         distributeService.setOvertime(distribute);
         return Message.success();
-    }
+    }*/
 
 }

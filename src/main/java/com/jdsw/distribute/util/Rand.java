@@ -1,5 +1,12 @@
 package com.jdsw.distribute.util;
 
+import com.jdsw.distribute.dao.DevelopDao;
+import com.jdsw.distribute.dao.NetworkDao;
+import com.jdsw.distribute.dao.TelemarkeDao;
+import com.jdsw.distribute.model.Distribute;
+import com.jdsw.distribute.service.NetworkService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -14,9 +21,10 @@ public class Rand {
             sb.append(str.charAt(number));
         }
         StringBuffer st=new StringBuffer(string);
-        SimpleDateFormat s = new SimpleDateFormat("yyMMddSSSS");
+        SimpleDateFormat s = new SimpleDateFormat("yyMMmmSSSS");
         String strd = s.format(new Date());
-        return st.append(strd).append(sb).toString();
+        String order = st.append(strd).append(sb).toString();
+        return order;
     }
 
     public static void main(String[] args) {
