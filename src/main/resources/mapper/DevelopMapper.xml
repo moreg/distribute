@@ -143,10 +143,10 @@
             )
         </foreach>
     </insert>
-    <!--列表-->
+    <!--客户列表-->
     <select id="developList" parameterType="Map" resultMap="aMap">
         select id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,receiving_time,activation,source from customer_develop
-        where  status = 10
+        where  status = 10 and activation = 1
         <if test="lastFollowName != null and lastFollowName !=''">
             and last_follow_name = #{lastFollowName}
         </if>

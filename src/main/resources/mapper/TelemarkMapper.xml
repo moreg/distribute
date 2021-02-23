@@ -62,7 +62,7 @@
     <result column="registered_capital"  property="registeredCapital" />
     <result column="address"  property="address" />
     <result column="total"  property="total" />
-
+    <result column="weChat"  property="weChat" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -113,7 +113,7 @@
   <select id="armyListPoolList" resultMap="aMap" parameterType="String">
 
     select id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,issue,create_time,
-    source,address,proposer,status,activation,last_follow_result from customer_telemarke
+    source,address,proposer,status,activation,last_follow_result,weChat from customer_telemarke
     where  1 = 1 and issue = #{issue}
     <if test="proposer != null and proposer !=''">
       and proposer = #{proposer}

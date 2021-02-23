@@ -3,6 +3,9 @@ package com.jdsw.distribute.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+/**
+ * 企业表
+ */
 @Data
 public class Enterprise {
     private Integer id;

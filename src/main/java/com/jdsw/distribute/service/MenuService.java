@@ -34,6 +34,8 @@ public interface MenuService {
      */
     List getsubordinateMenuList(Map map);
 
+    List<Menu> businessMenu();
+
     /**
      * 空军来源
      * @return

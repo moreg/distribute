@@ -222,4 +222,12 @@ public class Distribute {
      * 录音地址
      */
     String record;
+    /**
+     * 业务编号
+     */
+    String businessNo;
+    /**
+     * 签订人
+     */
+    String signed;
 }

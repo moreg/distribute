@@ -41,7 +41,9 @@
     <select id="findBranch" resultMap="BaseResultMap">
          select bm.id,bm.label,bm.parent_id,bm.parent_name,bm.order from branch_menu bm
     </select>
-
+    <select id="businessMenu" resultMap="BaseResultMap">
+        select bm.id,bm.label,bm.parent_id,bm.parent_name,bm.order from business_menu bm
+    </select>
     <select id="kSourceMenu" resultMap="MenuVo">
         select ks.id,ks.label,ks.parent_id,ks.parent_name,ks.order,ks.label as `value` from k_source ks
     </select>

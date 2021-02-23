@@ -15,6 +15,8 @@
         <result column="conduct"  property="conduct" />
         <result column="money"  property="money" />
         <result column="deal_time"  property="dealTime" />
+        <result column="business_no"  property="businessNo" />
+        <result column="signed"  property="signed" />
     </resultMap>
     <select id="qureyOrder" resultMap="cashierMap">
         select contract_no,conduct,pay,deal_time from deal_order where corporate_phone in
@@ -89,7 +91,7 @@
             <if test="dealTime != null and dealTime != ''">
                 #{dealTime},
             </if>
-            1,
+            #{orderState},
             sysdate()
         </trim>
     </insert>

@@ -129,7 +129,6 @@ public class MenuServiceImpl  implements MenuService {
                 childList.add(nav);
             }
         }
-        System.out.println(childList);
         //递归
         for (Menu nav : childList) {
             nav.setChildren(getChild3(nav.getId(), allMenu));
@@ -240,6 +239,37 @@ public class MenuServiceImpl  implements MenuService {
                     return childList;
                 }
             }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Menu> businessMenu() {
+        Map<String,Object> data = new HashMap<String,Object>();
+        try {//查询所有菜单
+            List<Menu> allMenu = menuMapper.businessMenu();
+            //根节点
+            List<Menu> rootMenu = new ArrayList<Menu>();
+            for (Menu nav : allMenu) {
+                if(nav.getParentId().equals("0")){//父节点是0的，为根节点。
+                    rootMenu.add(nav);
+                }
+            }
+            System.out.println(rootMenu);
+            /* 根据Menu类的order排序 */
+            //Collections.sort(rootMenu, order());
+            //为根菜单设置子菜单，getClild是递归调用的
+            for (Menu nav : rootMenu) {
+                /* 获取根节点下的所有子节点 使用getChild方法*/
+                List<Menu> childList = getChild3(nav.getId(), allMenu);
+                nav.setChildren(childList);//给根节点设置子节点
+            }
+            data.put("list", rootMenu);
+            return rootMenu;
+        } catch (Exception e) {
+            data.put("success", "false");
+            data.put("list", new ArrayList());
+            //return rootMenu;
         }
         return null;
     }

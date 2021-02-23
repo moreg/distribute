@@ -15,6 +15,8 @@ public interface MenuDao {
      List<Menu> findBranch();
      List<SysMune> getMenuList(String username);
 
+     List<Menu> businessMenu();
+     
      List<MenuVo> kSourceMenu();
 
      List<MenuVo> lSourceMenu();

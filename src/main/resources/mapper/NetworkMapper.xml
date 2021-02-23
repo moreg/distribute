@@ -90,7 +90,7 @@
   </sql>
 
   <sql id="PoolList">
-    id,track_id,corporate_name,corporate_phone,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer,sign
+    id,track_id,corporate_name,corporate_phone,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer,sign,weChat
   </sql>
 
   <select id="selectNetworkTrackId" resultType="String">

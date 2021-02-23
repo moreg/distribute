@@ -26,4 +26,12 @@ public class CashierVo {
     private String dealTime;
     private String conduct;
     private BigDecimal pay;
+    /**
+     * 业务编号
+     */
+    private String businessNo;
+    /**
+     * 签订人
+     */
+    private String signed;
 }

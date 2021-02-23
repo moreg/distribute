@@ -105,6 +105,14 @@ public class MenuController {
     }
 
     /**
+     * 办理业务菜单
+     * @return
+     */
+    @RequestMapping("/businessMenu")
+    public Message businessMenu(){
+        return Message.success("查询成功",menuService.businessMenu());
+    }
+    /**
      * 来源
      * @return
      */

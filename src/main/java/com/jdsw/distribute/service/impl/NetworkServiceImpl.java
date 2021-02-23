@@ -51,6 +51,8 @@ public class NetworkServiceImpl implements NetworkService {
     private DevelopDao developDao;
     @Autowired
     private DevelopFollowDao developFollowDao;
+    @Autowired
+    private BusinessDao businessDao;
     @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
@@ -413,6 +415,7 @@ public class NetworkServiceImpl implements NetworkService {
     }
 
     @Override
+    @Transactional
     public int updateRecordingNetwork(Map map) {
         Distribute distribute = (Distribute) map.get("distribute");
         distribute.setStatus(4);
@@ -443,6 +446,8 @@ public class NetworkServiceImpl implements NetworkService {
         enterprise.setName(distribute.getName());
         enterprise.setSource(distribute.getSource().toString());
         enterpriseDao.insertEnterprise(enterprise);
+/*        Business business = new Business();
+        business.setBusinessNo(distribute.getBusinessNo());*/
         return networkDao.UpdateRecordingNetwork((Distribute) map.get("distribute"));
     }
 
@@ -457,7 +462,7 @@ public class NetworkServiceImpl implements NetworkService {
             map.put("orderState",null);
         }
         for (Object str : set) {
-            if (str.equals(Department.FINANCE.value) ) {//财务
+            if (str.equals(Department.FINANCE.value) || str.equals(Department.ADMIN.value)) {//财务
                 PageHelper.startPage(pageNum, limit);
                 List<CashierVo> CashierVo = networkDao.cashierListNetwork(map);
                 PageInfo result = new PageInfo(CashierVo);
@@ -610,6 +615,7 @@ public class NetworkServiceImpl implements NetworkService {
     public int addBusiness(Map map) {
         DealOrder order = (DealOrder) map.get("dealOrder");
         order.setLastFollowName((String) map.get("name"));
+        order.setOrderState(1);
         return dealOrderDao.insertOrder(order);
     }
 
@@ -771,6 +777,7 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public Distribute qureyTrackId(String trackId) {
+        System.out.println(trackId);
         return networkDao.selectNetworkById3(trackId);
     }
 }
