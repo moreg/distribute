@@ -123,6 +123,13 @@ public interface NetworkService {
      * @return
      */
     PageInfo<CashierVo> cashierCompleteLis(Map map);
+
+    /**
+     * 录入弹窗
+     * @param distribute
+     * @return
+     */
+    CashierVo recordingPop(Distribute distribute);
     /**
      * 完成订单
      * @param

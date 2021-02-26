@@ -114,10 +114,10 @@
             <artifactId>jackson-module-parameter-names</artifactId>
         </dependency>
         <!--redis依赖添加-->
-<!--        <dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>-->
+        </dependency>
         <!--性能测试依赖-->
         <dependency>
             <groupId>org.databene</groupId>

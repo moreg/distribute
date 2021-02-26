@@ -13,7 +13,7 @@
         <result column="order_state"  property="orderState" />
         <result column="contract_no"  property="contractNo" />
         <result column="conduct"  property="conduct" />
-        <result column="money"  property="money" />
+        <result column="pay"  property="pay" />
         <result column="deal_time"  property="dealTime" />
         <result column="business_no"  property="businessNo" />
         <result column="signed"  property="signed" />
@@ -23,6 +23,9 @@
         <foreach collection="list" item="item" index="index" separator="," close=")" open="(">
         #{item}
         </foreach>
+    </select>
+    <select id="qureyOrderAll" resultMap="cashierMap">
+        select id,contract_no,deal_time,source,name,track_id,last_follow_name,corporate_name,corporate_phone from deal_order where id = #{id}
     </select>
     <insert id="insertOrder" parameterType="com.jdsw.distribute.model.DealOrder">
         insert into deal_order
@@ -95,4 +98,9 @@
             sysdate()
         </trim>
     </insert>
+    <update id="updateDealOrder" parameterType="com.jdsw.distribute.model.Distribute">
+    update deal_order set order_state = 1,conduct = #{conduct},contract_no = #{contractNo},pay = #{pay},cost = #{cost},deal_time = #{dealTime},
+    recording_name = #{recordingName},signed = #{signed},last_follow_name = #{lastFollowName}
+    where id = #{id}
+  </update>
 </mapper>

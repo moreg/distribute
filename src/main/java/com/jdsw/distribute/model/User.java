@@ -30,7 +30,7 @@ public class User implements Serializable {
     private Integer pageSize;
     private String department;
     private String group;
-
+    private String branch;
 
 
 }

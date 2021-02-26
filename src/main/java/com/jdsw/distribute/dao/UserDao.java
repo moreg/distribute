@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 public interface UserDao {
-    int deleteByPrimaryKey(Integer id);
 
     int insert(User record);
 
@@ -20,11 +19,9 @@ public interface UserDao {
 
     int insertSelective(User record);
 
-    User selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(User record);
 
-    int updateByPrimaryKey(User record);
 
     List<UsersVo> selectUsers();
 
@@ -33,8 +30,8 @@ public interface UserDao {
     Set<String> findPermissionByUserName(String username);
 
     int countUser();
-
-    Set<String> findRoleByUserName(String username);
+    User findRoleByUsername(String username);
+    //Set<String> findRoleByUserName(String username);
 
     Set<String> findRoleByUserName2(String username);
 

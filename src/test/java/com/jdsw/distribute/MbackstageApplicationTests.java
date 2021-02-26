@@ -29,10 +29,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import java.beans.IntrospectionException;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -80,7 +78,14 @@ public class MbackstageApplicationTests {
     }*/
     @Test
     public void liuc(){
-
+        List list = new ArrayList();
+        BigDecimal bigDecimal = new BigDecimal(124657);
+        Map map = new HashMap();
+        map.put("pay",bigDecimal);
+        map.put("conduct","注册公司");
+        map.put("businessNo","aa45346464");
+        list.add(map);
+        System.out.println(list);
     }
     @Test
     public void input_deploy(){

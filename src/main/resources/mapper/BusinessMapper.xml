@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jdsw.distribute.dao.BusinessDao">
+    <resultMap id="cashierMap" type="com.jdsw.distribute.model.Business">
+        <result column="id"  property="id" />
+        <result column="corporate_phone"  property="corporatePhone" />
+        <result column="contract_no"  property="contractNo" />
+        <result column="conduct"  property="conduct" />
+        <result column="pay"  property="pay" />
+        <result column="business_no"  property="businessNo" />
+        <result column="deal_time"  property="dealTime" />
+    </resultMap>
+    <select id="qureyBusiness" resultMap="cashierMap">
+        select contract_no,conduct,pay,deal_time from business where corporate_phone in
+        <foreach collection="list" item="item" index="index" separator="," close=")" open="(">
+            #{item}
+        </foreach>
+    </select>
+
+    <insert id="insertBusiness" parameterType="java.util.List">
+    insert into business(corporate_phone
+    ,create_time,contract_no,conduct,pay,business_no,deal_time
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+    (#{item.corporatePhone},sysdate(),#{item.contractNo},#{item.conduct},#{item.pay},#{item.businessNo},#{item.dealTime})
+    </foreach>
+    </insert>
+    <insert id="insertBusiness2" parameterType="com.jdsw.distribute.model.DealOrder">
+        insert into business (corporate_phone,contract_no,conduct,pay,deal_time,create_time) values (#{corporatePhone},#{contractNo},#{conduct},#{pay},#{dealTime},sysdate())
+    </insert>
+</mapper>

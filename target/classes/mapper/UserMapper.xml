@@ -11,9 +11,10 @@
     <result column="adminrole" jdbcType="VARCHAR" property="adminrole" />
     <result column="addtime" jdbcType="VARCHAR" property="addtime" />
     <result column="salt" jdbcType="VARCHAR" property="salt" />
-    <result column="permission" jdbcType="VARCHAR" property="permission" />
     <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="branch" jdbcType="VARCHAR" property="branch" />
     <result column="group" jdbcType="VARCHAR" property="group" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
     <collection property="roles" ofType="com.jdsw.distribute.model.Role">
       <id property="id" column="id"/>
       <result property="rolename" column="rolename"/>
@@ -57,16 +58,21 @@
   <select id="findByUserName" parameterType="string" resultMap="BaseResultMap">
   select * from user where username = #{username}
   </select>
-  <select id="findRoleByUserName" parameterType="string" resultType="java.lang.String">
-    select r.id from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
+
+  <select id="findRoleByUsername" parameterType="string" resultMap="BaseResultMap">
+ SELECT * FROM user LEFT JOIN user_role on `user`.id = user_role.userid LEFT JOIN role ON role.id = user_role.roleid WHERE `user`.username = #{username}
   </select>
+
+<!--  <select id="findRoleByUserName" parameterType="string" resultType="java.lang.String">
+    select r.id from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
+  </select>-->
 
   <select id="findRoleByUserName2" parameterType="string" resultType="java.lang.String">
     select r.rolename from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
   </select>
 
   <select id="findRoleByUserName3" parameterType="string" resultType="com.jdsw.distribute.vo.UsersVo">
-    select r.rolename,r.leader,r.group,r.id from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
+    select r.rolename,r.leader,u.group,r.id from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and username = #{username}
   </select>
   <select id="findRoleByUserName4" parameterType="string" resultType="String">
     select r.rolename from role r, user u ,user_role ur where u.id = ur.userid and r.id = ur.roleid and u.`name` = #{name}
@@ -75,16 +81,17 @@
   <select id="countUser" resultType="java.lang.Integer">
   select count(*) from user
   </select>
+
   <select id="queryDepartment"  resultMap="BaseResultMap" parameterType="Map">
-    select u.name,r.department,r.branch,r.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid  and r.branch = #{branch}
+    select u.name,u.department,u.branch,u.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid  and u.branch = #{branch}
     <if test="list.size()>0" >
-      and r.department in
+      and u.department in
       <foreach collection="list" item="department" index="index" open="(" close=")" separator=",">
         #{department}
       </foreach>
     </if>
     <if test="list2.size()>0">
-      and r.group in
+      and u.group in
       <foreach collection="list2" item="group" index="index" open="(" close=")" separator=",">
         #{group}
       </foreach>
@@ -92,14 +99,14 @@
   </select>
 
   <select id="queryGroup"  resultMap="BaseResultMap" parameterType="Map">
-    select u.name,r.department,r.branch,r.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.branch = #{branch} and r.group in
+    select u.name,u.department,u.branch,u.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.branch = #{branch} and r.group in
     <foreach collection="list" item="group" index="index" open="(" close=")" separator=",">
       #{group}
     </foreach>
   </select>
 
   <select id="queryCharge"  resultType="com.jdsw.distribute.vo.UsersVo" parameterType="java.util.List">
-    select u.name,r.department,r.branch,r.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = '主管' and r.branch = #{branch} and
+    select u.name,u.department,u.branch,u.group from user u,user_role ur,role r where u.id = ur.userid and r.id = ur.roleid and r.rolename = '主管' and r.branch = #{branch} and
     department = #{department} and r.group in
     <foreach collection="list"  index="index" item="group" open="(" close=")" separator=",">
       #{group}
@@ -120,7 +127,7 @@
   </select>
 
   <select id="queryBranch" resultType="com.jdsw.distribute.vo.UsersVo">
-    select branch,r.`group`,r.department,r.rolename from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and u.username = #{username}
+    select u.branch,u.`group`,u.department,r.rolename from user u,role r,user_role ur where  u.id = ur.userid and r.id = ur.roleid and u.username = #{username}
   </select>
 
   <!--查询下属名字-->
@@ -132,13 +139,13 @@
     delete from user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-
+  <!--添加账号-->
   <insert id="insert" parameterType="com.jdsw.distribute.model.User">
     insert into user (id, username, password, 
       name, remarks, state, 
-       addtime,salt)
+       addtime,salt,department,branch,`group`)
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{name,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{addtime},#{salt})
+      #{name,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{addtime},#{salt},#{department},#{branch},#{group})
   </insert>
   <insert id="insertSelective" parameterType="com.jdsw.distribute.model.User">
     insert into user

@@ -50,17 +50,11 @@ public class Task {
                     Date start = sdf.parse(distribute.get(i).getOverdueTime());
 
                     if (start.getTime() - now.getTime() > 0 && start.getTime() - now.getTime() <=300000){
-                        distribute1.setId(distribute.get(i).getId());
-                        distribute1.setStatus(6);
-                        //networkDao.SubmitRecordingNetwork(distribute1);
-/*                        System.out.println(distribute.get(i).getId());
-                        System.out.println("提醒即将超时");*/
+                        //System.out.println("提醒即将超时");
                     }else if (start.getTime() - now.getTime() <= -600000 && start.getTime() - now.getTime() >= -1200000){
-/*                        System.out.println(distribute.get(i).getId());
-                        System.out.println("超时十分钟提醒");*/
+                        //System.out.println("超时十分钟提醒");
                     }else if (start.getTime() - now.getTime() <= -1200000 && start.getTime() - now.getTime() >= -1500000){
-/*                        System.out.println(distribute.get(i).getId());
-                        System.out.println("超时二十分钟提醒");*/
+                        //System.out.println("超时二十分钟提醒");
                     }else if (start.getTime() - now.getTime() <= -1500000){
                         String str = distribute.get(i).getLastFollowName()+"超时退回";
                         String role = userDao.findRoleByUserName4(distribute.get(i).getLastFollowName());
@@ -68,7 +62,7 @@ public class Task {
                             distribute1.setStatus(5);
                             distribute1.setIssue(1);
                         }else if (Department.CHARGE.value.equals(role)){
-                            distribute1.setStatus(5);
+                            distribute1.setStatus(10);
                             distribute1.setIssue(1);
                             distribute1.setLeaderName(distribute.get(i).getLastFollowName());
                         }

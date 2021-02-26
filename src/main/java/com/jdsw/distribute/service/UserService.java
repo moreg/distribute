@@ -29,7 +29,7 @@ public interface UserService {
      * @return
      */
     int updatePassword(UsersVo usersVo);
-    Set<String> findRoleByUserName(String username);
+    User findRoleByUserName(String username);
     Set<String> findRoleByUserName2(String username);
     /**
      * 查询部门下的人员

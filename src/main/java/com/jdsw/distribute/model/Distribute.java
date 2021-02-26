@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 @Data
 public class Distribute {
     Integer id;
@@ -230,4 +233,8 @@ public class Distribute {
      * 签订人
      */
     String signed;
+    /**
+     * 业务列表
+     */
+    List<Distribute> conducts;
 }

@@ -13,6 +13,7 @@ import com.github.pagehelper.util.StringUtil;
 
 import com.jdsw.distribute.vo.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,8 @@ public class NetworkServiceImpl implements NetworkService {
     private DevelopFollowDao developFollowDao;
     @Autowired
     private BusinessDao businessDao;
+    @Autowired
+    private CustomerOrderDao customerOrderDao;
     @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
@@ -172,7 +175,7 @@ public class NetworkServiceImpl implements NetworkService {
                 List<Distribute> Network = networkDao.airForcePoolList(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
-            }else if (str.equals(Department.AIRCHARGE.value)){//空军线索主管
+            }else if (str.equals(Department.AIRCHARGE.value) || str.equals(Department.CLUECHARGE.value)){//空军线索主管
                 PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.airForcePoolList(map);
                 PageInfo result = new PageInfo(Network);
@@ -255,6 +258,7 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setActivation(0);
         distribute.setAppoint(0);
         distribute.setSign(1);
+        distribute.setIssue(0);
         distribute.setInvalid(0);
         distribute.setOverrun(0);
         if (StringUtils.isEmpty(distribute.getTrackId())){
@@ -262,7 +266,7 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.setTrackId(trackId);
         }
         for (Object str : set) {//遍历角色
-            if (str.equals(Department.AirCUSTOMER.value) || str.equals(Department.AIRCHARGE.value)){//客服
+            if (str.equals(Department.AirCUSTOMER.value) || str.equals(Department.AIRCHARGE.value) ||str.equals(Department.ADMIN.value)){//客服
                 if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
                     distribute.setReceivingTime(df.format(new Date()));
@@ -424,15 +428,15 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setTrackId(tid);
         if ("K".equals(tid.substring(0,1))){
             networkDao.updateBytrackId(distribute);
-            networkDao.updateBytrackId3(distribute);
+            customerOrderDao.updateBytrackId(distribute);
             distribute = networkDao.selectNetworkById3(tid);
         }else if ("L".equals(tid.substring(0,1))){
             telemarkeDao.updateBytrackId(distribute);
-            networkDao.updateBytrackId3(distribute);
+            customerOrderDao.updateBytrackId(distribute);
             distribute = telemarkeDao.selectNetworkById3(tid);
         }else if ("Z".equals(tid.substring(0,1))){
             developDao.updateBytrackId(distribute);
-            networkDao.updateBytrackId3(distribute);
+            customerOrderDao.updateBytrackId(distribute);
             distribute = developDao.selectDeveolpById3(tid);
         }
         Enterprise enterprise = new Enterprise();
@@ -446,9 +450,22 @@ public class NetworkServiceImpl implements NetworkService {
         enterprise.setName(distribute.getName());
         enterprise.setSource(distribute.getSource().toString());
         enterpriseDao.insertEnterprise(enterprise);
-/*        Business business = new Business();
-        business.setBusinessNo(distribute.getBusinessNo());*/
-        return networkDao.UpdateRecordingNetwork((Distribute) map.get("distribute"));
+        Distribute distribute3 = (Distribute) map.get("distribute");
+        List<Distribute> counducts = distribute3.getConducts();
+        List list = new ArrayList();
+        for (int i=0;i<counducts.size();i++){
+            Distribute distribute2 = (Distribute) counducts.get(i);
+            Business business = new Business();
+            business.setBusinessNo(distribute2.getBusinessNo());
+            business.setConduct(distribute2.getConduct());
+            business.setContractNo(distribute3.getContractNo());
+            business.setCorporatePhone(distribute3.getCorporatePhone());
+            business.setDealTime(distribute3.getDealTime());
+            business.setPay(distribute2.getPay());
+            list.add(business);
+        }
+        businessDao.insertBusiness(list);
+        return dealOrderDao.updateDealOrder((Distribute) map.get("distribute"));
     }
 
     @Override
@@ -470,6 +487,11 @@ public class NetworkServiceImpl implements NetworkService {
             }
         }
         return null;
+    }
+
+    @Override
+    public CashierVo recordingPop(Distribute distribute) {
+        return dealOrderDao.qureyOrderAll(distribute);
     }
 
     @Override
@@ -608,15 +630,13 @@ public class NetworkServiceImpl implements NetworkService {
         list.add(map.get("corporatePhone"));
         list.add(map.get("corporatePhone2"));
         list.add(map.get("corporatePhone3"));
-        return dealOrderDao.qureyOrder(list);
+        return businessDao.qureyBusiness(list);
     }
 
     @Override
     public int addBusiness(Map map) {
         DealOrder order = (DealOrder) map.get("dealOrder");
-        order.setLastFollowName((String) map.get("name"));
-        order.setOrderState(1);
-        return dealOrderDao.insertOrder(order);
+        return businessDao.insertBusiness2(order);
     }
 
     @Override

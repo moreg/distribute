@@ -60,7 +60,7 @@ public class TelemarkeServiceImpl implements TelemarkeService {
                 List<Distribute> Network = telemarkDao.armyListPoolList(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
-            }else if (str.equals(Department.ADMIN.value)){
+            }else if (str.equals(Department.ADMIN.value) || str.equals(Department.CLUECHARGE.value)){
                 PageHelper.startPage(pageNum, limit);
                 List<Distribute> Network = telemarkDao.armyListPoolList(map);
                 PageInfo result = new PageInfo(Network);

@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         if (user2 != null){
             return 3;
         }
-        String paw = user.getPassword();
+        String paw = "123456";
         String rand = MD5Utils.getRandomString(24);
         String salt = MD5Utils.loginMd5(paw,rand);
         String date = DateUtil.getDate();
@@ -81,8 +81,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<String> findRoleByUserName(String username) {
-        return userDao.findRoleByUserName(username);
+    public User findRoleByUserName(String username) {
+        return userDao.findRoleByUsername(username);
     }
     @Override
     public Set<String> findRoleByUserName2(String username) {
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
                     list2.add(temp[i]);
                 }
             }
-        }else if (Department.AirCUSTOMER.value.equals(user.getRolename()) || Department.ARMCUSTOMER.value.equals(user.getRolename() ) ||Department.AIRCHARGE.value.equals(user.getRolename() )|| Department.GENERAL.value.equals(user.getRolename()) || Department.DEPUTY.value.equals(user.getRolename())){
+        }else if (Department.CLUECHARGE.value.equals(user.getRolename())||Department.AirCUSTOMER.value.equals(user.getRolename()) || Department.ARMCUSTOMER.value.equals(user.getRolename() ) ||Department.AIRCHARGE.value.equals(user.getRolename() )|| Department.GENERAL.value.equals(user.getRolename()) || Department.DEPUTY.value.equals(user.getRolename())|| Department.ADMIN.value.equals(user.getRolename())){
             if (StringUtils.isNotEmpty(department)){
                 String temp[]=department.split(",");
                 for (int i=0;i<temp.length;i++){

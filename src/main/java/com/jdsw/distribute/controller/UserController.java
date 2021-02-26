@@ -33,6 +33,11 @@ public class UserController {
         return "/user/userList";
     }
 
+    /**
+     * 添加账号
+     * @param user
+     * @return
+     */
     @RequestMapping("/insertUser")
     public Message insertUser(@RequestBody User user){
         int i = userService.insertUser(user);
@@ -133,14 +138,14 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping("/queryRoles")
+/*    @RequestMapping("/queryRoles")
     public Message queryRoles(HttpSession session){
         String username = (String) session.getAttribute("username");
         Map map = new HashMap();
         map.put("permission",userService.findPermissionByUserName(username));
         map.put("role",userService.findRoleByUserName(username));
         return Message.success("操作成功",map);
-    }
+    }*/
 
 
 }

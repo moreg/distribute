@@ -158,7 +158,7 @@
   </select>
   <!--业务员跟单池-->
   <select id="withPool" resultMap="aMap" parameterType="Map">
-    SELECT id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,leader_sign from customer_network WHERE
+    SELECT id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,issue,leader_sign,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network WHERE
     `status` in (6,7,10)  and activation = 0 and issue = #{issue}
     <if test="lastFollowName != null and lastFollowName !=''">
       and last_follow_name = #{lastFollowName}
@@ -177,7 +177,7 @@
   </select>
   <!--主管跟单池-->
   <select id="withPool2" resultMap="aMap" parameterType="Map">
-    SELECT id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,issue,`status`,overrun from customer_network WHERE
+    SELECT id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,issue,`status`,overrun,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network WHERE
     ((leader_name = #{lastFollowName} and status = 5) or (last_follow_name = #{lastFollowName} and `status` = 10 and activation = 0))   and issue =  #{issue}
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
@@ -193,7 +193,7 @@
   </select>
   <!--空中客户-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
-    select id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_time,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,leader_sign,last_follow_result,total,grade,activation_time,sign from customer_network
+    select id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_time,leader_sign,last_follow_result,total,grade,activation_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network
     where status = #{status} and activation = 1
     <if test="lastFollowName != null and lastFollowName !=''">
       and last_follow_name = #{lastFollowName}
@@ -290,7 +290,11 @@
 
   <!--定时器超时调用-->
   <update id="overTime" parameterType="com.jdsw.distribute.model.Distribute">
-    update customer_network set status = #{status},overdue_time = #{overdueTime},overrun = #{overrun},last_follow_name = #{lastFollowName},issue = #{issue} where id = #{id}
+    update customer_network set status = #{status},overdue_time = #{overdueTime},overrun = #{overrun},last_follow_name = #{lastFollowName},issue = #{issue}
+    <if test="leaderName != null and leaderName !=''">
+      ,leader_name = #{leaderName}
+    </if>
+     where id = #{id}
   </update>
 
   <update id="appoint" parameterType="java.util.List">
@@ -307,10 +311,10 @@
               leader_name = #{distribute.leaderName},
               receiving_time = sysdate()
             </set>
-                <where>
-                  id = #{distribute.id}
-                </where>
-          </foreach>
+          <where>
+                id = #{distribute.id}
+          </where>
+        </foreach>
   </update>
 
   <update id="updateNetworkTrackId" parameterType="com.jdsw.distribute.model.Distribute">

@@ -255,9 +255,8 @@ public class MenuServiceImpl  implements MenuService {
                     rootMenu.add(nav);
                 }
             }
-            System.out.println(rootMenu);
             /* 根据Menu类的order排序 */
-            //Collections.sort(rootMenu, order());
+            Collections.sort(rootMenu, order());
             //为根菜单设置子菜单，getClild是递归调用的
             for (Menu nav : rootMenu) {
                 /* 获取根节点下的所有子节点 使用getChild方法*/

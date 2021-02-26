@@ -5,6 +5,8 @@ import com.jdsw.distribute.service.*;
 
 import com.jdsw.distribute.util.*;
 import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -416,6 +418,16 @@ public class NetworkController {
         mapl.put("orderState",orderState);
         return Message.success("操作成功",distributeService.cashierCompleteLis(mapl),0);
     }
+
+    /**
+     * 录入弹窗
+     * @param distribute
+     * @return
+     */
+    @RequestMapping("/recordingPop")
+    public Message recordingPop(@RequestBody Distribute distribute){
+        return Message.success("查询成功",distributeService.recordingPop(distribute));
+    }
     /**
      * 成交订单
      * @param pageNum
@@ -486,22 +498,6 @@ public class NetworkController {
         }
         return Message.fail();
     }
-
-    /**
-     * 客服转交
-     * @param distribute
-     * @return
-     */
-   /* @RequestMapping("/customerTransfer")
-    public Message customerTransfer(@RequestBody List<Distribute> distribute,HttpServletRequest request){
-        String name = (String) request.getAttribute("name");
-        String username = (String) request.getAttribute("username");
-        int i = distributeService.customerTransfer(distribute,name);
-        if (i > 0) {
-            return Message.success();
-        }
-        return Message.fail();
-    }*/
     /**
      * 设置超时时间
      * @param
@@ -692,4 +688,19 @@ public class NetworkController {
         return Message.success();
     }*/
 
+    /**
+     * 客服转交
+     * @param distribute
+     * @return
+     */
+   /* @RequestMapping("/customerTransfer")
+    public Message customerTransfer(@RequestBody List<Distribute> distribute,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
+        int i = distributeService.customerTransfer(distribute,name);
+        if (i > 0) {
+            return Message.success();
+        }
+        return Message.fail();
+    }*/
 }

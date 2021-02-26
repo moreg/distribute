@@ -44,6 +44,7 @@ public class LoginController {
         try {
             User user2 = userService.findByUserName(username);
             subject.login(token);
+            subject.hasRole("登录");
             Set<String> roles = userService.findRoleByUserName2(username);
             String toToken = null;
 

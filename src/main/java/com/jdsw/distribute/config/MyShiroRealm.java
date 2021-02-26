@@ -25,10 +25,8 @@ public class MyShiroRealm extends AuthorizingRealm {
         User userInfo  = (User)principals.getPrimaryPrincipal();
         for(Role role:userInfo.getRoles()){
             authorizationInfo.addRole(role.getRolename());
-            System.out.println("角色:"+role.getRolename());
         }
             authorizationInfo.setStringPermissions(userService.findPermissionByUserName(userInfo.getUsername()));
-            System.out.println("权限:"+userService.findPermissionByUserName(userInfo.getUsername()));
 
         return authorizationInfo;
     }
@@ -40,15 +38,15 @@ public class MyShiroRealm extends AuthorizingRealm {
         String username = (String)token.getPrincipal();
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-        User userInfo = userService.findByUserName(username);
+        User userInfo = (User) userService.findRoleByUserName(username);
         if(userInfo == null){
             return null;
         }
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                userInfo, //用户名
+                userInfo, //用户对象
                 userInfo.getPassword(), //密码
                 ByteSource.Util.bytes(userInfo.getSalt()),
-                getName()  //realm name
+                getName()  //name
         );
         return authenticationInfo;
     }
