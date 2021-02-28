@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 import com.jdsw.distribute.dao.UserDao;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.util.MD5Utils;
+import com.jdsw.distribute.util.RedisUtil;
 import com.jdsw.distribute.vo.UsersVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -23,8 +24,9 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     private static Logger logger = Logger.getLogger(UserService.class);
     @Autowired
-
     private UserDao userDao;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public PageInfo<UsersVo> findAllUser(int pageNum, int pageSize) {
@@ -64,6 +66,7 @@ public class UserServiceImpl implements UserService {
         user.setSalt(rand);
         user.setState(0);
         user.setAddtime(date);
+        redisUtil.hincr("id","bac",1);
         return userDao.insert(user);
     }
 

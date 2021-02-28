@@ -56,6 +56,8 @@ public class NetworkServiceImpl implements NetworkService {
     private BusinessDao businessDao;
     @Autowired
     private CustomerOrderDao customerOrderDao;
+    @Autowired
+    private RedisUtil redisUtil;
     @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
@@ -249,6 +251,10 @@ public class NetworkServiceImpl implements NetworkService {
     }
     @Override
     public Distribute insertNetwoork(Map map) {
+        long num =redisUtil.incr("networkcount",1);
+        num = 202100000+num;
+        StringBuffer st=new StringBuffer("XK");
+        StringBuffer trackId = st.append(num);
         DistributeFollow distributeFollow = new DistributeFollow();
         String str2 = map.get("name")+"新建线索";
         Set set = userDao.findRoleByUserName2((String) map.get("username"));//获取角色
@@ -261,10 +267,11 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setIssue(0);
         distribute.setInvalid(0);
         distribute.setOverrun(0);
-        if (StringUtils.isEmpty(distribute.getTrackId())){
+        distribute.setTrackId(trackId.toString());
+       /* if (StringUtils.isEmpty(distribute.getTrackId())){
             String trackId = Rand.getTrackId("K");//获得跟踪单号
             distribute.setTrackId(trackId);
-        }
+        }*/
         for (Object str : set) {//遍历角色
             if (str.equals(Department.AirCUSTOMER.value) || str.equals(Department.AIRCHARGE.value) ||str.equals(Department.ADMIN.value)){//客服
                 if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
@@ -351,7 +358,11 @@ public class NetworkServiceImpl implements NetworkService {
                 for (int i = 0;i<result.size();i++){//客服导入
                     Object ob = result.get(i);
                     Map map = JSON.parseObject(JSON.toJSONString(ob),Map.class);
-                    String trackId = Rand.getTrackId("K");//获得跟踪单号
+                    long num =redisUtil.incr("networkcount",1);
+                    num = 202100000+num;
+                    StringBuffer st=new StringBuffer("XK");
+                    StringBuffer trackId = st.append(num);
+                    //String trackId = Rand.getTrackId("K");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("issue",0);
                     map.put("status",0);
