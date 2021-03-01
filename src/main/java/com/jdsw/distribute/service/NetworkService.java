@@ -251,4 +251,6 @@ public interface NetworkService {
      * @return
      */
     Distribute qureyTrackId(String trackId);
+
+    Map uploadImgNew(MultipartFile[] img);
 }

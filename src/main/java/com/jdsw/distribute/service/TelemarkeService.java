@@ -133,4 +133,11 @@ public interface TelemarkeService {
 
     PageInfo<Distribute> statusList(int pageNum, int limit, Integer status,String name);
 
+    /**
+     * 新建上传图片
+     * @param img
+     * @return
+     */
+    Map uploadImgNew(MultipartFile[] img);
+
 }

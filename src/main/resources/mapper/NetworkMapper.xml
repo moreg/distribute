@@ -28,6 +28,19 @@
     <result column="corporate_phone2"  property="corporatePhone2" />
     <result column="corporate_phone3"  property="corporatePhone3" />
     <result column="last_follow_result"  property="lastFollowResult" />
+    <result column="apply_time"  property="applyTime" />
+    <result column="apply_reason"  property="applyReason" />
+    <result column="apply_explain"  property="applyExplain" />
+    <result column="return_name"  property="returnName" />
+    <result column="return_time"  property="returnTime" />
+    <result column="stop_time"  property="stopTime" />
+    <result column="stop_explain"  property="stopExplain" />
+    <result column="out_time"  property="outTime" />
+    <result column="out_name"  property="outName" />
+    <result column="signed"  property="signed" />
+
+
+
   </resultMap>
   <resultMap id="pool" type="com.jdsw.distribute.vo.ComePool">
     <result column="contacts"  property="contacts" />
@@ -61,6 +74,16 @@
     <result column="activation_time"  property="activationTime" />
     <result column="overrun"  property="overrun" />
     <result column="weChat"  property="weChat" />
+    <result column="apply_time"  property="applyTime" />
+    <result column="apply_reason"  property="applyReason" />
+    <result column="apply_explain"  property="applyExplain" />
+    <result column="return_name"  property="returnName" />
+    <result column="return_time"  property="returnTime" />
+    <result column="stop_time"  property="stopTime" />
+    <result column="stop_explain"  property="stopExplain" />
+    <result column="out_time"  property="outTime" />
+    <result column="out_name"  property="outName" />
+    <result column="signed"  property="signed" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -88,9 +111,14 @@
     id,track_id,name,corporate_name,corporate_phone,registered_capital,establish_time,operation,issue,state,create_time,last_follow_name,
     source,last_follow_time,city,other_phone,address,overdue_time,status
   </sql>
-
+  <sql id="withPool_List">
+    id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_result,leader_name,activation,proposer,create_time,sign,source,
+     TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,out_name,out_time,apply_time,apply_reason,apply_explain,return_name,return_time,
+     stop_time,stop_explain,signed,flag
+  </sql>
   <sql id="PoolList">
-    id,track_id,corporate_name,corporate_phone,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer,sign,weChat
+    id,track_id,corporate_name,corporate_phone,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer,sign,weChat,apply_time,apply_reason,apply_explain,return_name
+    ,return_time,stop_time,stop_explain,out_time,out_name,signed
   </sql>
 
   <select id="selectNetworkTrackId" resultType="String">
@@ -115,10 +143,7 @@
   <!--空军分发池-->
   <select id="airForcePoolList" resultMap="aMap" parameterType="Map">
     select <include refid="PoolList"></include> from customer_network
-    where 1 = 1
-        <if test="issue != null">
-          and issue = #{issue}
-        </if>
+    where issue = #{issue}
         <if test="proposer != null and proposer !=''">
           and proposer = #{proposer}
         </if>
@@ -158,8 +183,8 @@
   </select>
   <!--业务员跟单池-->
   <select id="withPool" resultMap="aMap" parameterType="Map">
-    SELECT id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,issue,leader_sign,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network WHERE
-    `status` in (6,7,10)  and activation = 0 and issue = #{issue}
+    select * from (SELECT <include refid="withPool_List"></include> from customer_telemarke UNION  SELECT <include refid="withPool_List"></include> from customer_network) as a
+    where flag = #{flag}
     <if test="lastFollowName != null and lastFollowName !=''">
       and last_follow_name = #{lastFollowName}
     </if>
@@ -282,6 +307,14 @@
   <select id="qureydealOrder" resultType="String" parameterType="com.jdsw.distribute.model.Distribute">
     select track_id from deal_order where id = #{id}
   </select>
+  <!--查询累计单号-->
+  <select id="getRowNo" parameterType="String" resultType="Integer">
+    select `row_count` from row_no where `type` = #{tpye}
+  </select>
+
+  <update id="updateRow" parameterType="Map">
+    update row_no set `row_count` = #{rowCount} where `type` = #{type}
+  </update>
 
   <update id="UpdateRecordingNetwork" parameterType="com.jdsw.distribute.model.Distribute">
     update deal_order set order_state = 1,conduct = #{conduct},contract_no = #{contractNo},pay = #{pay},cost = #{cost},deal_time = #{dealTime},recording_name = #{recordingName}
@@ -296,7 +329,7 @@
     </if>
      where id = #{id}
   </update>
-
+  <!--分发-->
   <update id="appoint" parameterType="java.util.List">
         <foreach collection="list" item="distribute" index= "index" open="" close="" separator =";">
             update customer_network
@@ -309,7 +342,8 @@
                 status = #{distribute.status},
               overdue_time = #{distribute.overdueTime},
               leader_name = #{distribute.leaderName},
-              receiving_time = sysdate()
+              receiving_time = sysdate(),
+              flag = #{distribute.flag}
             </set>
           <where>
                 id = #{distribute.id}
@@ -323,7 +357,7 @@
 
   <update id="updateNetworkFirstFollowName" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set last_follow_name = #{firstFollowName},first_follow_name = #{firstFollowName},issue = 1,status = #{status},leader_name = #{leaderName},
-    receiving_time = sysdate(),branch = #{branch} where id = #{id}
+    receiving_time = sysdate(),branch = #{branch},flag = #{flag} where id = #{id}
   </update>
 
   <update id="updateNetworkLastFollowName" parameterType="java.util.List">

@@ -40,10 +40,6 @@ public class Distribute {
      */
     Integer state;
     /**
-     * 最后跟进阶段
-     */
-    Integer lastFollowUp;
-    /**
      * 最后跟进内容
      */
     String lastFollowResult;
@@ -63,7 +59,7 @@ public class Distribute {
     /**
      * 录入时间
      */
-    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     Date createTime;
     /**
      * 微信号
@@ -237,4 +233,44 @@ public class Distribute {
      * 业务列表
      */
     List<Distribute> conducts;
+    /**
+     * 申请时间
+     */
+    String applyTime;
+    /**
+     * 申请理由
+     */
+    String applyReason;
+    /**
+     * 申请说明
+     */
+    String applyExplain;
+    /**
+     * 退回给谁
+     */
+    String returnName;
+    /**
+     * 退回时间
+     */
+    String returnTime;
+    /**
+     * 停止时间
+     */
+    String stopTime;
+    /**
+     * 停止说明
+     */
+    String stopExplain;
+    /**
+     * 分发时间
+     */
+    String outTime;
+    /**
+     * 分发人员
+     */
+    String outName;
+    /**
+     * 跟单池导航状态
+     */
+    Integer flag;
 }

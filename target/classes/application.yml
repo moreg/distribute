@@ -78,4 +78,4 @@ pagehelper:
 
 filter:
   config:
-    excludeUrls: /login,/menu/menuList,/menu/kSourceMenu,/distribute/uploadImg,/telemark/uploadImg,/distribute/uploadFile,/telemark/uploadFile,/K,/L,/Z,/distribute/uploadImgNew,/telemark/uploadImgNew,/develop/uploadImg,/distribute/uploadImgPool,/telemark/uploadImgPool #不需过滤，直接放行
+    excludeUrls: /login,/menu/menuList,/menu/kSourceMenu,/distribute/uploadImg,/telemark/uploadImg,/distribute/uploadFile,/telemark/uploadFile,/K,/L,/Z,/XK,/XL,/XZ,/distribute/uploadImgNew,/telemark/uploadImgNew,/develop/uploadImg,/distribute/uploadImgPool,/telemark/uploadImgPool #不需过滤，直接放行

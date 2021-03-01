@@ -13,7 +13,7 @@ public class AirForcePool {
     private String corporateName;
     private String corporatePhone;
     private Integer issue;
-    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createTime;
     private String lastFollowName;
     private String source;
@@ -33,4 +33,48 @@ public class AirForcePool {
     private String grade;
     private Integer overrun;
     private String weChat;
+    /**
+     * 申请时间
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date applyTime;
+    /**
+     * 申请理由
+     */
+    private String applyReason;
+    /**
+     * 申请说明
+     */
+    private String applyExplain;
+    /**
+     * 退回给谁
+     */
+    private String returnName;
+    /**
+     * 退回时间
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date returnTime;
+    /**
+     * 停止时间
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date stopTime;
+    /**
+     * 停止说明
+     */
+    private String stopExplain;
+    /**
+     * 分发时间
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date outTime;
+    /**
+     * 分发人员
+     */
+    private String outName;
+    /**
+     * 签订人
+     */
+    private String signed;
 }

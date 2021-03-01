@@ -14,10 +14,7 @@ import com.jdsw.distribute.model.DistributeFollow;
 import com.jdsw.distribute.model.Excel;
 import com.jdsw.distribute.model.User;
 import com.jdsw.distribute.service.TelemarkeService;
-import com.jdsw.distribute.util.DateUtil;
-import com.jdsw.distribute.util.FileUtil;
-import com.jdsw.distribute.util.Rand;
-import com.jdsw.distribute.util.excelRead;
+import com.jdsw.distribute.util.*;
 import com.jdsw.distribute.vo.CashierVo;
 import com.jdsw.distribute.vo.InsertVo;
 import com.jdsw.distribute.vo.RecordingVo;
@@ -33,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -440,5 +438,24 @@ public class TelemarkeServiceImpl implements TelemarkeService {
         List<Distribute> distribute = telemarkDao.statusList(distribute1);
         PageInfo result = new PageInfo(distribute);
         return result;
+    }
+
+    @Override
+    public Map uploadImgNew(MultipartFile[] img) {
+        int row = networkDao.getRowNo("XL");
+        row = 202100000+row;
+        StringBuffer st=new StringBuffer("XL");
+        StringBuffer trackId = st.append(row);
+        String uploadPathDB=null;
+        Map map=new HashMap();
+        try {
+            uploadPathDB= ImageUtil.saveImage(trackId.toString(),img,"XL");
+        }catch (IOException e){
+            e.printStackTrace();
+            return map;
+        }
+        map.put("imgUrl",uploadPathDB);
+        map.put("trackId",trackId);
+        return map;
     }
 }

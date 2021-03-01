@@ -23,13 +23,13 @@ import java.util.*;
 public class NetworkController {
 
     @Resource
-    private NetworkService distributeService;
+    private NetworkService networkService;
     @Resource
     private TelemarkeService telemarkeService;
     @Resource
     private DevelopService developService;
     /**
-     * 空军线索
+     * 分发池
      */
     @RequestMapping("/airForcePoolList")
     public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute distribute, HttpServletRequest request, HttpServletResponse response){
@@ -44,7 +44,7 @@ public class NetworkController {
         mapl.put("distribute",distribute);
         mapl.put("username",username);
         mapl.put("name",name);
-        return Message.success("操作成功",distributeService.airForcePoolList(mapl),0);
+        return Message.success("操作成功",networkService.airForcePoolList(mapl),0);
     }
 
     /**
@@ -52,7 +52,7 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/grabbingPool")
-    public Message grabbingPool(int pageNum, int limit, String content, String strtime, String endtime, Distribute network, HttpServletRequest request, HttpServletResponse response){
+    public Message grabbingPool(int pageNum, int limit, String content, String strtime, String endtime, HttpServletRequest request, HttpServletResponse response){
         String name = (String) request.getAttribute("name");
         String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
@@ -63,7 +63,7 @@ public class NetworkController {
         mapl.put("endtime",endtime);
         mapl.put("name",name);
         mapl.put("username",username);
-        return Message.success("查询成功",distributeService.grabbingPool(mapl));
+        return Message.success("查询成功",networkService.grabbingPool(mapl));
     }
 
     /**
@@ -77,7 +77,7 @@ public class NetworkController {
      * @return
      */
     @RequestMapping("/withPool")
-    public Message withPool(int pageNum, int limit, String content, String strtime, String endtime, Integer issue,String pool,HttpServletRequest request){
+    public Message withPool(int pageNum, int limit, String content, String strtime, String endtime,Integer flag,HttpServletRequest request){
         String name = (String) request.getAttribute("name");
         String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
@@ -88,9 +88,8 @@ public class NetworkController {
         mapl.put("endtime",endtime);
         mapl.put("username",username);
         mapl.put("name",name);
-        mapl.put("issue",issue);
-        mapl.put("pool",pool);
-        return Message.success("查询成功",distributeService.withPool(mapl));
+        mapl.put("flag",flag);
+        return Message.success("查询成功",networkService.withPool(mapl));
     }
     /**
      * 新增
@@ -105,7 +104,7 @@ public class NetworkController {
         map1.put("name",name);
         map1.put("username",username);
         map1.put("distribute",distribute);
-        return Message.success("新增成功",distributeService.insertNetwoork(map1));
+        return Message.success("新增成功",networkService.insertNetwoork(map1));
 
     }
     /**
@@ -120,7 +119,7 @@ public class NetworkController {
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("username",username);
-        int i = distributeService.excelNetwork(file,username,name);
+        int i = networkService.excelNetwork(file,username,name);
         if (i > 0){
             return Message.success("导入成功");
         }
@@ -133,7 +132,7 @@ public class NetworkController {
      */
     @RequestMapping(value = "/deleteNetwork",method = RequestMethod.POST,produces="application/json")
     public Message deleteNetwork(@RequestBody Distribute distribute){
-        int i = distributeService.deleteNetwork(distribute);
+        int i = networkService.deleteNetwork(distribute);
         if (i > 0){
             return Message.success();
         }
@@ -147,7 +146,7 @@ public class NetworkController {
      */
     @RequestMapping(value = "/updateNetwork",method = RequestMethod.POST,produces="application/json")
     public Message updateNetwork(@RequestBody Distribute distribute){
-        int i = distributeService.updateNetwork(distribute);
+        int i = networkService.updateNetwork(distribute);
         if (i > 0){
             return  Message.success();
         }
@@ -160,7 +159,7 @@ public class NetworkController {
      */
     @RequestMapping(value = "/updateNetworkPop")
     public Message updateNetworkPop(Integer id){
-        return Message.success("查询成功",distributeService.updateNetworkPop(id));
+        return Message.success("查询成功",networkService.updateNetworkPop(id));
     }
     /**
      * 抢单接口
@@ -173,7 +172,7 @@ public class NetworkController {
         String role = (String) request.getAttribute("role");
         distribute.setLastFollowName(lastFollowName);
         distribute.setFirstFollowName(lastFollowName);
-        int i = distributeService.orderTaking(distribute,username,lastFollowName,role);
+        int i = networkService.orderTaking(distribute,username,lastFollowName,role);
         if (i == 1){
             return Message.success("抢单成功");
         }else if (i == 2){
@@ -190,7 +189,7 @@ public class NetworkController {
     @RequestMapping(value = "/appoint" ,method = RequestMethod.POST,produces="application/json")
     public Message appoint(@RequestBody List<Distribute> network,HttpServletRequest request){
         String name = (String) request.getAttribute("name");
-        int i = distributeService.appoint(network,name);
+        int i = networkService.appoint(network,name);
         if (i > 0){
             return Message.success();
         }
@@ -212,7 +211,7 @@ public class NetworkController {
         mapl.put("endtime",endtime);
         mapl.put("lastFollowName",lastFollowName);
         mapl.put("username",username);
-        return Message.success("操作成功",distributeService.queryNetworkByLastName(mapl),0);
+        return Message.success("操作成功",networkService.queryNetworkByLastName(mapl),0);
     }
 
     /**
@@ -231,7 +230,7 @@ public class NetworkController {
         mapl.put("endtime",endtime);
         mapl.put("name",name);
         mapl.put("username",username);
-        return Message.success("操作成功",distributeService.enterprisePoolList(mapl));
+        return Message.success("操作成功",networkService.enterprisePoolList(mapl));
     }
 
     /**
@@ -241,7 +240,7 @@ public class NetworkController {
      */
     @RequestMapping("/overTime")
     public Message overTime(@RequestBody Distribute network){
-        int i = distributeService.overTime(network);
+        int i = networkService.overTime(network);
         if (i > 0){
             return Message.success();
         }
@@ -255,15 +254,16 @@ public class NetworkController {
     @RequestMapping(value = "/followupNetwork",method = RequestMethod.POST,produces="application/json")
     public Message followupNetwork(@RequestBody DistributeFollow networkFollow,HttpServletRequest request){
         String strid = networkFollow.getTrackId().substring(0,1);
+        String strid2 = networkFollow.getTrackId().substring(0,2);
         String name = (String) request.getAttribute("name");
         String username = (String) request.getAttribute("username");
         networkFollow.setFollowName(name);
         int i = 0;
-        if ("K".equals(strid)){
-             i = distributeService.followupNetwork(networkFollow,username);
-        }else if ("L".equals(strid)){
+        if ("XK".equals(strid2) || "K".equals(strid)){
+             i = networkService.followupNetwork(networkFollow,username);
+        }else if ("XL".equals(strid2)|| "L".equals(strid)){
             i = telemarkeService.followupNetwork(networkFollow);
-        }else if ("Z".equals(strid)){
+        }else if ("XZ".equals(strid2)|| "Z".equals(strid)){
             i = developService.followupDevelop(networkFollow);
         }
         if (i > 0){
@@ -285,7 +285,7 @@ public class NetworkController {
         mapl.put("username",username);
         mapl.put("distribute",distribute);
         mapl.put("name",name);
-        distributeService.activation(mapl);
+        networkService.activation(mapl);
         return Message.success();
     }
     /**
@@ -299,7 +299,7 @@ public class NetworkController {
         String uploadPathDB=null;
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"K");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"XK");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -315,18 +315,7 @@ public class NetworkController {
      */
     @RequestMapping("/uploadImgNew")
     public Message  uploadImgNew(@RequestParam("img") MultipartFile[] img,HttpServletRequest request){
-        String uploadPathDB=null;
-        String trackId = Rand.getTrackId("K");//获得跟踪单号
-        Map map=new HashMap();
-        try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"K");
-        }catch (IOException e){
-            e.printStackTrace();
-            return Message.fail("上传失败");
-        }
-        map.put("imgUrl",uploadPathDB);
-        map.put("trackId",trackId);
-        return Message.success("上传成功",map);
+        return Message.success("操作成功",networkService.uploadImgNew(img));
     }
     /**
      * 退单图片上传
@@ -375,7 +364,7 @@ public class NetworkController {
      */
     @RequestMapping(value = "/submitRecordingNetwork",method = RequestMethod.POST,produces="application/json")
     public Message submitRecordingNetwork(@RequestBody List<Distribute> network){
-        int i = distributeService.submitRecordingNetwork(network);
+        int i = networkService.submitRecordingNetwork(network);
         if (i > 0){
             return Message.success("提交成功");
         }
@@ -393,7 +382,7 @@ public class NetworkController {
         mapl.put("username",username);
         mapl.put("distribute",distribute);
         mapl.put("name",name);
-        int i = distributeService.updateRecordingNetwork(mapl);
+        int i = networkService.updateRecordingNetwork(mapl);
         if (i > 0){
             return Message.success();
         }
@@ -416,7 +405,7 @@ public class NetworkController {
         mapl.put("username",username);
         mapl.put("name",name);
         mapl.put("orderState",orderState);
-        return Message.success("操作成功",distributeService.cashierCompleteLis(mapl),0);
+        return Message.success("操作成功",networkService.cashierCompleteLis(mapl),0);
     }
 
     /**
@@ -426,7 +415,7 @@ public class NetworkController {
      */
     @RequestMapping("/recordingPop")
     public Message recordingPop(@RequestBody Distribute distribute){
-        return Message.success("查询成功",distributeService.recordingPop(distribute));
+        return Message.success("查询成功",networkService.recordingPop(distribute));
     }
     /**
      * 成交订单
@@ -451,7 +440,7 @@ public class NetworkController {
         mapl.put("username",username);
         mapl.put("name",name);
         mapl.put("status",status);
-        return Message.success("操作成功",distributeService.dealListNetwork(mapl),0);
+        return Message.success("操作成功",networkService.dealListNetwork(mapl),0);
     }
 
     /**
@@ -481,7 +470,7 @@ public class NetworkController {
         mapl.put("status",status);
         mapl.put("lastFollowName",lastFollowName);
         mapl.put("pool",pool);
-        return Message.success("操作成功",distributeService.subordinateList(mapl),0);
+        return Message.success("操作成功",networkService.subordinateList(mapl),0);
     }
     /**
      * 主管转交
@@ -492,7 +481,7 @@ public class NetworkController {
     public Message transferNetwork(@RequestBody List<Distribute> distribute,HttpServletRequest request){
         String name = (String) request.getAttribute("name");
         String username = (String) request.getAttribute("username");
-        int i = distributeService.transferNetwork(distribute,name);
+        int i = networkService.transferNetwork(distribute,name);
         if ( i > 0){
             return Message.success();
         }
@@ -505,7 +494,7 @@ public class NetworkController {
      */
     @RequestMapping("/setOverdueTime")
     public Message setOverdueTime(@RequestBody Distribute distribute){
-        int i = distributeService.setOverdueTime(distribute);
+        int i = networkService.setOverdueTime(distribute);
         if (i > 0){
            return Message.success();
         }
@@ -518,15 +507,7 @@ public class NetworkController {
      */
     @RequestMapping("/qureyFollowList")
     public Message qureyFollowList(Integer id,String trackId)throws IOException{
-        String strid = trackId.substring(0,1);
-        if ("K".equals(strid)){
-            return Message.success("操作成功",distributeService.qureyFollowList(id,trackId));
-        }else if ("L".equals(strid)){
-            return Message.success("操作成功",telemarkeService.qureyFollowList(id));
-        }else if ("Z".equals(strid)){
-            return Message.success("操作成功",developService.qureyFollowList(id));
-        }
-        return Message.fail();
+        return Message.success("操作成功",networkService.qureyFollowList(id,trackId));
     }
     /**
      * 查询客户信息
@@ -536,7 +517,7 @@ public class NetworkController {
     @RequestMapping("/qureyCustomer")
     public Message qureyCustomer(Integer id,String trackId)throws IOException{
         String strid = trackId.substring(0,1);
-        return Message.success("操作成功",distributeService.qureyCustomer(id,trackId));
+        return Message.success("操作成功",networkService.qureyCustomer(id,trackId));
     }
 
     /**
@@ -551,7 +532,7 @@ public class NetworkController {
         map.put("corporatePhone",corporatePhone);
         map.put("corporatePhone2",corporatePhone2);
         map.put("corporatePhone3",corporatePhone3);
-        return Message.success("查询成功",distributeService.enterpriseList(map));
+        return Message.success("查询成功",networkService.enterpriseList(map));
     }
     /**
      * 增加关联企业
@@ -566,7 +547,7 @@ public class NetworkController {
         Map mapl = new HashMap();
         mapl.put("name",name);
         mapl.put("enterprise",enterprise);
-        int i = distributeService.addEnterprise(mapl);
+        int i = networkService.addEnterprise(mapl);
         if (i > 0){
             return Message.success();
         }
@@ -585,7 +566,7 @@ public class NetworkController {
         map.put("corporatePhone",corporatePhone);
         map.put("corporatePhone2",corporatePhone2);
         map.put("corporatePhone3",corporatePhone3);
-        return Message.success("查询成功",distributeService.business(map));
+        return Message.success("查询成功",networkService.business(map));
     }
     /**
      * 增加办理业务
@@ -601,14 +582,18 @@ public class NetworkController {
         Map mapl = new HashMap();
         mapl.put("name",name);
         mapl.put("dealOrder",dealOrder);
-        int i = distributeService.addBusiness(mapl);
+        int i = networkService.addBusiness(mapl);
         if (i > 0){
             return Message.success();
         }
         return Message.fail();
     }
+    @RequestMapping("/returnPoolPop")
+    public Message returnPoolPop(){
+    return Message.success();
+    }
     /**
-     * 退单
+     * 申述
      * @param distribute
      * @return
      */
@@ -619,7 +604,7 @@ public class NetworkController {
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("distribute",distribute);
-        int i = distributeService.returnPool(map1);
+        int i = networkService.returnPool(map1);
         if (i > 0) {
             return Message.success("操作成功");
         }
@@ -637,7 +622,7 @@ public class NetworkController {
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("distribute",distribute);
-        int i = distributeService.chargeback(map1);
+        int i = networkService.chargeback(map1);
         if (i > 0) {
             return Message.success("操作成功");
         }
@@ -659,7 +644,7 @@ public class NetworkController {
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("distribute",distribute);
-        int i = distributeService.adopt(map1);
+        int i = networkService.adopt(map1);
         if (i > 0 ){
             return Message.success();
         }
@@ -677,8 +662,9 @@ public class NetworkController {
     public Message statusList(int pageNum, int limit,Integer status,HttpServletRequest request){
         String name = (String) request.getAttribute("name");
         String username = (String) request.getAttribute("username");
-        return Message.success("查询成功",distributeService.statusList(pageNum,limit,status,name));
+        return Message.success("查询成功",networkService.statusList(pageNum,limit,status,name));
     }
+
     /**
      * 强制超时
      */

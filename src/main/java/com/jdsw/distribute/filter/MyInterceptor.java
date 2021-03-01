@@ -22,7 +22,7 @@ public class MyInterceptor implements HandlerInterceptor {
             throws Exception {
         String uri = request.getRequestURI();
         List<String> excludes = Splitter.on(",").trimResults().splitToList(this.excludeUrls);
-        if (uri.substring(0,2).equals("/K")  || uri.substring(0,2).equals("/L") || uri.substring(0,2).equals("/Z")){
+        if (uri.substring(0,2).equals("/K")  || uri.substring(0,2).equals("/L") || uri.substring(0,2).equals("/Z")|| uri.substring(0,3).equals("/XK")|| uri.substring(0,3).equals("/XL")|| uri.substring(0,3).equals("/XZ")){
             return true;
         }
         for (int i = 0;i<excludes.size();i++){

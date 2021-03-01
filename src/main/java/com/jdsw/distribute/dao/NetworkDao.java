@@ -251,4 +251,16 @@ public interface NetworkDao {
 
     List<Distribute> queryOverTime();
 
+    /**
+     * 获取行号
+     * @return
+     */
+    Integer getRowNo(String type);
+
+    /**
+     * 修改单号计数
+     * @param map
+     * @return
+     */
+    int updateRow(Map map);
 }

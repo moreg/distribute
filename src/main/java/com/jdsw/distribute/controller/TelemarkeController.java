@@ -238,6 +238,7 @@ public class TelemarkeController {
      */
     @RequestMapping("/uploadImgNew")
     public Message  uploadImgNew(@RequestParam("img") MultipartFile[] img,HttpServletRequest request){
+        telemarkService.uploadImgNew(img);
         String uploadPathDB=null;
         String trackId = Rand.getTrackId("L");//获得跟踪单号
         Map map=new HashMap();
