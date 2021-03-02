@@ -13,19 +13,14 @@ import com.github.pagehelper.util.StringUtil;
 
 import com.jdsw.distribute.vo.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -59,6 +54,8 @@ public class NetworkServiceImpl implements NetworkService {
     private CustomerOrderDao customerOrderDao;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private CustomerDao customerDao;
     @Override
     @Transactional
     public int appoint(List<Distribute> network, String name) {
@@ -76,6 +73,8 @@ public class NetworkServiceImpl implements NetworkService {
             distribute.setBranch(network.get(i).getBranch());
             distribute.setStatus(0);
             distribute.setFlag(0);
+            distribute.setOutName(name);
+            distribute.setOutTime(DateUtil.getDateTime());
             //指定人
             if (StringUtil.isNotEmpty(network.get(i).getFirstFollowName())){
                 String role = userDao.findRoleByUserName4(network.get(0).getFirstFollowName());
@@ -105,7 +104,7 @@ public class NetworkServiceImpl implements NetworkService {
     public int orderTaking(Distribute network,String username,String name,String role) {
         int i = 0;
         UsersVo usersVo = userDao.queryBranch(username);
-        String str = name+"领取了线索";
+        String str = "领取了线索";
         DistributeFollow networkFollow = new DistributeFollow();
         networkFollow.setFollowName(name);
         networkFollow.setNetworkId(network.getId());
@@ -132,12 +131,10 @@ public class NetworkServiceImpl implements NetworkService {
                 map.put("lastFollowName",null);
             }
         }
-        map.put("status",10);
         PageHelper.startPage(pageNum, limit);
-        List<Distribute> Network = networkDao.queryNetworkByLastName(map);
+        List<Distribute> Network = customerDao.customerList(map);
         PageInfo result = new PageInfo(Network);
         return result;
-
     }
 
     @Override
@@ -225,15 +222,20 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     @Transactional
     public Distribute insertNetwoork(Map map) {
-        int row = networkDao.getRowNo("XK");
-        map.put("rowCount",row+1);
-        row = 202100000+row;
-        StringBuffer st=new StringBuffer("XK");
-        StringBuffer trackId = st.append(row);
-        DistributeFollow distributeFollow = new DistributeFollow();
-        String str2 = map.get("name")+"新建线索";
-        Set set = userDao.findRoleByUserName2((String) map.get("username"));//获取角色
         Distribute distribute = (Distribute) map.get("distribute");
+        if (StringUtil.isEmpty(distribute.getTrackId())){
+            int row = networkDao.getRowNo("XK");
+            map.put("rowCount",row+1);
+            row = 202100000+row;
+            StringBuffer st=new StringBuffer("XK");
+            StringBuffer trackId = st.append(row);
+            distribute.setTrackId(trackId.toString());
+            map.put("type","XK");
+            networkDao.updateRow(map);
+        }
+        DistributeFollow distributeFollow = new DistributeFollow();
+        String str2 = "新建一条线索";
+        Set set = userDao.findRoleByUserName2((String) map.get("username"));//获取角色
         distributeFollow.setFollowResult(str2);
         distributeFollow.setFollowName((String) map.get("name"));
         distribute.setActivation(0);
@@ -242,7 +244,6 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setIssue(0);
         distribute.setInvalid(0);
         distribute.setOverrun(0);
-        distribute.setTrackId(trackId.toString());
         for (Object str : set) {//遍历角色
             if (str.equals(Department.AirCUSTOMER.value) || str.equals(Department.AIRCHARGE.value) ||str.equals(Department.ADMIN.value)){//客服
                 if (StringUtils.isNotEmpty(distribute.getLastFollowName())){
@@ -257,7 +258,6 @@ public class NetworkServiceImpl implements NetworkService {
                     distribute.setStatus(0);
                 }else {
                     distribute.setIssue(0);
-                    distribute.setStatus(0);
                 }
                 distribute.setLeaderSign(1);
                 distribute.setProposer((String) map.get("name"));
@@ -269,8 +269,6 @@ public class NetworkServiceImpl implements NetworkService {
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
         distributeFollow.setImgUrl(distribute.getImgUrl());
         networkFollowDao.insertNetworkFollow(distributeFollow);
-        map.put("type","XK");
-        networkDao.updateRow(map);
         return distribute;
     }
 
@@ -338,7 +336,6 @@ public class NetworkServiceImpl implements NetworkService {
                     //String trackId = Rand.getTrackId("K");//获得跟踪单号
                     map.put("trackId",trackId);
                     map.put("issue",0);
-                    map.put("status",0);
                     map.put("leaderSign",1);
                     map.put("proposer",name);
                     map.put("sign",1);
@@ -515,26 +512,29 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     @Transactional
     public int transferNetwork(List<Distribute> distribute,String name) {
-        String str = "给"+distribute.get(0).getLeaderName()+"转交了一条线索";
+        StringBuffer str = new StringBuffer("<p>给"+distribute.get(0).getLeaderName()+"转交了一条线索</p>");
         DistributeFollow networkFollow;
         Distribute distribute1;
         List<Distribute> ld = new ArrayList<>();
         List<DistributeFollow> ls = new ArrayList<>();
         for (int i=0;i<distribute.size();i++){
+            str.append("<p>转交说明：</p>").append("<p>"+distribute.get(i).getDeliverExplain()+"</p>");
             networkFollow = new DistributeFollow();
             distribute1 = new Distribute();
             networkFollow.setFollowName(name);
             networkFollow.setNetworkId(distribute.get(i).getId());
-            networkFollow.setFollowResult(str);
+            networkFollow.setFollowResult(str.toString());
             ls.add(networkFollow);
             distribute1.setLastFollowName(distribute.get(0).getLeaderName());
             distribute1.setOverdueTime(DateUtil.getOverTime(600000));
             distribute1.setId(distribute.get(i).getId());
             distribute1.setStatus(10);
             distribute1.setLeaderSign(1);
+            distribute1.setReceiveName(distribute.get(i).getLastFollowName());
             ld.add(distribute1);
             networkFollowDao.insertNetworkFollow2(ls);
         }
+        networkDao.insertDeliver(ld);
         return networkDao.updateNetworkLastFollowName(ld);
     }
 
@@ -586,16 +586,7 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public Distribute qureyCustomer(Integer id, String trackId) {
-        String str = trackId.substring(0,1);
-        String str2 = trackId.substring(0,2);
-        if ("K".equals(str) ||"XK".equals(str2)){
-            return networkDao.selectNetworkById(id);
-        }else if ("L".equals(str)||"XL".equals(str2)){
-            return telemarkeDao.selectNetworkById(id);
-        }else if ("Z".equals(str)||"XZ".equals(str2)){
-            return developDao.selectDeveolpById(id);
-        }
-        return null;
+        return customerDao.selectCustomer(trackId);
     }
 
     @Override
@@ -630,25 +621,119 @@ public class NetworkServiceImpl implements NetworkService {
     public int returnPool(Map map) {
         Distribute distribute = (Distribute) map.get("distribute");
         DistributeFollow networkFollow;
-        Integer status = distribute.getStatus();
-        String str = null;
-        if (7 == status){
-            str = map.get("name")+"提交“无效”退单";
-        }else if (11 == status){
-            str = map.get("name")+"提交“有效（无法办理）”退单";
-        }
-        String trid = distribute.getTrackId().substring(0, 1);;
+        String str = "提交申诉";
+        String trid = distribute.getTrackId().substring(0, 2);;
         networkFollow = new DistributeFollow();
         networkFollow.setFollowName((String) map.get("name"));
         networkFollow.setNetworkId(distribute.getId());
         networkFollow.setFollowResult(str);
-        if ("K".equals(trid)){
+        if ("XK".equals(trid)){
             networkFollowDao.insertNetworkFollow(networkFollow);
             networkFollow.setImgUrl(distribute.getImgUrl());
             networkFollow.setRecord(distribute.getRecord());
-            networkFollow.setFollowResult(distribute.getLastFollowResult());
+            networkFollow.setFollowResult(distribute.getApplyExplain());
             networkFollowDao.insertNetworkFollow(networkFollow);
-        }else if ("L".equals(trid)){
+            distribute.setIssue(2);
+            distribute.setFlag(1);
+            distribute.setStatus(7);
+            distribute.setApplyTime(DateUtil.getDateTime());
+            return networkDao.updateBytrackId(distribute);
+        }else if ("XL".equals(trid)){
+            telemarkeFollowDao.insertNetworkFollow(networkFollow);
+            distribute.setIssue(2);
+            distribute.setStatus(1);
+            distribute.setSign(0);
+            networkFollow.setImgUrl(distribute.getImgUrl());
+            networkFollow.setRecord(distribute.getRecord());
+            networkFollow.setFollowResult(distribute.getLastFollowResult());
+            telemarkeFollowDao.insertNetworkFollow(networkFollow);
+            distribute.setLastFollowTime(null);
+            distribute.setReceivingTime(null);
+            distribute.setOverdueTime(null);
+            networkFollow.setImgUrl(distribute.getImgUrl());
+            networkFollow.setFollowResult(distribute.getLastFollowResult());
+            return telemarkeDao.updateBytrackId2(distribute);
+        }
+        return 0;
+    }
+
+    @Override
+    @Transactional
+    public int chargeback(Map map) {
+        Distribute distribute = (Distribute) map.get("distribute");
+        Distribute distribute2 = networkDao.selectNetworkById3(distribute.getTrackId());
+        DistributeFollow networkFollow = new DistributeFollow();
+        networkFollow.setFollowName((String) map.get("name"));
+        networkFollow.setNetworkId(distribute.getId());
+        String str = "驳回申述";
+        if (distribute2.getInvalid() == 1){
+            distribute.setStatus(5);
+            distribute.setOverdueTime(null);
+            distribute.setOverrun(1);
+            distribute.setFlag(1);
+        }else {
+            distribute.setIssue(1);
+            distribute.setFlag(0);
+            distribute.setStatus(10);
+            distribute.setOverdueTime(DateUtil.getOverTime(86400000));
+        }
+        networkFollow.setFollowResult(str);
+        networkFollowDao.insertNetworkFollow(networkFollow);
+        networkFollow.setImgUrl(distribute.getImgUrl());
+        networkFollow.setFollowResult(distribute.getLastFollowResult());
+        networkFollowDao.insertNetworkFollow(networkFollow);
+        distribute.setInvalid(1);
+        return networkDao.updateBytrackId(distribute);
+    }
+
+    @Override
+    @Transactional
+    public int chargebackStop(Map map) {
+        Distribute distribute = (Distribute) map.get("distribute");
+        Distribute distribute2 = networkDao.selectNetworkById3(distribute.getTrackId());
+        DistributeFollow networkFollow = new DistributeFollow();
+        networkFollow.setFollowName((String) map.get("name"));
+        networkFollow.setNetworkId(distribute.getId());
+        String str = "驳回停止跟进申请";
+        if (distribute2.getInvalid() == 1){
+            distribute.setStatus(5);
+            distribute.setOverdueTime(null);
+            distribute.setOverrun(1);
+        }else {
+            distribute.setIssue(1);
+            distribute.setFlag(0);
+            distribute.setStatus(10);
+            distribute.setOverdueTime(DateUtil.getOverTime(86400000));
+        }
+        networkFollow.setFollowResult(str);
+        networkFollowDao.insertNetworkFollow(networkFollow);
+        networkFollow.setImgUrl(distribute.getImgUrl());
+        networkFollow.setFollowResult(distribute.getLastFollowResult());
+        networkFollowDao.insertNetworkFollow(networkFollow);
+        return networkDao.updateBytrackId(distribute);
+    }
+
+    @Override
+    public int applyStop(Map map) {
+        Distribute distribute = (Distribute) map.get("distribute");
+        DistributeFollow networkFollow;
+        String str = "提交“停止跟进";
+        String trid = distribute.getTrackId().substring(0, 2);;
+        networkFollow = new DistributeFollow();
+        networkFollow.setFollowName((String) map.get("name"));
+        networkFollow.setNetworkId(distribute.getId());
+        networkFollow.setFollowResult(str);
+        if ("XK".equals(trid)){
+            networkFollowDao.insertNetworkFollow(networkFollow);
+            networkFollow.setImgUrl(distribute.getImgUrl());
+            networkFollow.setRecord(distribute.getRecord());
+            networkFollow.setFollowResult(distribute.getStopExplain());
+            networkFollowDao.insertNetworkFollow(networkFollow);
+            distribute.setIssue(5);
+            distribute.setFlag(5);
+            distribute.setStopTime(DateUtil.getDateTime());
+            return networkDao.updateBytrackId(distribute);
+        }else if ("XL".equals(trid)){
             telemarkeFollowDao.insertNetworkFollow(networkFollow);
             distribute.setIssue(1);
             distribute.setStatus(1);
@@ -665,41 +750,14 @@ public class NetworkServiceImpl implements NetworkService {
             networkFollow.setFollowResult(distribute.getLastFollowResult());
             return telemarkeDao.updateBytrackId2(distribute);
         }
-        distribute.setIssue(2);
-        return networkDao.updateBytrackId(distribute);
+        return 0;
     }
 
     @Override
     @Transactional
-    public int chargeback(Map map) {
-        Distribute distribute = (Distribute) map.get("distribute");
-        Distribute distribute2 = networkDao.selectNetworkById3(distribute.getTrackId());
-        DistributeFollow networkFollow = new DistributeFollow();
-        networkFollow.setFollowName((String) map.get("name"));
-        networkFollow.setNetworkId(distribute.getId());
-        String str = map.get("name")+"驳回申请";
-        if (distribute2.getInvalid() == 1){
-            distribute.setStatus(5);
-            distribute.setOverdueTime(null);
-            distribute.setOverrun(1);
-        }else {
-            distribute.setStatus(10);
-            distribute.setOverdueTime(DateUtil.getOverTime(86400000));
-        }
-        networkFollow.setFollowResult(str);
-        networkFollowDao.insertNetworkFollow(networkFollow);
-        networkFollow.setImgUrl(distribute.getImgUrl());
-        networkFollow.setFollowResult(distribute.getLastFollowResult());
-        networkFollowDao.insertNetworkFollow(networkFollow);
-        distribute.setIssue(1);
-        distribute.setInvalid(1);
-        return networkDao.updateBytrackId(distribute);
-    }
-    @Override
-    @Transactional
     public int adopt(Map map) {
         Distribute distribute = (Distribute) map.get("distribute");
-        String str = map.get("name")+"通过申请";
+        String str = "通过申诉申请";
         DistributeFollow networkFollow = new DistributeFollow();
         networkFollow.setFollowName((String) map.get("name"));
         networkFollow.setNetworkId(distribute.getId());
@@ -708,18 +766,35 @@ public class NetworkServiceImpl implements NetworkService {
         networkFollow.setImgUrl(distribute.getImgUrl());
         networkFollow.setFollowResult(distribute.getLastFollowResult());
         networkFollowDao.insertNetworkFollow(networkFollow);
-        Integer status = distribute.getStatus();
-        if(status == 7){
-            distribute.setSign(0);
-            distribute.setStatus(1);
-        }else if (status == 11){
-            distribute.setSign(2);
-            distribute.setStatus(0);
-        }
+        distribute.setSign(2);
+        distribute.setStatus(0);
         distribute.setLastFollowName(null);
         distribute.setReceivingTime(null);
-        distribute.setIssue(1);
-        distribute.setInvalid(1);
+        distribute.setIssue(5);
+        distribute.setFlag(5);
+        distribute.setOverdueTime(null);
+        networkDao.updateBytrackId(distribute);
+        return networkDao.updateBytrackId2(distribute);
+    }
+
+    @Override
+    public int adoptStop(Map map) {
+        Distribute distribute = (Distribute) map.get("distribute");
+        String str = "通过停止申请";
+        DistributeFollow networkFollow = new DistributeFollow();
+        networkFollow.setFollowName((String) map.get("name"));
+        networkFollow.setNetworkId(distribute.getId());
+        networkFollow.setFollowResult(str);
+        networkFollowDao.insertNetworkFollow(networkFollow);
+        networkFollow.setImgUrl(distribute.getImgUrl());
+        networkFollow.setFollowResult(distribute.getLastFollowResult());
+        networkFollowDao.insertNetworkFollow(networkFollow);
+        distribute.setSign(0);
+        distribute.setStatus(0);
+        distribute.setLastFollowName(null);
+        distribute.setReceivingTime(null);
+        distribute.setIssue(5);
+        distribute.setFlag(5);
         distribute.setOverdueTime(null);
         networkDao.updateBytrackId(distribute);
         return networkDao.updateBytrackId2(distribute);
@@ -744,29 +819,30 @@ public class NetworkServiceImpl implements NetworkService {
     @Override
     @Transactional
     public int activation(Map map) {
-        String str = map.get("name")+"激活客户";
+        String str = "激活客户";
         Distribute  distribute = (Distribute) map.get("distribute");
-        String strid =  distribute.getTrackId().substring(0,1);
+        String strid =  distribute.getTrackId().substring(0,2);
         distribute.setActivationName((String) map.get("name"));
         distribute.setLastFollowName((String) map.get("name"));
         distribute.setActivation(1);
         distribute.setStatus(10);
         distribute.setOverrun(0);
-        distribute.setActivationTime(DateUtil.getDate());
+        distribute.setActivationTime(DateUtil.getDateTime());
         DistributeFollow networkFollow = new DistributeFollow();
         networkFollow.setFollowName((String) map.get("name"));
         networkFollow.setNetworkId(distribute.getId());
         networkFollow.setFollowResult(str);
-        if ("K".equals(strid)){
+        if ("XK".equals(strid)){
             Distribute distribute1 = networkDao.selectNetworkById(distribute.getId());;
+            Integer ac = distribute1.getActivation();
             if (distribute1.getSign() == 1){
                 distribute.setOverdueTime(DateUtil.getOverTime(259200000));
             }
-            if (distribute1.getActivation() == 0){
+            if (ac == 0){
                 networkFollowDao.insertNetworkFollow(networkFollow);
             }
-            return networkDao.updateNetwork(distribute);
-        }else if ("L".equals(strid)){
+             networkDao.updateNetwork(distribute);
+        }else if ("XL".equals(strid)){
             Distribute distribute1 = telemarkeDao.selectNetworkById(distribute.getId());
             if (distribute1.getSign() == 1){
                 distribute.setOverdueTime(DateUtil.getOverTime(259200000));
@@ -774,11 +850,21 @@ public class NetworkServiceImpl implements NetworkService {
             if (distribute1.getActivation() == 0){
                 telemarkeFollowDao.insertNetworkFollow(networkFollow);
             }
-            return telemarkeDao.updateworkOverdueTime(distribute);
-        }else if ("Z".equals(strid)){
-            return developDao.updateDevelop(distribute);
+             telemarkeDao.updateworkOverdueTime(distribute);
+        }else if ("XZ".equals(strid)){
+             developDao.updateDevelop(distribute);
         }
-        return 0;
+        if (StringUtil.isEmpty(distribute.getCustomerNo())){
+            int row = networkDao.getRowNo("KH");
+            map.put("rowCount",row+1);
+            row = 202100000+row;
+            StringBuffer st=new StringBuffer("KH");
+            StringBuffer customerNo = st.append(row);
+            distribute.setCustomerNo(customerNo.toString());
+            networkDao.updateRow(map);
+            return customerDao.insertCustomer(distribute);
+        }
+        return customerDao.updateCustomer(distribute);
     }
 
     @Override
@@ -789,12 +875,16 @@ public class NetworkServiceImpl implements NetworkService {
 
     @Override
     public Map uploadImgNew(MultipartFile[] img) {
+        Map map=new HashMap();
         int row = networkDao.getRowNo("XK");
+        map.put("rowCount",row+1);
+        map.put("type","XK");
         row = 202100000+row;
         StringBuffer st=new StringBuffer("XK");
         StringBuffer trackId = st.append(row);
         String uploadPathDB=null;
-        Map map=new HashMap();
+
+        networkDao.updateRow(map);
         try {
             uploadPathDB= ImageUtil.saveImage(trackId.toString(),img,"XK");
         }catch (IOException e){

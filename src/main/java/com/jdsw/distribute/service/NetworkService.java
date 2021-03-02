@@ -217,11 +217,24 @@ public interface NetworkService {
     int chargeback(Map map);
 
     /**
+     * 驳回停止跟进
+     * @param map
+     * @return
+     */
+    int chargebackStop(Map map);
+    /**
      * 通过
      * @param
      * @return
      */
     int adopt(Map map);
+
+    /**
+     * 通过停止申请
+     * @param map
+     * @return
+     */
+    int adoptStop(Map map);
     /**
      * 跟单状态
      * @param pageNum
@@ -252,5 +265,17 @@ public interface NetworkService {
      */
     Distribute qureyTrackId(String trackId);
 
+    /**
+     * 新建上传图片
+     * @param img
+     * @return
+     */
     Map uploadImgNew(MultipartFile[] img);
+
+    /**
+     * 停止跟进
+     * @param map
+     * @return
+     */
+    int applyStop(Map map);
 }

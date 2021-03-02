@@ -263,4 +263,11 @@ public interface NetworkDao {
      * @return
      */
     int updateRow(Map map);
+
+    /**
+     * 新增转交记录
+     * @param distribute
+     * @return
+     */
+    int insertDeliver(List<Distribute> distribute);
 }

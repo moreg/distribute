@@ -38,6 +38,7 @@
     <result column="out_time"  property="outTime" />
     <result column="out_name"  property="outName" />
     <result column="signed"  property="signed" />
+    <result column="stopReason"  property="stop_reason" />
 
 
 
@@ -84,6 +85,7 @@
     <result column="out_time"  property="outTime" />
     <result column="out_name"  property="outName" />
     <result column="signed"  property="signed" />
+    <result column="stopReason"  property="stop_reason" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -165,7 +167,7 @@
   <!--抢单池-->
   <select id="grabbingPool" resultMap="aMap" parameterType="Map">
     select id,track_id,source,last_follow_name,last_follow_result,sign,proposer,create_time,issue,receiving_time from customer_network
-    where  issue = 1 and `status` in(0,1)
+    where  `status` in(0,1)
     <if test="branch !=null and branch !=''">
       and branch = #{branch}
     </if>
@@ -216,7 +218,7 @@
     </if>
     ORDER BY create_time DESC
   </select>
-  <!--空中客户-->
+  <!--客户池-->
   <select id="queryNetworkByLastName" resultMap="aMap" parameterType="String">
     select id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_time,leader_sign,last_follow_result,total,grade,activation_time,sign,source,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network
     where status = #{status} and activation = 1
@@ -531,24 +533,47 @@
 
   <update id="updateBytrackId" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network
-    set
+    <trim prefix="SET" suffixOverrides=",">
     <if test="status  !=null">
-      status = #{status}
+      status = #{status},
     </if>
     <if test="activation  !=null">
-      ,activation = #{activation}
+      activation = #{activation},
     </if>
     <if test="issue  !=null">
-      ,issue = #{issue}
+      issue = #{issue},
     </if>
     <if test="overrun  !=null">
-      ,overrun = #{overrun}
+      overrun = #{overrun},
     </if>
-      ,overdue_time = #{overdueTime}
-
+    <if test="overdueTime != null and overdueTime != ''">
+      overdue_time = #{overdueTime},
+    </if>
     <if test="invalid  !=null">
-      ,invalid = #{invalid}
+      invalid = #{invalid},
     </if>
+    <if test="flag !=null">
+      flag = #{flag},
+    </if>
+    <if test="applyReason !=null and applyReason !=''">
+      apply_reason = #{applyReason},
+    </if>
+    <if test="applyTime !=null and applyTime !=''">
+      apply_time = #{applyTime},
+    </if>
+    <if test="applyExplain !=null and applyExplain !=''">
+      apply_explain = #{applyExplain},
+    </if>
+    <if test="stopExplain  !=null and stopExplain !=''">
+      stop_explain = #{stopExplain},
+    </if>
+    <if test="stopTime  !=null and stopTime !=''">
+      stop_time = #{stopTime},
+    </if>
+    <if test="stopReason  !=null and stopReason !=''">
+      stop_reason = #{stopReason},
+    </if>
+    </trim>
     where track_Id = #{trackId}
   </update>
   <update id="updateBytrackId2" parameterType="com.jdsw.distribute.model.Distribute">
@@ -714,5 +739,12 @@
     </if>
     ,#{proposer}
     )
+  </insert>
+
+  <insert id="insertDeliver" parameterType="java.util.List">
+    insert into deliver(track_id,receiving_time,last_follow_name,source,out_time,out_name,receive_name,deliver_explain) values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.trackId},sysdate(),#{item.lastFollowName},#{item.source},#{item.outTime},#{item.outName},#{item.receiveName},#{item.deliverExplain})
+    </foreach>
   </insert>
 </mapper>

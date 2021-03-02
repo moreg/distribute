@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jdsw.distribute.dao.CustomerDao">
+    <resultMap id="DistributeMap" type="com.jdsw.distribute.model.Distribute">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name"  property="name" />
+        <result column="corporate_name"  property="corporateName" />
+        <result column="corporate_phone"  property="corporatePhone" />
+        <result column="contacts"  property="contacts" />
+        <result column="contacts_phone"  property="contactsPhone" />
+        <result column="source"  property="source" />
+        <result column="follow_number"  property="followNumber" />
+        <result column="state"  property="state" />
+        <result column="last_follow_up"  property="lastFollowUp" />
+        <result column="last_follow_content"  property="lastFollowContent" />
+        <result column="last_follow_time"  property="lastFollowTime" />
+        <result column="last_follow_name"  property="lastFollowName" />
+        <result column="track_id"  property="trackId" />
+        <result column="overdue_time"  property="overdueTime" />
+        <result column="status"  property="status" />
+        <result column="track_id"  property="trackId" />
+        <result column="conduct"  property="conduct" />
+        <result column="create_time"  property="createTime" />
+        <result column="industry"  property="industry" />
+        <result column="integral"  property="integral" />
+        <result column="activation_time"  property="activationTime" />
+        <result column="activation_name"  property="activationName" />
+        <result column="corporate_phone2"  property="corporatePhone2" />
+        <result column="corporate_phone3"  property="corporatePhone3" />
+        <result column="last_follow_result"  property="lastFollowResult" />
+        <result column="apply_time"  property="applyTime" />
+        <result column="apply_reason"  property="applyReason" />
+        <result column="apply_explain"  property="applyExplain" />
+        <result column="return_name"  property="returnName" />
+        <result column="return_time"  property="returnTime" />
+        <result column="stop_time"  property="stopTime" />
+        <result column="stop_explain"  property="stopExplain" />
+        <result column="out_time"  property="outTime" />
+        <result column="out_name"  property="outName" />
+        <result column="signed"  property="signed" />
+
+
+
+    </resultMap>
+    <insert id="insertCustomer" parameterType="com.jdsw.distribute.model.Distribute">
+        insert into customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="customerNo != null and customerNo !=''">
+            customer_no,
+        </if>
+        <if test="trackId != null and trackId !=''">
+            track_id,
+        </if>
+        <if test="activationTime !=null and activationTime !=''">
+            activation_time,
+        </if>
+        <if test="corporateName !=null and corporateName !=''">
+            corporate_name,
+        </if>
+        <if test="corporatePhone !=null and corporatePhone !=''">
+            corporate_phone,
+        </if>
+        <if test="corporatePhone2 !=null and corporatePhone2 !=''">
+            corporate_phone2,
+        </if>
+        <if test="corporatePhone3 !=null and corporatePhone3 !=''">
+            corporate_phone3,
+        </if>
+        <if test="lastFollowName !=null and lastFollowName !=''">
+            last_follow_name,
+        </if>
+        <if test="lastFollowTime != null and lastFollowTime !=''">
+            last_follow_time,
+        </if>
+        <if test="source != null and source !=''">
+            source,
+        </if>
+        <if test="lastFollowResult != null and lastFollowResult != ''">
+            last_follow_result,
+        </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerNo != null and customerNo !=''">
+                #{customerNo},
+            </if>
+            <if test="trackId != null and trackId !=''">
+                #{trackId},
+            </if>
+            <if test="activationTime !=null and activationTime !=''">
+                #{activationTime},
+            </if>
+            <if test="corporateName !=null and corporateName !=''">
+                #{corporateName},
+            </if>
+            <if test="corporatePhone !=null and corporatePhone !=''">
+                #{corporatePhone},
+            </if>
+            <if test="corporatePhone2 !=null and corporatePhone2 !=''">
+                #{corporatePhone2},
+            </if>
+            <if test="corporatePhone3 !=null and corporatePhone3 !=''">
+                #{corporatePhone3},
+            </if>
+            <if test="lastFollowName !=null and lastFollowName !=''">
+                #{lastFollowName},
+            </if>
+            <if test="lastFollowTime != null and lastFollowTime !=''">
+                #{lastFollowTime},
+            </if>
+            <if test="source != null and source !=''">
+                #{source},
+            </if>
+            <if test="lastFollowResult != null and lastFollowResult != ''">
+                #{lastFollowResult},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateCustomer" parameterType="com.jdsw.distribute.model.Distribute">
+        update customer
+        <trim prefix="SET" suffixOverrides=",">
+        <if test="corporateName !=null and corporateName !=''">
+            corporate_name = #{corporateName},
+        </if>
+        <if test="corporatePhone !=null and corporatePhone !=''">
+            corporate_phone = #{corporatePhone},
+        </if>
+        <if test="corporatePhone2 !=null and corporatePhone2 !=''">
+            corporate_phone2 = #{corporatePhone2},
+        </if>
+        <if test="corporatePhone3 !=null and corporatePhone3 !=''">
+            corporate_phone3 =#{corporatePhone3},
+        </if>
+        <if test="source !=null and source !=''">
+            source =#{source},
+        </if>
+        <if test="weChat !=null and weChat !=''">
+            weChat =#{weChat},
+        </if>
+        </trim>
+        where track_id = #{trackId}
+    </update>
+
+    <!--查询客户信息-->
+    <select id="selectCustomer" resultMap="DistributeMap" parameterType="String">
+        select id,customer_no,activation_time,corporate_name,corporate_phone,last_follow_name,last_follow_time,source,last_follow_result,total,
+        grade,track_id,corporate_phone2,corporate_phone3,weChat from customer where track_id = #{trackId}
+    </select>
+    <!--客户池-->
+    <select id="customerList" resultMap="DistributeMap" parameterType="String">
+        select id,customer_no,activation_time,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,source,track_id,corporate_phone2,corporate_phone3 from customer
+        where 1 = 1
+        <if test="lastFollowName != null and lastFollowName !=''">
+            and last_follow_name = #{lastFollowName}
+        </if>
+        <if test="strtime != null and strtime!=''">
+            AND create_time <![CDATA[ >= ]]> #{strtime}
+        </if>
+        <if test="endtime != null and endtime!=''">
+            AND create_time <![CDATA[ <= ]]> #{endtime}
+        </if>
+        <if test="content != null and content!= ''">
+            <bind name="content" value="'%' + content + '%'" ></bind>
+            and (corporate_name like #{content} or corporate_phone like #{content})
+        </if>
+        ORDER BY id DESC
+    </select>
+</mapper>

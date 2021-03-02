@@ -273,4 +273,20 @@ public class Distribute {
      * 跟单池导航状态
      */
     Integer flag;
+    /**
+     * 客户号
+     */
+    String customerNo;
+    /**
+     * 停止理由
+     */
+    String stopReason;
+    /**
+     * 接收人
+     */
+    String receiveName;
+    /**
+     * 转交说明
+     */
+    String deliverExplain;
 }

@@ -196,7 +196,7 @@ public class NetworkController {
         return Message.fail();
     }
     /**
-     * 空中客户
+     * 客户池
      * @return
      */
     @RequestMapping("/queryNetworkByLastName")
@@ -328,7 +328,7 @@ public class NetworkController {
         String uploadPathDB=null;
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"K");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"XK");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -348,7 +348,7 @@ public class NetworkController {
         Map map=new HashMap();
         String uploadPathDB=null;
         try {
-            uploadPathDB= VideoUtil.saveVideo(trackId,file,"K");
+            uploadPathDB= VideoUtil.saveVideo(trackId,file,"XK");
         }catch (IOException e) {
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -473,7 +473,7 @@ public class NetworkController {
         return Message.success("操作成功",networkService.subordinateList(mapl),0);
     }
     /**
-     * 主管转交
+     * 转交
      * @param distribute
      * @return
      */
@@ -516,7 +516,6 @@ public class NetworkController {
      */
     @RequestMapping("/qureyCustomer")
     public Message qureyCustomer(Integer id,String trackId)throws IOException{
-        String strid = trackId.substring(0,1);
         return Message.success("操作成功",networkService.qureyCustomer(id,trackId));
     }
 
@@ -588,10 +587,6 @@ public class NetworkController {
         }
         return Message.fail();
     }
-    @RequestMapping("/returnPoolPop")
-    public Message returnPoolPop(){
-    return Message.success();
-    }
     /**
      * 申述
      * @param distribute
@@ -611,7 +606,7 @@ public class NetworkController {
         return Message.fail();
     }
     /**
-     * 退回给业务员
+     * 驳回申述
      * @param distribute
      * @return
      */
@@ -630,7 +625,46 @@ public class NetworkController {
     }
 
     /**
-     * 通过
+     * 停止跟进
+     * @param distribute
+     * @param request
+     * @return
+     */
+    @RequestMapping("/applyStop")
+    public Message applyStop(@RequestBody Distribute distribute,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
+        Map map = new HashMap();
+        map.put("name",name);
+        map.put("username",username);
+        map.put("distribute",distribute);
+        int i =networkService.applyStop(map);
+        if (i > 0){
+            return Message.success();
+        }
+        return Message.fail();
+    }
+    /**
+     * 驳回停止跟进
+     * @param distribute
+     * @param request
+     * @return
+     */
+    @RequestMapping("/chargebackStop")
+    public Message chargebackStop(@RequestBody Distribute distribute,HttpServletRequest request) {
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
+        Map map1 = new HashMap();
+        map1.put("name",name);
+        map1.put("distribute",distribute);
+        int i = networkService.chargebackStop(map1);
+        if (i > 0) {
+            return Message.success("操作成功");
+        }
+        return Message.fail();
+    }
+    /**
+     * 通过申述
      * @param
      * @param
      * @param
@@ -645,6 +679,26 @@ public class NetworkController {
         map1.put("name",name);
         map1.put("distribute",distribute);
         int i = networkService.adopt(map1);
+        if (i > 0 ){
+            return Message.success();
+        }
+        return  Message.fail();
+    }
+
+    /**
+     * 通过停止申请
+     * @param distribute
+     * @param request
+     * @return
+     */
+    @RequestMapping("/adoptStop")
+    public Message adoptStop(@RequestBody Distribute distribute,HttpServletRequest request){
+        String name = (String) request.getAttribute("name");
+        String username = (String) request.getAttribute("username");
+        Map map1 = new HashMap();
+        map1.put("name",name);
+        map1.put("distribute",distribute);
+        int i = networkService.adoptStop(map1);
         if (i > 0 ){
             return Message.success();
         }
