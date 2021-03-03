@@ -270,4 +270,11 @@ public interface NetworkDao {
      * @return
      */
     int insertDeliver(List<Distribute> distribute);
+
+    /**
+     * 转交列表
+     * @param name
+     * @return
+     */
+    List<Distribute> selectDeliver(Map  map);
 }

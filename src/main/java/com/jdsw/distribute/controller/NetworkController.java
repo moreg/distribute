@@ -427,6 +427,7 @@ public class NetworkController {
      *
      * @return
      */
+/*
     @RequestMapping("/dealListNetwork")
     public Message dealListNetwork(int pageNum, int limit, String content, String strtime, String endtime,Integer status,HttpServletRequest request){
         String name = (String) request.getAttribute("name");
@@ -442,6 +443,7 @@ public class NetworkController {
         mapl.put("status",status);
         return Message.success("操作成功",networkService.dealListNetwork(mapl),0);
     }
+*/
 
     /**
      * 下属客户
@@ -450,26 +452,18 @@ public class NetworkController {
      * @param content
      * @param strtime
      * @param endtime
-     * @param status
-     * @param pool
      * @param request
      * @return
      */
     @RequestMapping("/subordinateList")
-    public Message subordinateList(int pageNum, int limit, String content, String strtime, String endtime,Integer status,String pool,String lastFollowName,HttpServletRequest request){
-        String name = (String) request.getAttribute("name");
-        String username = (String) request.getAttribute("username");
+    public Message subordinateList(int pageNum, int limit, String content, String strtime, String endtime,String lastFollowName,HttpServletRequest request){
         Map mapl = new HashMap();
         mapl.put("pageNum",pageNum);
         mapl.put("limit",limit);
         mapl.put("content",content);
         mapl.put("strtime",strtime);
         mapl.put("endtime",endtime);
-        mapl.put("username",username);
-        mapl.put("name",name);
-        mapl.put("status",status);
         mapl.put("lastFollowName",lastFollowName);
-        mapl.put("pool",pool);
         return Message.success("操作成功",networkService.subordinateList(mapl),0);
     }
     /**
@@ -617,6 +611,7 @@ public class NetworkController {
         Map map1 = new HashMap();
         map1.put("name",name);
         map1.put("distribute",distribute);
+        map1.put("username",username);
         int i = networkService.chargeback(map1);
         if (i > 0) {
             return Message.success("操作成功");

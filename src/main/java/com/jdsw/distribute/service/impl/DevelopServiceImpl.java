@@ -2,10 +2,7 @@ package com.jdsw.distribute.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.jdsw.distribute.dao.DevelopDao;
-import com.jdsw.distribute.dao.DevelopFollowDao;
-import com.jdsw.distribute.dao.NetworkDao;
-import com.jdsw.distribute.dao.UserDao;
+import com.jdsw.distribute.dao.*;
 import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
@@ -36,7 +33,8 @@ public class DevelopServiceImpl implements DevelopService {
     private DevelopFollowDao developFollowDao;
     @Autowired
     private NetworkDao networkDao;
-
+    @Autowired
+    private CustomerDao customerDao;
     @Override
     public int insertDevelop(Map map) {
         String str2 =map.get("name")+"新建线索";
@@ -45,14 +43,34 @@ public class DevelopServiceImpl implements DevelopService {
         UsersVo usersVo = userDao.queryBranch((String) map.get("username"));
         distribute.setActivation(1);
         distribute.setLastFollowName((String) map.get("name"));
+        distribute.setFirstFollowName((String) map.get("name"));
         distribute.setProposer((String) map.get("name"));
         distribute.setGrade(usersVo.getGroup());
+        distribute.setSign(1);
+        distribute.setFlag(0);
+        distribute.setActivationTime(DateUtil.getDateTime());
         if (StringUtils.isEmpty(distribute.getReceivingTime())){
-            distribute.setReceivingTime(DateUtil.getDate("yyyy-MM-dd"));
+            distribute.setReceivingTime(DateUtil.getDateTime());
         }
         if (StringUtils.isEmpty(distribute.getTrackId())){
-            String trackId = Rand.getTrackId("Z");//获得跟踪单号
-            distribute.setTrackId(trackId);
+            int row = networkDao.getRowNo("XZ");
+            map.put("rowCount",row+1);
+            row = 202100000+row;
+            StringBuffer st=new StringBuffer("XZ");
+            StringBuffer trackId = st.append(row);
+            distribute.setTrackId(trackId.toString());
+            map.put("type","XZ");
+            networkDao.updateRow(map);
+        }
+        if (StringUtils.isEmpty(distribute.getCustomerNo())){
+            int row = networkDao.getRowNo("KH");
+            map.put("rowCount",row+1);
+            row = 202100000+row;
+            StringBuffer st=new StringBuffer("KH");
+            StringBuffer customerNo = st.append(row);
+            distribute.setCustomerNo(customerNo.toString());
+            map.put("type","KH");
+            networkDao.updateRow(map);
         }
         for (Object str : set) {
             if (str.equals(Department.CHARGE.value)) {//主管
@@ -70,6 +88,7 @@ public class DevelopServiceImpl implements DevelopService {
         developFollowDao.insertDevelopFollow(distributeFollow);
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
         distributeFollow.setImgUrl(distribute.getImgUrl());
+        customerDao.insertCustomer(distribute);
         return developFollowDao.insertDevelopFollow(distributeFollow);
     }
 

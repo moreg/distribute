@@ -92,6 +92,9 @@
         ,create_time
         ,status
         ,proposer
+        ,sign
+        ,flag
+        ,first_follow_name
         )VALUES (
         <if test="corporateName != null and corporateName !=''">
             #{corporateName}
@@ -128,6 +131,9 @@
         ,SYSDATE()
         ,10
         ,#{lastFollowName}
+        ,#{sign}
+        ,#{flag}
+        ,#{firstFollowName}
         )
     </insert>
     <!--导入-->
@@ -243,6 +249,9 @@
                 <set>
                     <if test="Distribute.lastFollowName != null and Distribute.lastFollowName != ''">
                         last_follow_name =#{Distribute.lastFollowName},
+                    </if>
+                    <if test="Distribute.firstFollowName != null and Distribute.firstFollowName != ''">
+                        first_follow_name =#{Distribute.firstFollowName},
                     </if>
                     <if test="Distribute.leaderName != null and Distribute.leaderName !=''">
                         leader_name = #{Distribute.leaderName},

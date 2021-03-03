@@ -38,10 +38,10 @@
     <result column="out_time"  property="outTime" />
     <result column="out_name"  property="outName" />
     <result column="signed"  property="signed" />
-    <result column="stopReason"  property="stop_reason" />
-
-
-
+    <result column="stop_reason"  property="stopReason" />
+    <result column="leader_name"  property="leaderName" />
+    <result column="deliver_explain"  property="deliverExplain" />
+    <result column="receiving_time"  property="receivingTime" />
   </resultMap>
   <resultMap id="pool" type="com.jdsw.distribute.vo.ComePool">
     <result column="contacts"  property="contacts" />
@@ -116,7 +116,7 @@
   <sql id="withPool_List">
     id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_result,leader_name,activation,proposer,create_time,sign,source,
      TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,out_name,out_time,apply_time,apply_reason,apply_explain,return_name,return_time,
-     stop_time,stop_explain,signed,flag
+     stop_time,stop_explain,signed,flag,first_follow_name,receiving_time
   </sql>
   <sql id="PoolList">
     id,track_id,corporate_name,corporate_phone,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer,sign,weChat,apply_time,apply_reason,apply_explain,return_name
@@ -185,8 +185,8 @@
   </select>
   <!--业务员跟单池-->
   <select id="withPool" resultMap="aMap" parameterType="Map">
-    select * from (SELECT <include refid="withPool_List"></include> from customer_telemarke UNION  SELECT <include refid="withPool_List"></include> from customer_network) as a
-    where flag = #{flag}
+    select * from (SELECT <include refid="withPool_List"></include> from customer_telemarke UNION  SELECT <include refid="withPool_List"></include> from customer_network UNION SELECT <include refid="withPool_List"></include> FROM customer_develop) as a
+    where a.flag = #{flag}
     <if test="lastFollowName != null and lastFollowName !=''">
       and last_follow_name = #{lastFollowName}
     </if>
@@ -313,7 +313,13 @@
   <select id="getRowNo" parameterType="String" resultType="Integer">
     select `row_count` from row_no where `type` = #{tpye}
   </select>
-
+  <select id="selectDeliver" parameterType="Map" resultMap="DistributeMap">
+    select id,track_id,receiving_time,first_follow_name,source,out_time,out_name,receive_name,deliver_explain from deliver where 1 = 1
+    <if test="lastFollowName != null and lastFollowName !=''">
+      and first_follow_name = #{lastFollowName}
+    </if>
+  </select>
+  
   <update id="updateRow" parameterType="Map">
     update row_no set `row_count` = #{rowCount} where `type` = #{type}
   </update>
@@ -335,7 +341,10 @@
   <update id="appoint" parameterType="java.util.List">
         <foreach collection="list" item="distribute" index= "index" open="" close="" separator =";">
             update customer_network
-            <set>
+          <trim prefix="SET" suffixOverrides=",">
+          <if test="distribute.receivingTime !=null and distribute.receivingTime !=''">
+            receiving_time = #{distribute.receivingTime},
+          </if>
               branch = #{distribute.branch},
               last_follow_name = #{distribute.firstFollowName},
               first_follow_name = #{distribute.firstFollowName},
@@ -345,8 +354,10 @@
               overdue_time = #{distribute.overdueTime},
               leader_name = #{distribute.leaderName},
               receiving_time = sysdate(),
-              flag = #{distribute.flag}
-            </set>
+              flag = #{distribute.flag},
+              out_time = #{distribute.outTime},
+              out_name = #{distribute.outName}
+          </trim>
           <where>
                 id = #{distribute.id}
           </where>
@@ -573,6 +584,9 @@
     <if test="stopReason  !=null and stopReason !=''">
       stop_reason = #{stopReason},
     </if>
+    <if test="lastFollowName  !=null and lastFollowName !=''">
+      last_follow_name = #{lastFollowName},
+    </if>
     </trim>
     where track_Id = #{trackId}
   </update>
@@ -742,9 +756,9 @@
   </insert>
 
   <insert id="insertDeliver" parameterType="java.util.List">
-    insert into deliver(track_id,receiving_time,last_follow_name,source,out_time,out_name,receive_name,deliver_explain) values
+    insert into deliver(track_id,receiving_time,first_follow_name,source,out_time,out_name,receive_name,deliver_explain) values
     <foreach collection="list" item="item" separator=",">
-      (#{item.trackId},sysdate(),#{item.lastFollowName},#{item.source},#{item.outTime},#{item.outName},#{item.receiveName},#{item.deliverExplain})
+      (#{item.trackId},#{item.receivingTime},#{item.firstFollowName},#{item.source},#{item.outTime},#{item.outName},#{item.receiveName},#{item.deliverExplain})
     </foreach>
   </insert>
 </mapper>
