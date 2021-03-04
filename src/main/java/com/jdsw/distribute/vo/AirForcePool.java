@@ -77,4 +77,8 @@ public class AirForcePool {
      * 签订人
      */
     private String signed;
+    /**
+     * 接单人
+     */
+    private String firstFollowName;
 }

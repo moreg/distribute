@@ -14,6 +14,9 @@
             <if test="record != null and record != ''">
                 record,
             </if>
+            <if test="operation != null and operation !=''">
+                operation,
+            </if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -27,6 +30,9 @@
             <if test="record != null and record != ''">
                 #{record},
             </if>
+            <if test="operation != null and operation !=''">
+                #{operation},
+            </if>
             sysdate()
 
         </trim>
@@ -37,9 +43,9 @@
                network_id as networkId,img_url as imgUrl,record,create_time as createTime from customer_develop_follow where network_id = #{id} ORDER BY id DESC
     </select>
     <insert id="insertNetworkFollow2" parameterType="java.util.List">
-        insert into customer_develop_follow(follow_name,follow_result,network_id,create_time) values
+        insert into customer_develop_follow(follow_name,follow_result,network_id,create_time,operation) values
         <foreach collection="list" item="item" separator=",">
-            (#{item.followName},#{item.followResult},#{item.networkId},sysdate())
+            (#{item.followName},#{item.followResult},#{item.networkId},sysdate(),#{item.operation})
         </foreach>
     </insert>
 </mapper>

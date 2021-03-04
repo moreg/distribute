@@ -57,4 +57,8 @@ public class DistributeFollow {
      * 单号
      */
     private String trackId;
+    /**
+     * 操作
+     */
+    private String operation;
 }

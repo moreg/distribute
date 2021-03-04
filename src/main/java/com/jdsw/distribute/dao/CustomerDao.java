@@ -28,8 +28,8 @@ public interface CustomerDao {
 
     /**
      * 查询客户信息
-     * @param trackId
+     * @param
      * @return
      */
-    Distribute selectCustomer(String trackId);
+    Distribute selectCustomer(String customerNo);
 }

@@ -58,10 +58,10 @@ public class DevelopController {
     @RequestMapping("/uploadImg")
     public Message  uploadImgNew(@RequestParam("img") MultipartFile[] img, HttpServletRequest request){
         String uploadPathDB=null;
-        String trackId = Rand.getTrackId("Z");//获得跟踪单号
+        String trackId = Rand.getTrackId("XZ");//获得跟踪单号
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"Z");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"XZ");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");

@@ -31,6 +31,9 @@
       <if test="record != null and record != ''">
         record,
       </if>
+      <if test="operation != null and operation !=''">
+        operation,
+      </if>
       create_time
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -44,6 +47,9 @@
       <if test="record != null and record != ''">
         #{record},
       </if>
+      <if test="operation != null and operation !=''">
+        #{operation},
+      </if>
       sysdate()
 
     </trim>
@@ -51,9 +57,9 @@
   </insert>
 
   <insert id="insertNetworkFollow2" parameterType="java.util.List">
-    insert into customer_network_follow(follow_name,follow_result,network_id,create_time) values
+    insert into customer_network_follow(follow_name,follow_result,network_id,create_time,operation) values
     <foreach collection="list" item="item" separator=",">
-    (#{item.followName},#{item.followResult},#{item.networkId},sysdate())
+    (#{item.followName},#{item.followResult},#{item.networkId},sysdate(),#{item.operation})
     </foreach>
   </insert>
 
@@ -62,6 +68,6 @@
   </update>
 
   <select id="qureyFollowList" parameterType="java.lang.Integer" resultMap="DistributeMap">
-    select id,follow_name,follow_time,follow_result,network_id,img_url,record,create_time from customer_network_follow where network_id = #{id} ORDER BY id DESC
+    select cf.id,follow_name,follow_time,follow_result,network_id,img_url,record,cf.create_time,apply_reason,apply_explain,operation,stop_explain,deliver_explain from customer_network_follow cf LEFT JOIN customer_network cn ON cf.network_id = cn.id WHERE cf.network_id = #{id} ORDER BY id DESC
   </select>
 </mapper>

@@ -174,7 +174,13 @@ public interface NetworkService {
      * @return
      */
     Distribute qureyCustomer(Integer id,String trackId);
-
+    /**
+     * 客户信息
+     * @param id
+     * @param
+     * @return
+     */
+    Distribute qureyCustomer2(Integer id,String customerNo);
     /**
      * 关联企业
      * @param
@@ -221,7 +227,7 @@ public interface NetworkService {
      * @param map
      * @return
      */
-    int chargebackStop(Map map);
+    //int chargebackStop(Map map);
     /**
      * 通过
      * @param
@@ -230,11 +236,17 @@ public interface NetworkService {
     int adopt(Map map);
 
     /**
+     * 修改客户资料
+     * @param distribute
+     * @return
+     */
+    int updateCustomer(Distribute distribute);
+    /**
      * 通过停止申请
      * @param map
      * @return
      */
-    int adoptStop(Map map);
+    //int adoptStop(Map map);
     /**
      * 跟单状态
      * @param pageNum
@@ -257,6 +269,13 @@ public interface NetworkService {
      * @return
      */
     int activation(Map map);
+
+    /**
+     * 确认
+     * @param map
+     * @return
+     */
+    int confirm(Map map);
 
     /**
      * 查询是否有重复单号

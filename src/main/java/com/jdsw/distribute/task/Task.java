@@ -48,7 +48,6 @@ public class Task {
                 if (StringUtils.isNotEmpty(distribute.get(i).getOverdueTime())){
                     distribute1 = new Distribute();
                     Date start = sdf.parse(distribute.get(i).getOverdueTime());
-
                     if (start.getTime() - now.getTime() > 0 && start.getTime() - now.getTime() <=300000){
                         //System.out.println("提醒即将超时");
                     }else if (start.getTime() - now.getTime() <= -600000 && start.getTime() - now.getTime() >= -1200000){
@@ -56,25 +55,25 @@ public class Task {
                     }else if (start.getTime() - now.getTime() <= -1200000 && start.getTime() - now.getTime() >= -1500000){
                         //System.out.println("超时二十分钟提醒");
                     }else if (start.getTime() - now.getTime() <= -1500000){
-                        String str = distribute.get(i).getLastFollowName()+"超时退回";
                         String role = userDao.findRoleByUserName4(distribute.get(i).getLastFollowName());
                         if (Department.SALESMAN.value.equals(role)){
                             distribute1.setStatus(5);
-                            distribute1.setIssue(1);
+                            distribute1.setIssue(3);
+                            distribute1.setFlag(3);
                         }else if (Department.CHARGE.value.equals(role)){
-                            distribute1.setStatus(10);
-                            distribute1.setIssue(1);
-                            distribute1.setLeaderName(distribute.get(i).getLastFollowName());
+                            distribute1.setStatus(5);
+                            distribute1.setIssue(3);
+                            distribute1.setFlag(3);
+                            distribute1.setLastFollowName("聂帅");
                         }
                         distribute1.setId(distribute.get(i).getId());
                         distribute1.setOverdueTime(null);
                         distribute1.setOverrun(1);
-                        distribute1.setLastFollowName(null);
                         networkDao.overTime(distribute1);
                         DistributeFollow networkFollow= new DistributeFollow();
                         networkFollow.setFollowName(distribute.get(i).getLastFollowName());
                         networkFollow.setNetworkId(distribute.get(i).getId());
-                        networkFollow.setFollowResult(str);
+                        networkFollow.setOperation("超时退回");
                         networkFollowDao.insertNetworkFollow(networkFollow);
                     }
                 }

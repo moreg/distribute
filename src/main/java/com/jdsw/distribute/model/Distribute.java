@@ -234,7 +234,7 @@ public class Distribute {
      */
     List<Distribute> conducts;
     /**
-     * 申请时间
+     * 申诉时间
      */
     String applyTime;
     /**
@@ -242,7 +242,7 @@ public class Distribute {
      */
     String applyReason;
     /**
-     * 申请说明
+     * 申诉说明
      */
     String applyExplain;
     /**
@@ -289,4 +289,8 @@ public class Distribute {
      * 转交说明
      */
     String deliverExplain;
+    /**
+     * 操作
+     */
+    String operation;
 }

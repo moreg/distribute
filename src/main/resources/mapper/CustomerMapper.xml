@@ -50,6 +50,9 @@
     <insert id="insertCustomer" parameterType="com.jdsw.distribute.model.Distribute">
         insert into customer
         <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null">
+            id,
+        </if>
         <if test="customerNo != null and customerNo !=''">
             customer_no,
         </if>
@@ -88,6 +91,9 @@
         </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="id != null">
+            #{id},
+        </if>
         <if test="customerNo != null and customerNo !=''">
             #{customerNo},
         </if>
@@ -163,17 +169,17 @@
             name =#{name},
         </if>
         </trim>
-        where track_id = #{trackId}
+        where customer_no = #{customerNo}
     </update>
 
     <!--查询客户信息-->
     <select id="selectCustomer" resultMap="DistributeMap" parameterType="String">
         select id,customer_no,activation_time,corporate_name,corporate_phone,last_follow_name,last_follow_time,source,last_follow_result,total,
-        grade,track_id,corporate_phone2,corporate_phone3,weChat from customer where track_id = #{trackId}
+        grade,track_id,corporate_phone2,corporate_phone3,weChat from customer where customer_no = #{customerNo}
     </select>
     <!--客户池-->
     <select id="customerList" resultMap="DistributeMap" parameterType="String">
-        select id,customer_no,activation_time,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,source,track_id,corporate_phone2,corporate_phone3,receive_name,deliver_explain,receiving_time from customer
+        select id,customer_no,activation_time,corporate_name,corporate_phone,last_follow_name,last_follow_time,last_follow_result,total,grade,source,track_id from customer
         where 1 = 1
         <if test="lastFollowName != null and lastFollowName !=''">
             and last_follow_name = #{lastFollowName}
