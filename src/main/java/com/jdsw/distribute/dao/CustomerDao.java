@@ -32,4 +32,11 @@ public interface CustomerDao {
      * @return
      */
     Distribute selectCustomer(String customerNo);
+
+    /**
+     * 查手机号码查询
+     * @param corporatePhone
+     * @return
+     */
+    Distribute selectCustomer2(String corporatePhone);
 }

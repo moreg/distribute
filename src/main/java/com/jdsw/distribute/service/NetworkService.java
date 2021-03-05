@@ -70,7 +70,7 @@ public interface NetworkService {
      * @param
      * @return
      */
-    Distribute insertNetwoork(Map map);
+    int insertNetwoork(Map map);
 
     /**
      * 导入网销线索

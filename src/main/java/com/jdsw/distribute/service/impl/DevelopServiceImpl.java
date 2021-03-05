@@ -37,7 +37,6 @@ public class DevelopServiceImpl implements DevelopService {
     private CustomerDao customerDao;
     @Override
     public int insertDevelop(Map map) {
-        String str2 =map.get("name")+"新建线索";
         Distribute distribute = (Distribute) map.get("distribute");
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
         UsersVo usersVo = userDao.queryBranch((String) map.get("username"));
@@ -83,11 +82,10 @@ public class DevelopServiceImpl implements DevelopService {
         }
         developDao.insertDevelop(distribute);
         DistributeFollow distributeFollow = new DistributeFollow();
-        distributeFollow.setFollowResult(str2);
         distributeFollow.setNetworkId(distribute.getId());
-        developFollowDao.insertDevelopFollow(distributeFollow);
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
         distributeFollow.setImgUrl(distribute.getImgUrl());
+        distributeFollow.setOperation("新建线索");
         customerDao.insertCustomer(distribute);
         return developFollowDao.insertDevelopFollow(distributeFollow);
     }
@@ -129,7 +127,7 @@ public class DevelopServiceImpl implements DevelopService {
         Distribute distribute = new Distribute();
         distribute.setId(distributeFollow.getNetworkId());
         distribute.setLastFollowResult(distributeFollow.getFollowResult());
-        distribute.setLastFollowTime(DateUtil.getDate("yyyy-MM-dd HH:mm:ss"));
+        distribute.setLastFollowTime(DateUtil.getDateTime());
         developDao.updateDevelop(distribute);
         return developFollowDao.insertDevelopFollow(distributeFollow);
     }
@@ -142,9 +140,8 @@ public class DevelopServiceImpl implements DevelopService {
     @Transactional
     public int submitRecordingNetwork(List<Distribute> distribute) {
         for (int i=0;i<distribute.size();i++){
-            Distribute distribute2 = new Distribute();
             Distribute distribute3 = new Distribute();
-            distribute2 = developDao.selectDeveolpById(distribute.get(i).getId());
+            Distribute distribute2 = developDao.selectDeveolpById(distribute.get(i).getId());
             distribute3.setStatus(3);
             distribute3.setTrackId(distribute2.getTrackId());
             developDao.updateBytrackId(distribute3);
@@ -156,7 +153,6 @@ public class DevelopServiceImpl implements DevelopService {
     @Override
     @Transactional
     public int transferNetwork(List<Distribute> distribute,String name) {
-        String str = "给"+distribute.get(0).getLeaderName()+"转交了一条线索";
         DistributeFollow networkFollow;
         Distribute distribute1;
         List<Distribute> ld = new ArrayList<>();
@@ -166,13 +162,12 @@ public class DevelopServiceImpl implements DevelopService {
             distribute1 = new Distribute();
             networkFollow.setFollowName(name);
             networkFollow.setNetworkId(distribute.get(i).getId());
-            networkFollow.setFollowResult(str);
+            networkFollow.setOperation("转交");
             ls.add(networkFollow);
             distribute1.setLastFollowName(distribute.get(0).getLeaderName());
             distribute1.setId(distribute.get(i).getId());
             distribute1.setStatus(10);
             ld.add(distribute1);
-            System.out.println(ls);
             developFollowDao.insertNetworkFollow2(ls);
         }
         return developDao.updateNetworkLastFollowName(ld);

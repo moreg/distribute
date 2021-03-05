@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
-import com.jdsw.distribute.dao.NetworkDao;
-import com.jdsw.distribute.dao.TelemarkeDao;
-import com.jdsw.distribute.dao.TelemarkeFollowDao;
-import com.jdsw.distribute.dao.UserDao;
+import com.jdsw.distribute.dao.*;
 import com.jdsw.distribute.enums.Department;
 import com.jdsw.distribute.model.Distribute;
 import com.jdsw.distribute.model.DistributeFollow;
@@ -362,7 +359,6 @@ public class TelemarkeServiceImpl implements TelemarkeService {
     @Transactional
     public int assign(List<Distribute> distribute,String username,String name) {
         Distribute distribute1 = null;
-        String str = "给"+distribute.get(0).getLeaderName()+"转交了一条线索";
         DistributeFollow networkFollow;
         List<Distribute> ld = new ArrayList<>();
         List<DistributeFollow> ls = new ArrayList<>();
@@ -370,14 +366,14 @@ public class TelemarkeServiceImpl implements TelemarkeService {
             networkFollow = new DistributeFollow();
             networkFollow.setFollowName(name);
             networkFollow.setNetworkId(distribute.get(i).getId());
-            networkFollow.setFollowResult(str);
+            networkFollow.setOperation("转交");
             ls.add(networkFollow);
             distribute1 = new Distribute();
             distribute1.setFirstFollowName(distribute.get(i).getLeaderName());
             distribute1.setLastFollowName(distribute.get(i).getLeaderName());
             distribute1.setLeaderSign(1);
-            distribute1.setIssue(1);
             distribute1.setStatus(10);
+            distribute1.setFlag(0);
             distribute1.setOverdueTime(DateUtil.getOverTime(86400000));
             distribute1.setId(distribute.get(i).getId());
             ld.add(distribute1);

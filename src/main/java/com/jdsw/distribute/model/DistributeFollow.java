@@ -61,4 +61,21 @@ public class DistributeFollow {
      * 操作
      */
     private String operation;
+    /**
+     * 转交说明
+     */
+    private String deliverExplain;
+    /**
+     * 申诉理由
+     */
+    private String applyReason;
+    /**
+     * 申诉说明
+     */
+    private String applyExplain;
+    /**
+     * 停止说明
+     */
+    private String stopExplain;
+
 }

@@ -273,8 +273,15 @@ public interface NetworkDao {
 
     /**
      * 转交列表
-     * @param name
+     * @param
      * @return
      */
     List<Distribute> selectDeliver(Map  map);
+
+    /**
+     * 查询是否有重复号码
+     * @param corporatePhone
+     * @return
+     */
+    Distribute selectNetworkByPhone(String corporatePhone);
 }

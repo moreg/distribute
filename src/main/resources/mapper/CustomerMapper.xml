@@ -41,10 +41,7 @@
         <result column="receive_name"  property="receiveName" />
         <result column="deliver_explain"  property="deliverExplain" />
         <result column="receiving_time"  property="receivingTime" />
-
-
-
-
+        <result column="customer_no"  property="customerNo" />
 
     </resultMap>
     <insert id="insertCustomer" parameterType="com.jdsw.distribute.model.Distribute">
@@ -169,13 +166,24 @@
             name =#{name},
         </if>
         </trim>
-        where customer_no = #{customerNo}
+        where 1 = 1
+        <if test="customerNo != null and customerNo !=''">
+           and customer_no = #{customerNo}
+        </if>
+        <if test="trackId !=null and trackId !=''">
+            and track_id = #{trackId}
+        </if>
     </update>
 
     <!--查询客户信息-->
     <select id="selectCustomer" resultMap="DistributeMap" parameterType="String">
         select id,customer_no,activation_time,corporate_name,corporate_phone,last_follow_name,last_follow_time,source,last_follow_result,total,
         grade,track_id,corporate_phone2,corporate_phone3,weChat from customer where customer_no = #{customerNo}
+    </select>
+
+    <select id="selectCustomer2" resultMap="DistributeMap" parameterType="String">
+        select id,customer_no,activation_time,corporate_name,corporate_phone,last_follow_name,last_follow_time,source,last_follow_result,total,
+        grade,track_id,corporate_phone2,corporate_phone3,weChat from customer where corporate_phone = #{corporatePhone}
     </select>
     <!--客户池-->
     <select id="customerList" resultMap="DistributeMap" parameterType="String">

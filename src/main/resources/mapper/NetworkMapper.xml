@@ -43,6 +43,8 @@
     <result column="deliver_explain"  property="deliverExplain" />
     <result column="receiving_time"  property="receivingTime" />
     <result column="first_follow_name"  property="firstFollowName" />
+    <result column="deliver_explain"  property="deliverExplain" />
+    <result column="stop_reason"  property="stopReason" />
 
   </resultMap>
   <resultMap id="pool" type="com.jdsw.distribute.vo.ComePool">
@@ -89,6 +91,8 @@
     <result column="signed"  property="signed" />
     <result column="stopReason"  property="stop_reason" />
     <result column="first_follow_name"  property="firstFollowName" />
+    <result column="deliver_explain"  property="deliverExplain" />
+    <result column="stop_reason"  property="stopReason" />
   </resultMap>
   <resultMap id="cashierMap" type="com.jdsw.distribute.vo.CashierVo">
     <result column="id"  property="id" />
@@ -119,11 +123,11 @@
   <sql id="withPool_List">
     id,track_id,corporate_name,corporate_phone,last_follow_name,last_follow_result,leader_name,activation,proposer,create_time,sign,source,
      TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time,out_name,out_time,apply_time,apply_reason,apply_explain,return_name,return_time,
-     stop_time,stop_explain,signed,flag,first_follow_name,receiving_time
+     stop_time,stop_explain,signed,flag,first_follow_name,receiving_time,deliver_explain,stop_reason
   </sql>
   <sql id="PoolList">
     id,track_id,corporate_name,corporate_phone,create_time,last_follow_name,issue,receiving_time,last_follow_result,status,source,proposer,sign,weChat,apply_time,apply_reason,apply_explain,return_name
-    ,return_time,stop_time,stop_explain,out_time,out_name,signed
+    ,return_time,stop_time,stop_explain,out_time,out_name,signed,first_follow_name
   </sql>
 
   <select id="selectNetworkTrackId" resultType="String">
@@ -143,6 +147,11 @@
   <select id="selectNetworkById2" resultMap="DistributeMap">
     select *
     from customer_network where id =#{id} FOR UPDATE
+  </select>
+
+  <select id="selectNetworkByPhone" resultMap="DistributeMap">
+    select *
+    from customer_network where corporate_phone =#{corporatePhone}
   </select>
 
   <!--空军分发池-->
@@ -300,7 +309,7 @@
   </select>
 
   <select id="queryOverTime" resultMap="DistributeMap">
-    select id,overdue_time,last_follow_name from customer_network where flag = 0
+    select id,overdue_time,last_follow_name,leader_name from customer_network where flag = 0
   </select>
 
   <select id="statusList" resultMap="aMap" parameterType="com.jdsw.distribute.model.Distribute">

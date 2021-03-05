@@ -484,6 +484,9 @@
           <if test="Distribute.issue != null ">
             issue = #{Distribute.issue},
           </if>
+          <if test="Distribute.flag != null ">
+            flag = #{Distribute.flag},
+          </if>
           leader_sign = #{Distribute.leaderSign}
         </set>
         <where>

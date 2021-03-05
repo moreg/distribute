@@ -60,6 +60,7 @@ public class Task {
                             distribute1.setStatus(5);
                             distribute1.setIssue(3);
                             distribute1.setFlag(3);
+                            distribute1.setLastFollowName(distribute.get(i).getLeaderName());
                         }else if (Department.CHARGE.value.equals(role)){
                             distribute1.setStatus(5);
                             distribute1.setIssue(3);

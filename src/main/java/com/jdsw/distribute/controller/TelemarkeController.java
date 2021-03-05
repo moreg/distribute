@@ -240,10 +240,10 @@ public class TelemarkeController {
     public Message  uploadImgNew(@RequestParam("img") MultipartFile[] img,HttpServletRequest request){
         telemarkService.uploadImgNew(img);
         String uploadPathDB=null;
-        String trackId = Rand.getTrackId("L");//获得跟踪单号
+        String trackId = Rand.getTrackId("XL");//获得跟踪单号
         Map map=new HashMap();
         try {
-            uploadPathDB= ImageUtil.saveImage(trackId,img,"L");
+            uploadPathDB= ImageUtil.saveImage(trackId,img,"XL");
         }catch (IOException e){
             e.printStackTrace();
             return Message.fail("上传失败");
@@ -266,7 +266,7 @@ public class TelemarkeController {
         return Message.fail("提交失败");
     }
     /**
-     * 主管转发
+     * 转发
      * @param distribute
      * @return
      */
@@ -285,7 +285,7 @@ public class TelemarkeController {
      * @param
      * @return
      */
-    @RequestMapping("/customerTransfer")
+/*    @RequestMapping("/customerTransfer")
     public Message customerTransfer(@RequestBody List<Distribute> distribute,HttpServletRequest request){
         String username = (String) request.getAttribute("username");
         String name = (String) request.getAttribute("name");
@@ -295,7 +295,7 @@ public class TelemarkeController {
         }
         return Message.fail();
 
-    }
+    }*/
 
     /**
      * 查询跟进列表
@@ -312,11 +312,11 @@ public class TelemarkeController {
      * @param distribute
      * @return
      */
-    @RequestMapping("/setOvertime")
+/*    @RequestMapping("/setOvertime")
     public Message setOvertime(@RequestBody Distribute distribute){
         telemarkService.setOvertime(distribute);
         return Message.success();
-    }
+    }*/
     /**
      * 状态查询
      * @param pageNum
@@ -325,11 +325,11 @@ public class TelemarkeController {
      * @param
      * @return
      */
-    @RequestMapping("/statusList")
+/*    @RequestMapping("/statusList")
     public Message statusList(int pageNum, int limit,Integer status,HttpServletRequest request){
         String username = (String) request.getAttribute("username");
         String name = (String) request.getAttribute("name");
         return Message.success("查询成功",telemarkService.statusList(pageNum,limit,status,name));
-    }
+    }*/
 
 }

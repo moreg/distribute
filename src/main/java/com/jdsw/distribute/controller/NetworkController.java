@@ -104,8 +104,13 @@ public class NetworkController {
         map1.put("name",name);
         map1.put("username",username);
         map1.put("distribute",distribute);
-        return Message.success("新增成功",networkService.insertNetwoork(map1));
-
+        int i = networkService.insertNetwoork(map1);
+        if (i == 2){
+            return Message.success("已存在相同号码",308);
+        }else if (i == 1){
+            return Message.success();
+        }
+        return Message.fail();
     }
     /**
      * 导入网销线索
@@ -520,7 +525,7 @@ public class NetworkController {
         return Message.success("操作成功",networkService.qureyCustomer(id,trackId));
     }
     /**
-     * 查询客户信息
+     * 查询客户池客户信息
      * @return
      * @throws IOException
      */
@@ -676,6 +681,12 @@ public class NetworkController {
         }
         return  Message.fail();
     }
+
+    /**
+     * 修改客户池资料
+     * @param distribute
+     * @return
+     */
     @RequestMapping("/updateCustomer")
     public Message updateCustomer(@RequestBody Distribute distribute){
         int i = networkService.updateCustomer(distribute);

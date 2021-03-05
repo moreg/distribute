@@ -81,4 +81,8 @@ public class AirForcePool {
      * 接单人
      */
     private String firstFollowName;
+    /**
+     * 转交说明
+     */
+    private String deliverExplain;
 }
