@@ -40,7 +40,6 @@
     <result column="signed"  property="signed" />
     <result column="stop_reason"  property="stopReason" />
     <result column="leader_name"  property="leaderName" />
-    <result column="deliver_explain"  property="deliverExplain" />
     <result column="receiving_time"  property="receivingTime" />
     <result column="first_follow_name"  property="firstFollowName" />
     <result column="deliver_explain"  property="deliverExplain" />
@@ -161,6 +160,9 @@
         <if test="proposer != null and proposer !=''">
           and proposer = #{proposer}
         </if>
+        <if test="outName != null and outName !=''">
+        and out_name = #{outName}
+        </if>
         <if test="sign != null">
           AND sign = #{sign}
         </if>
@@ -179,7 +181,7 @@
   <!--抢单池-->
   <select id="grabbingPool" resultMap="aMap" parameterType="Map">
     select id,track_id,source,last_follow_name,last_follow_result,sign,proposer,create_time,issue,receiving_time from customer_network
-    where  `status` in(0,1)
+    where  `status` = 0
     <if test="branch !=null and branch !=''">
       and branch = #{branch}
     </if>
@@ -216,8 +218,8 @@
   </select>
   <!--主管跟单池-->
   <select id="withPool2" resultMap="aMap" parameterType="Map">
-    SELECT id,track_id,corporate_name,corporate_phone,weChat,last_follow_name,last_follow_result,leader_name,activation,proposer,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time,sign,source,issue,`status`,overrun,TIMESTAMPDIFF(second ,SYSDATE(),overdue_time) as overdue_time from customer_network WHERE
-    ((leader_name = #{lastFollowName} and status = 5) or (last_follow_name = #{lastFollowName} and `status` = 10 and activation = 0))   and issue =  #{issue}
+    select * from (SELECT <include refid="withPool_List"></include> from customer_telemarke UNION  SELECT <include refid="withPool_List"></include> from customer_network UNION SELECT <include refid="withPool_List"></include> FROM customer_develop) as a
+    where a.flag = #{flag} and (last_follow_name = #{lastFollowName} or out_name = #{outName})
     <if test="strtime != null and strtime!=''">
       AND create_time <![CDATA[ >= ]]> #{strtime}
     </if>
@@ -309,7 +311,7 @@
   </select>
 
   <select id="queryOverTime" resultMap="DistributeMap">
-    select id,overdue_time,last_follow_name,leader_name from customer_network where flag = 0
+    select id,overdue_time,next_time,last_follow_name,leader_name from customer_network where flag = 0
   </select>
 
   <select id="statusList" resultMap="aMap" parameterType="com.jdsw.distribute.model.Distribute">
@@ -539,12 +541,8 @@
 
   <update id="updateNetwork2" parameterType="com.jdsw.distribute.model.Distribute">
     update customer_network set
-
-      last_follow_time = sysdate()
-
-    <if test="overdueTime !=null">
-      ,overdue_time = #{overdueTime}
-    </if>
+    last_follow_time = sysdate()
+    ,overdue_time = #{overdueTime}
     <if test="lastFollowResult != null and lastFollowResult !=''">
       ,last_follow_result = #{lastFollowResult}
     </if>

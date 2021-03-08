@@ -12,7 +12,11 @@
     <result column="remarks"  property="remarks" />
     <result column="record"  property="record" />
     <result column="create_time"  property="createTime" />
-
+    <result column="deliver_explain"  property="deliverExplain" />
+    <result column="stop_reason"  property="stopReason" />
+    <result column="stop_explain"  property="stopExplain" />
+    <result column="apply_reason"  property="applyReason" />
+    <result column="apply_explain"  property="applyExplain" />
   </resultMap>
   <sql id="Base_Column_List">
     name, corporate_name, corporate_phone, contacts, contacts_phone, source, follow_number,state,last_follow_up,

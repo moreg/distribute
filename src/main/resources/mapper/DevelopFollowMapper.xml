@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jdsw.distribute.dao.DevelopFollowDao">
+    <resultMap id="DistributeMap" type="com.jdsw.distribute.model.DistributeFollow">
+        <id column="id"  property="id" />
+        <result column="follow_name"  property="followName" />
+        <result column="follow_time"  property="followTime" />
+        <result column="follow_result"  property="followResult" />
+        <result column="network_id" property="networkId" />
+        <result column="img_url"  property="imgUrl" />
+        <result column="remarks"  property="remarks" />
+        <result column="record"  property="record" />
+        <result column="create_time"  property="createTime" />
+        <result column="deliver_explain"  property="deliverExplain" />
+        <result column="stop_reason"  property="stopReason" />
+        <result column="stop_explain"  property="stopExplain" />
+        <result column="apply_reason"  property="applyReason" />
+        <result column="apply_explain"  property="applyExplain" />
+    </resultMap>
     <insert id="insertDevelopFollow" parameterType="com.jdsw.distribute.model.DistributeFollow">
         insert into customer_develop_follow
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -62,7 +78,7 @@
         </trim>
 
     </insert>
-    <select id="qureyFollowList" parameterType="java.lang.Integer" resultType="com.jdsw.distribute.model.DistributeFollow">
+    <select id="qureyFollowList" parameterType="java.lang.Integer" resultMap="DistributeMap">
         select cf.id,follow_name,follow_time,follow_result,network_id,img_url,record,cf.create_time,cf.apply_reason,cf.apply_explain,cf.operation,cf.stop_explain,cf.deliver_explain
          from customer_develop_follow cf LEFT JOIN customer_develop cd ON cf.network_id = cd.id where network_id = #{id} ORDER BY id DESC
     </select>

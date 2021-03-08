@@ -159,9 +159,17 @@ public class NetworkServiceImpl implements NetworkService {
         Distribute distribute = (Distribute) map.get("distribute");
         Integer pageNum = (Integer) map.get("pageNum");
         Integer limit = (Integer) map.get("limit");
-        map.put("issue",distribute.getIssue());
+        Integer issue = (Integer) map.get("issue");
+        //map.put("issue",distribute.getIssue());
         for (Object str : set) {
             if (str.equals(Department.AirCUSTOMER.value)){//线索管理员
+                if (issue == 2){
+                    map.put("outName",map.get("name"));
+                    PageHelper.startPage(pageNum,limit);
+                    List<Distribute> Network = networkDao.airForcePoolList(map);
+                    PageInfo result = new PageInfo(Network);
+                    return result;
+                }
                 map.put("proposer",map.get("name"));
                 PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.airForcePoolList(map);
@@ -172,7 +180,7 @@ public class NetworkServiceImpl implements NetworkService {
                 List<Distribute> Network = networkDao.airForcePoolList(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
-            }else if (str.equals(Department.AIRCHARGE.value) || str.equals(Department.CLUECHARGE.value)){//空军线索主管
+            }else if (str.equals(Department.AIRCHARGE.value) || str.equals(Department.CLUECHARGE.value) ||str.equals(Department.GENERAL.value)||str.equals(Department.DEPUTY.value)){//空军线索主管
                 PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.airForcePoolList(map);
                 PageInfo result = new PageInfo(Network);
@@ -186,8 +194,11 @@ public class NetworkServiceImpl implements NetworkService {
     public PageInfo<Distribute> grabbingPool(Map map) {
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
         map.put("flag",map.get("flag"));
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
         for (Object str : set){
-            if (str.equals(Department.ADMIN.value)){
+            if (str.equals(Department.ADMIN.value) || str.equals(Department.CLUECHARGE.value)|| str.equals(Department.GENERAL.value)|| str.equals(Department.DEPUTY.value)){
+                PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.grabbingPool(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
@@ -204,15 +215,26 @@ public class NetworkServiceImpl implements NetworkService {
     public PageInfo<Distribute> withPool(Map map) {
         Set set = userDao.findRoleByUserName2((String) map.get("username"));
         Integer flag = (Integer) map.get("flag");
+        Integer pageNum = (Integer) map.get("pageNum");
+        Integer limit = (Integer) map.get("limit");
         map.put("lastFollowName",map.get("name"));
         for (Object str : set) {
-            if (str.equals(Department.SALESMAN.value) || str.equals(Department.CHARGE.value)|| str.equals(Department.DEPUTY.value) || str.equals(Department.GENERAL.value)){
+            if (str.equals(Department.SALESMAN.value) || str.equals(Department.CHARGE.value)){
+                if (flag == 1){
+                    map.put("outName",map.get("name"));
+                    PageHelper.startPage(pageNum,limit);
+                    List<Distribute> Network = networkDao.withPool2(map);
+                    PageInfo result = new PageInfo(Network);
+                    return result;
+                }
+                PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.withPool(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
             }
-            if (str.equals(Department.ADMIN.value)){
+            if (str.equals(Department.ADMIN.value) || str.equals(Department.DEPUTY.value) || str.equals(Department.GENERAL.value) ||str.equals(Department.CLUECHARGE.value)){
                 map.put("lastFollowName",null);
+                PageHelper.startPage(pageNum,limit);
                 List<Distribute> Network = networkDao.withPool(map);
                 PageInfo result = new PageInfo(Network);
                 return result;
@@ -222,11 +244,11 @@ public class NetworkServiceImpl implements NetworkService {
     }
     @Override
     @Transactional
-    public int insertNetwoork(Map map) {
+    public Distribute insertNetwoork(Map map) {
         Distribute distribute = (Distribute) map.get("distribute");
         Distribute distribute1 = networkDao.selectNetworkByPhone(distribute.getCorporatePhone());
         if (distribute1 != null){
-            return 2;
+            return distribute;
         }
         if (StringUtil.isEmpty(distribute.getTrackId())){
             int row = networkDao.getRowNo("XK");
@@ -270,7 +292,8 @@ public class NetworkServiceImpl implements NetworkService {
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
         distributeFollow.setImgUrl(distribute.getImgUrl());
         distributeFollow.setOperation("新建线索");
-        return networkFollowDao.insertNetworkFollow(distributeFollow);
+        networkFollowDao.insertNetworkFollow(distributeFollow);
+        return distribute;
     }
 
     @Override
@@ -805,8 +828,8 @@ public class NetworkServiceImpl implements NetworkService {
         distribute.setStatus(0);
         distribute.setLastFollowName(null);
         distribute.setReceivingTime(null);
-        distribute.setIssue(5);
-        distribute.setFlag(5);
+        distribute.setIssue(0);
+        distribute.setFlag(null);
         distribute.setOverdueTime(null);
         networkDao.updateBytrackId(distribute);
         return networkDao.updateBytrackId2(distribute);
@@ -919,7 +942,7 @@ public class NetworkServiceImpl implements NetworkService {
         networkFollow.setFollowName((String) map.get("name"));
         networkFollow.setNetworkId(distribute.getId());
         if ("XK".equals(strid)){
-            Distribute distribute1 = networkDao.selectNetworkById(distribute.getId());;
+            Distribute distribute1 = networkDao.selectNetworkById(distribute.getId());
             distribute.setLeaderName(distribute1.getLeaderName());
            return networkDao.updateNetwork(distribute);
         }else if ("XL".equals(strid)){

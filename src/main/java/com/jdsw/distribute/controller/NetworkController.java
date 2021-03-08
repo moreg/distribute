@@ -32,7 +32,7 @@ public class NetworkController {
      * 分发池
      */
     @RequestMapping("/airForcePoolList")
-    public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime, Distribute distribute, HttpServletRequest request, HttpServletResponse response){
+    public Message airForcePoolList(int pageNum, int limit, String content, String strtime, String endtime,Integer issue, Distribute distribute, HttpServletRequest request, HttpServletResponse response){
         String name = (String) request.getAttribute("name");
         String username = (String) request.getAttribute("username");
         Map mapl = new HashMap();
@@ -44,6 +44,7 @@ public class NetworkController {
         mapl.put("distribute",distribute);
         mapl.put("username",username);
         mapl.put("name",name);
+        mapl.put("issue",issue);
         return Message.success("操作成功",networkService.airForcePoolList(mapl),0);
     }
 
@@ -104,13 +105,13 @@ public class NetworkController {
         map1.put("name",name);
         map1.put("username",username);
         map1.put("distribute",distribute);
-        int i = networkService.insertNetwoork(map1);
-        if (i == 2){
+        //int i = networkService.insertNetwoork(map1);
+/*        if (i == 2){
             return Message.success("已存在相同号码",308);
         }else if (i == 1){
             return Message.success();
-        }
-        return Message.fail();
+        }*/
+        return Message.success("新增成功",networkService.insertNetwoork(map1));
     }
     /**
      * 导入网销线索

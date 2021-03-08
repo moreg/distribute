@@ -87,6 +87,12 @@
         <if test="weChat != null and weChat != ''">
             ,weChat
         </if>
+        <if test="outTime != null and outTime != ''">
+            ,out_time
+        </if>
+        <if test="outName != null and outName != ''">
+            ,out_name
+        </if>
         ,activation_name
         ,receiving_time
         ,create_time
@@ -125,6 +131,12 @@
         </if>
         <if test="weChat != null and weChat != ''">
             ,#{weChat}
+        </if>
+        <if test="outTime != null">
+            ,#{outTime}
+        </if>
+        <if test="outName != null and outName != ''">
+            ,#{outName}
         </if>
         ,#{lastFollowName}
         ,#{receivingTime}

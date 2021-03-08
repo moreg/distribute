@@ -103,13 +103,13 @@ public interface NetworkDao {
     List<Distribute> grabbingPool(Map map);
 
     /**
-     * 主管跟单池
+     * 业务员跟单池
      * @param map
      * @return
      */
     List<Distribute> withPool(Map map);
     /**
-     * 业务员跟单池
+     * 主管跟单池
      * @param map
      * @return
      */

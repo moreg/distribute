@@ -45,6 +45,9 @@ public class Task {
         Distribute distribute1 = null;
         if (distribute.size() > 0){
             for (int i=0;i<distribute.size();i++){
+                if (StringUtils.isNotEmpty(distribute.get(i).getNextTime())){
+                    return;
+                }
                 if (StringUtils.isNotEmpty(distribute.get(i).getOverdueTime())){
                     distribute1 = new Distribute();
                     Date start = sdf.parse(distribute.get(i).getOverdueTime());

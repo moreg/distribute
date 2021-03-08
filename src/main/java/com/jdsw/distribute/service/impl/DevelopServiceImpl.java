@@ -47,6 +47,8 @@ public class DevelopServiceImpl implements DevelopService {
         distribute.setGrade(usersVo.getGroup());
         distribute.setSign(1);
         distribute.setFlag(0);
+        distribute.setOutName((String) map.get("name"));
+        distribute.setOutTime(DateUtil.getDateTime());
         distribute.setActivationTime(DateUtil.getDateTime());
         if (StringUtils.isEmpty(distribute.getReceivingTime())){
             distribute.setReceivingTime(DateUtil.getDateTime());
@@ -86,6 +88,7 @@ public class DevelopServiceImpl implements DevelopService {
         distributeFollow.setFollowResult(distribute.getLastFollowResult());
         distributeFollow.setImgUrl(distribute.getImgUrl());
         distributeFollow.setOperation("新建线索");
+        distributeFollow.setFollowName((String) map.get("name"));
         customerDao.insertCustomer(distribute);
         return developFollowDao.insertDevelopFollow(distributeFollow);
     }
